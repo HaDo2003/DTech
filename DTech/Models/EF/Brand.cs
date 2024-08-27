@@ -30,6 +30,8 @@ public partial class Brand
     [Display(Name = "Update Date")]
     public DateTime? UpdateDate { get; set; }
 
+    public int? Status { get; set; }
+
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 
     [NotMapped]

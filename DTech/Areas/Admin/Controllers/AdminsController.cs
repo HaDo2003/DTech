@@ -69,7 +69,7 @@ namespace DTech.Areas.Admin.Controllers
 
                 if (existingAccount != null)
                 {
-                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("error", "Account already exists!"));
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Account already exists!"));
                     return View(admin);
                 }
 

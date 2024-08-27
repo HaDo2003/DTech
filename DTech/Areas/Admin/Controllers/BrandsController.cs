@@ -44,12 +44,23 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            ViewBag.Status = new Dictionary<int, string>
+            {
+                { 1, "Available" },
+                { 0, "Unavailable" },
+            };
+
             return View(brand);
         }
 
         // GET: Admin/Brands/Create
         public IActionResult Create()
         {
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
             return View();
         }
 
@@ -58,7 +69,7 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BrandId,Name,Slug,Logo,CreatedBy,CreateDate,UpdatedBy,UpdateDate,LogoUpload")] Brand brand)
+        public async Task<IActionResult> Create([Bind("BrandId,Name,Slug,Logo,CreatedBy,CreateDate,UpdatedBy,UpdateDate,Status,LogoUpload")] Brand brand)
         {
             if (ModelState.IsValid)
             {
@@ -107,6 +118,11 @@ namespace DTech.Areas.Admin.Controllers
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
             return View(brand);
         }
 
@@ -123,6 +139,11 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
             return View(brand);
         }
 
@@ -131,7 +152,7 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BrandId,Name,Slug,Logo,CreatedBy,CreateDate,UpdatedBy,UpdateDate,LogoUpload")] Brand brand)
+        public async Task<IActionResult> Edit(int id, [Bind("BrandId,Name,Slug,Logo,CreatedBy,CreateDate,UpdatedBy,UpdateDate,Status,LogoUpload")] Brand brand)
         {
             if (id != brand.BrandId)
             {
@@ -200,6 +221,11 @@ namespace DTech.Areas.Admin.Controllers
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
             return View(brand);
         }
 
@@ -217,6 +243,12 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Status = new Dictionary<int, string>
+            {
+                    { 1, "Available" },
+                    { 0, "Unavailable" },
+            };
 
             return View(brand);
         }
@@ -250,6 +282,32 @@ namespace DTech.Areas.Admin.Controllers
         private bool BrandExists(int id)
         {
             return _context.Brands.Any(e => e.BrandId == id);
+        }
+
+        public async Task<IActionResult> StatusChange(int id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var brand = await _context.Brands
+                .FirstOrDefaultAsync(m => m.BrandId == id);
+
+            if (brand == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            brand.Status = (brand.Status == 1) ? 0 : 1;
+            brand.UpdateDate = DateTime.Now;
+            brand.UpdatedBy = "Admin1";
+
+            _context.Update(brand);
+            await _context.SaveChangesAsync();
+
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
+            return RedirectToAction(nameof(Index));
         }
     }
 }

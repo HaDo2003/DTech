@@ -49,8 +49,17 @@
                                         <td>@Html.DisplayFor(model => model.Slug)</td>
                                     </tr>
                                     <tr>
-                                        <th>@Html.DisplayNameFor(model => model.Logo)</th>
-                                        <td>@Html.DisplayFor(model => model.Logo)</td>
+                                        <th>@Html.DisplayNameFor(model => model.Status)</th>
+                                        <td>
+                                            @if (Model.Status.HasValue && ViewBag.Status.ContainsKey(Model.Status.Value))
+                                            {
+                                                @ViewBag.Status[Model.Status.Value]
+                                            }
+                                            else
+                                            {
+                                                <span>Unknown Status</span>
+                                            }
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>

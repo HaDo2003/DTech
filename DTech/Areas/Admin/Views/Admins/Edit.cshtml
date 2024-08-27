@@ -5,6 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+
 <div class="row">
     <div class="col-md-12">
         <form asp-action="Edit" method="post" enctype="multipart/form-data">
@@ -39,6 +40,9 @@
                         <div class="col-12">
                             <!-- Default box -->
                             <div class="card">
+                                <div class="card-header text-center">
+                                    @Html.Partial("Message")
+                                </div>
                                 <div class="card-body">
                                     <input type="hidden" asp-for="AdminId" />
 

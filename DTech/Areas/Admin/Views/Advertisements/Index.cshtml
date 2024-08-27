@@ -7,18 +7,7 @@
 
 @section Scripts {
     <script type="text/javascript">
-        $(document).ready(function () {
-            // Initialize DataTables
-            let table = $('#myTable').DataTable();
-
-            // Make alert message disappear after 10 seconds
-            var alertMessage = $("#alert-message");
-            if (alertMessage.length) {
-                setTimeout(function () {
-                    alertMessage.remove();
-                }, 10000); // 10000 milliseconds = 10 seconds
-            }
-        });
+        let table = $('#brandTable').DataTable();
     </script>
 }
 

@@ -7,18 +7,7 @@
 
 @section Scripts {
     <script type="text/javascript">
-        $(document).ready(function () {
-            // Initialize DataTables
-            let table = $('#brandTable').DataTable();
-
-            // Make alert message disappear after 10 seconds
-            var alertMessage = $("#alert-message");
-            if (alertMessage.length) {
-                setTimeout(function () {
-                    alertMessage.remove();
-                }, 10000); // 10000 milliseconds = 10 seconds
-            }
-        });
+        let table = $('#brandTable').DataTable();
     </script>
 }
 
@@ -101,6 +90,21 @@
                                             <img src="~/img/BrandLogo/@item.Logo" alt="Advertisement" width="150" height="150" />
                                         </td>
                                         <td>
+                                            @if (item.Status == 1)
+                                            {
+                                                <a asp-for="@item.Status" asp-action="StatusChange" asp-route-id="@item.BrandId" class="btn btn-sm btn-success text-center btn-custom">
+                                                    <i class="fa-solid fa-toggle-on fa-sm"></i>
+                                                    <span class="hover-text">Change Status</span>
+                                                </a>
+                                            }
+                                            else if (item.Status == 0)
+                                            {
+                                                <a asp-for="@item.Status" asp-action="StatusChange" asp-route-id="@item.BrandId" class="btn btn-sm btn-danger text-center btn-custom">
+                                                    <i class="fa-solid fa-toggle-off fa-sm"></i>
+                                                    <span class="hover-text">Change Status</span>
+                                                </a>
+                                            }
+
                                             <a asp-action="Edit" asp-route-id="@item.BrandId" class="btn btn-sm btn-primary text-center btn-custom">
                                                 <i class="fa-solid fa-pen-to-square fa-sm"></i>
                                                 <span class="hover-text">Edit</span>
