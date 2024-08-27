@@ -1,0 +1,143 @@
+﻿@model IEnumerable<DTech.Models.EF.Admin>
+
+@{
+    ViewData["Title"] = "Admin Account";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Initialize DataTables
+            let table = $('#myTable').DataTable();
+
+            // Make alert message disappear after 10 seconds
+            var alertMessage = $("#alert-message");
+            if (alertMessage.length) {
+                setTimeout(function () {
+                    alertMessage.remove();
+                }, 10000); // 10000 milliseconds = 10 seconds
+            }
+        });
+    </script>
+}
+
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Admin Account Management</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li>
+                        <a class="btn btn-sm btn-success text-center">
+                            <i class="fa-solid fa-house fa-sm"></i>
+                            Home
+                        </a>
+                    </li>
+
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col">
+                                <strong class="card-title">Account Information</strong>
+                            </div>
+
+                            <div class="col">
+                                @Html.Partial("Message")
+                            </div>
+
+                            <div class="col text-end">
+                                <a asp-action="Create" class="btn btn-sm btn-success text-center">
+                                    <i class="fa-solid fa-plus fa-sm"></i>
+                                    Create New
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body py-0">
+                        <table class="table table-bordered table-striped" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Account)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Password)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.FirstName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.LastName)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Gender)
+                                    </th>
+                                    <th>
+                                        Function
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Account)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Password)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.FirstName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.LastName)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Gender)
+                                        </td>
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.AdminId" class="btn btn-sm btn-primary text-center btn-custom">
+                                                <i class="fa-solid fa-pen-to-square fa-sm"></i>
+                                                <span class="hover-text">Edit</span>
+                                            </a>
+
+                                            <a asp-action="Details" asp-route-id="@item.AdminId" class="btn btn-sm btn-info text-center btn-custom">
+                                                <i class="fa-solid fa-circle-info fa-sm"></i>
+                                                <span class="hover-text">Details</span>
+                                            </a>
+
+                                            <a asp-action="Delete" asp-route-id="@item.AdminId" class="btn btn-sm btn-danger text-center btn-custom">
+                                                <i class="fa-solid fa-trash fa-sm"></i>
+                                                <span class="hover-text">Delete</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div> <!-- /.card-body -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->

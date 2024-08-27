@@ -1,0 +1,179 @@
+﻿@model DTech.Models.EF.Admin
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Edit</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li>
+                                    <a asp-action="Index" class="btn btn-sm btn-success text-center">
+                                        <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+                                        Back to List
+                                    </a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div> <!--end::Row-->
+                </div> <!--end::Container-->
+            </div> <!--end::App Content Header--> <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Default box -->
+                            <div class="card">
+                                <div class="card-body">
+                                    <input type="hidden" asp-for="AdminId" />
+
+                                    <div class="form-group">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-2 col-sm-4 text-center">
+                                                <img src="~/img/AdminImg/@Model.Photo" id="imgpreview" class="py-2" alt="" />
+                                            </div>
+
+                                            <div class="col-lg-10 col-sm-8 p-0">
+                                                <label for="input-file" class="custom-upload ms-2">Update Photo</label>
+                                            </div>
+                                        </div>
+                                        <input asp-for="PhotoUpload" class="form-control custom-photo-input" id="input-file" onchange="img_pathUrl(this)" />
+                                        <span asp-validation-for="PhotoUpload" class="text-danger"></span>
+                                    </div>
+                                    <input type="hidden" asp-for="Photo" />
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Account" class="control-label"></label>
+                                                <input asp-for="Account" class="form-control" readonly />
+                                                <span asp-validation-for="Account" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Password" class="control-label"></label>
+                                                <input asp-for="Password" class="form-control" />
+                                                <span asp-validation-for="Password" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="FirstName" class="control-label"></label>
+                                                <input asp-for="FirstName" class="form-control" />
+                                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="LastName" class="control-label"></label>
+                                                <input asp-for="LastName" class="form-control" />
+                                                <span asp-validation-for="LastName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group py-2 custom-radio-container">
+                                        <label asp-for="Gender" class="control-label"></label>
+                                        <div class="custom-radio-group">
+                                            <div>
+                                                <input asp-for="Gender" type="radio" value="Male" id="Male" class="custom-radio" />
+                                                <label class="custom-label-radio" for="Male">Male</label>
+                                            </div>
+                                            <div>
+                                                <input asp-for="Gender" type="radio" value="Female" id="Female" class="custom-radio" />
+                                                <label class="custom-label-radio" for="Female">Female</label>
+                                            </div>
+                                            <div>
+                                                <input asp-for="Gender" type="radio" value="Other" id="Other" class="custom-radio" />
+                                                <label class="custom-label-radio" for="Other">Other</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <span asp-validation-for="Gender" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-4">
+                                            <div class="form-group">
+                                                <label asp-for="CreatedBy" class="control-label"></label>
+                                                <input asp-for="CreatedBy" class="form-control" readonly />
+                                                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-sm-8">
+                                            <div class="form-group">
+                                                <label asp-for="CreateDate" class="control-label"></label>
+                                                <input asp-for="CreateDate" class="form-control" readonly />
+                                                <span asp-validation-for="CreateDate" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-4">
+                                            <div class="form-group">
+                                                <label asp-for="UpdatedBy" class="control-label"></label>
+                                                <input asp-for="UpdatedBy" class="form-control" readonly />
+                                                <span asp-validation-for="UpdatedBy" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-sm-8">
+                                            <div class="form-group">
+                                                <label asp-for="UpdateDate" class="control-label"></label>
+                                                <input asp-for="UpdateDate" class="form-control" readonly />
+                                                <span asp-validation-for="UpdateDate" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div> <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <div class="form-group">
+                                        <button type="submit" value="Save" class="btn btn-primary">
+                                            <i class="fa-solid fa-floppy-disk fa-sm"></i>
+                                            Save
+                                        </button>
+                                    </div>
+                                </div> <!-- /.card-footer-->
+                            </div> <!-- /.card -->
+                        </div>
+                    </div> <!--end::Row-->
+                </div> <!--end::Container-->
+            </div> <!--end::App Content-->
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function img_pathUrl(input) {
+            $("img#imgpreview")[0].src = URL.createObjectURL(input.files[0]);
+        }
+    </script>
+}

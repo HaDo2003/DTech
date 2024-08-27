@@ -1,0 +1,199 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+/*=========================================================
+Nav Bar
+===========================================================*/
+
+.bg-main {
+    background: linear-gradient(180deg, #141414 0%, #202022 50%, #47474f 100%);
+}
+
+.img-logo {
+    width: 180px;
+    height: 46px;
+}
+
+
+.fontsize {
+    font-size: 13px;
+}
+
+.search-input {
+    height: 40px;
+    border: 1px solid #ced4da;
+    border-right: 0;
+    border-radius: 4px 0 0 4px;
+    outline: none;
+    box-shadow: none;
+}
+
+    .search-input:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+.btn.btn-search {
+    height: 40px;
+    background: white;
+    border: 1px solid #ced4da;
+    border-left: 0;
+    border-radius: 0 4px 4px 0;
+    outline: none;
+    box-shadow: none;
+}
+
+    .btn.btn-search:focus {
+        outline: none;
+        box-shadow: none;
+    }
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.navbar {
+    width: 1250px;
+}
+
+.c-item {
+    height: 400px;
+}
+
+/*=========================================================
+NEWSLETTER
+===========================================================*/
+
+#newsletter.section {
+    border-top: 2px solid #E4E7ED;
+    border-bottom: 3px solid;
+    margin-top: 30px;
+}
+
+.newsletter {
+    text-align: center;
+}
+
+    .newsletter p {
+        font-size: 24px;
+    }
+
+    .newsletter form {
+        position: relative;
+        max-width: 520px;
+        margin: 30px auto;
+        display: flex;
+    }
+
+        .newsletter form:after {
+            content: "\f003";
+            font-family: FontAwesome;
+            position: absolute;
+            font-size: 160px;
+            color: #E4E7ED;
+            top: 15px;
+            -webkit-transform: translateY(-50%) rotate(15deg);
+            -ms-transform: translateY(-50%) rotate(15deg);
+            transform: translateY(-50%) rotate(15deg);
+            z-index: -1;
+            left: -90px;
+        }
+
+        .newsletter form .input {
+            width: calc(100% - 160px);
+            margin-right: -4px;
+            border-radius: 40px 0px 0px 40px;
+            padding: 10px;
+            box-sizing: border-box;
+            height: 40px;
+            outline: none;
+        }
+
+        .newsletter form .newsletter-btn {
+            width: 160px;
+            height: 40px;
+            font-weight: 700;
+            background: #333;
+            color: #FFF;
+            border: 1px solid #555;
+            border-radius: 0px 40px 40px 0px;
+            cursor: pointer;
+            text-align: center;
+        }
+/*=========================================================
+Footer
+===========================================================*/
+.bg-footer {
+    background: #000;
+}
+
+/*=========================================================
+Default
+===========================================================*/
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+a {
+    color: #0077cc;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}

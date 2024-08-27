@@ -1,0 +1,16 @@
+﻿<head>
+    <link href="~/css/adminsite.css" rel="stylesheet" />
+</head>
+
+@using DTech.Library
+@using Newtonsoft.Json
+
+@if (TempData.ContainsKey("message"))
+{
+    var messageJson = TempData["message"].ToString();
+    XMessage message = JsonConvert.DeserializeObject<XMessage>(messageJson);
+
+    <div id="alert-message" class="alert alert-@message.TypeMsg custom-alert">
+        @message.Msg
+    </div>
+}
