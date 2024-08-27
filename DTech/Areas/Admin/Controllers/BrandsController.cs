@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
+using DTech.Library;
+using Newtonsoft.Json;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -13,10 +15,12 @@ namespace DTech.Areas.Admin.Controllers
     public class BrandsController : Controller
     {
         private readonly EcommerceWebContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public BrandsController(EcommerceWebContext context)
+        public BrandsController(EcommerceWebContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         // GET: Admin/Brands
@@ -54,12 +58,53 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BrandId,Name,Slug,Logo,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Brand brand)
+        public async Task<IActionResult> Create([Bind("BrandId,Name,Slug,Logo,CreatedBy,CreateDate,UpdatedBy,UpdateDate,LogoUpload")] Brand brand)
         {
             if (ModelState.IsValid)
             {
+                //Check if adv already exist
+                brand.Slug = brand.Name.ToLower().Replace(" ", "-");
+
+                var slug = await _context.Brands
+                    .FirstOrDefaultAsync(a => a.Slug == brand.Slug);
+
+                if (slug != null)
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Brand already exists!"));
+                    return View(brand);
+                }
+
+                //ImageUpload
+                string imageName;
+
+                if (brand.LogoUpload != null)
+                {
+                    string uploadDir = Path.Combine(_environment.WebRootPath, "img/BrandLogo");
+                    imageName = Path.GetFileName(brand.LogoUpload.FileName);
+
+                    string filePath = Path.Combine(uploadDir, imageName);
+
+                    using (var fs = new FileStream(filePath, FileMode.Create))
+                    {
+                        await brand.LogoUpload.CopyToAsync(fs);
+                    }
+
+                }
+                else
+                {
+                    imageName = "noimgge.png";
+                }
+
+                //Save to database
+                brand.Logo = imageName;
+                brand.CreateDate = DateTime.Now;
+                brand.CreatedBy = "Admin1";
+
                 _context.Add(brand);
                 await _context.SaveChangesAsync();
+
+                //Success message
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
                 return RedirectToAction(nameof(Index));
             }
             return View(brand);
@@ -86,7 +131,7 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BrandId,Name,Slug,Logo,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Brand brand)
+        public async Task<IActionResult> Edit(int id, [Bind("BrandId,Name,Slug,Logo,CreatedBy,CreateDate,UpdatedBy,UpdateDate,LogoUpload")] Brand brand)
         {
             if (id != brand.BrandId)
             {
@@ -97,6 +142,47 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
+                    //Change name
+                    brand.Slug = brand.Name.ToLower().Replace(" ", "-");
+                    var slug = await _context.Brands
+                    .FirstOrDefaultAsync(a => a.Slug == brand.Slug);
+
+                    if (slug != null)
+                    {
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Brand already exists!"));
+                        return View(brand);
+                    }
+
+                    //Change Photo
+                    if (brand.LogoUpload != null && brand.LogoUpload.Length > 0)
+                    {
+                        string uploadDir = Path.Combine(_environment.WebRootPath, "img/BrandLogo");
+
+                        //Delete old imgae
+                        if (!string.Equals(brand.Logo, "noimage.png"))
+                        {
+                            string oldImagePath = Path.Combine(uploadDir, brand.Logo);
+
+                            if (System.IO.File.Exists(oldImagePath))
+                            {
+                                System.IO.File.Delete(oldImagePath);
+                            }
+                        }
+                        string imageName = Path.GetFileName(brand.LogoUpload.FileName);
+
+                        string filePath = Path.Combine(uploadDir, imageName);
+
+                        using (var fs = new FileStream(filePath, FileMode.Create))
+                        {
+                            await brand.LogoUpload.CopyToAsync(fs);
+                        }
+
+                        brand.Logo = imageName;
+                    }
+                    
+                    brand.UpdateDate = DateTime.Now;
+                    brand.UpdatedBy = "Admin1";
+
                     _context.Update(brand);
                     await _context.SaveChangesAsync();
                 }
@@ -111,6 +197,7 @@ namespace DTech.Areas.Admin.Controllers
                         throw;
                     }
                 }
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
             return View(brand);
@@ -142,10 +229,21 @@ namespace DTech.Areas.Admin.Controllers
             var brand = await _context.Brands.FindAsync(id);
             if (brand != null)
             {
+                //Delete old image
+                if (!string.Equals(brand.Logo, "noimage.png"))
+                {
+                    string PhotoPath = Path.Combine(_environment.WebRootPath, "img/BrandLogo/" + brand.Logo);
+
+                    if (System.IO.File.Exists(PhotoPath))
+                    {
+                        System.IO.File.Delete(PhotoPath);
+                    }
+                }
                 _context.Brands.Remove(brand);
             }
 
             await _context.SaveChangesAsync();
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Deleted successfully"));
             return RedirectToAction(nameof(Index));
         }
 

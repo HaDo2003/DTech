@@ -79,7 +79,7 @@ namespace DTech.Areas.Admin.Controllers
                     .FirstOrDefaultAsync(a => a.Slug == advertisement.Slug);
 
                 if (slug != null) {
-                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("error", "Adevertisement already exists!"));
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Advertisement already exists!"));
                     return View(advertisement);
                 }
 
@@ -164,6 +164,18 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
+                    //Check if adv already exist
+                    advertisement.Slug = advertisement.Name.ToLower().Replace(" ", "-");
+
+                    var slug = await _context.Advertisements
+                        .FirstOrDefaultAsync(a => a.Slug == advertisement.Slug);
+
+                    if (slug != null)
+                    {
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Advertisement already exists!"));
+                        return View(advertisement);
+                    }
+
                     //Change Photo
                     if (advertisement.ImageUpload != null && advertisement.ImageUpload.Length > 0)
                     {
@@ -211,6 +223,11 @@ namespace DTech.Areas.Admin.Controllers
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
             return View(advertisement);
         }
 
@@ -245,7 +262,7 @@ namespace DTech.Areas.Admin.Controllers
             var advertisement = await _context.Advertisements.FindAsync(id);
             if (advertisement != null)
             {
-                //Delete old imgae
+                //Delete old image
                 if (!string.Equals(advertisement.Image, "noimage.png"))
                 {
                     string PhotoPath = Path.Combine(_environment.WebRootPath, "img/AdvImg/" + advertisement.Image);

@@ -2,63 +2,105 @@
 
 @{
     ViewData["Title"] = "Create";
-    Layout = "~/Areas/Adminstrator/Views/Shared/_LayoutAdmin.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Create</h1>
-
-<h4>Brand</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-12">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Slug" class="control-label"></label>
-                <input asp-for="Slug" class="form-control" />
-                <span asp-validation-for="Slug" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Logo" class="control-label"></label>
-                <input asp-for="Logo" class="form-control" />
-                <span asp-validation-for="Logo" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedBy" class="control-label"></label>
-                <input asp-for="CreatedBy" class="form-control" />
-                <span asp-validation-for="CreatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreateDate" class="control-label"></label>
-                <input asp-for="CreateDate" class="form-control" />
-                <span asp-validation-for="CreateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedBy" class="control-label"></label>
-                <input asp-for="UpdatedBy" class="form-control" />
-                <span asp-validation-for="UpdatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdateDate" class="control-label"></label>
-                <input asp-for="UpdateDate" class="form-control" />
-                <span asp-validation-for="UpdateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Create</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li>
+                                    <a asp-action="Index" class="btn btn-sm btn-success text-center">
+                                        <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+                                        Back to List
+                                    </a>
+                                </li>
+                            </ol>
+                        </div>
+                    </div> <!--end::Row-->
+                </div> <!--end::Container-->
+            </div> <!--end::App Content Header-->
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Default box -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col">
+                                            <h3 class="card-title">Brand Creation</h3>
+                                        </div>
+
+                                        <div class="col text-end">
+                                            @Html.Partial("Message")
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-2 col-sm-4 text-center">
+                                                <img src="#" id="imgpreview" class="py-2" alt="" />
+                                            </div>
+
+                                            <div class="col-lg-10 col-sm-8 p-0">
+                                                <label for="input-file" class="custom-upload ms-2">Upload Logo</label>
+                                            </div>
+                                        </div>
+                                        <input asp-for="LogoUpload" class="form-control custom-photo-input" id="input-file" onchange="img_pathUrl(this)" />
+                                        <span asp-validation-for="LogoUpload" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="Name" class="control-label">
+                                            @Html.DisplayNameFor(model => model.Name)
+                                            <span class="text-danger">(*)</span>
+                                        </label>
+                                        <input asp-for="Name" class="form-control" />
+                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                    </div>
+
+                                </div> <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <div class="form-group">
+                                        <button type="submit" value="Create" class="btn btn-primary">
+                                            <i class="fa-solid fa-floppy-disk fa-sm"></i>
+                                            Save
+                                        </button>
+                                    </div>
+                                </div> <!-- /.card-footer-->
+                            </div> <!-- /.card -->
+                        </div>
+                    </div> <!--end::Row-->
+                </div> <!--end::Container-->
+            </div> <!--end::App Content-->
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function img_pathUrl(input) {
+            $("img#imgpreview")[0].src = URL.createObjectURL(input.files[0]);
+        }
+    </script>
 }

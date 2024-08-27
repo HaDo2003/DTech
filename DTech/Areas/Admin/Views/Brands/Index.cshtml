@@ -1,72 +1,128 @@
 ﻿@model IEnumerable<DTech.Models.EF.Brand>
 
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Areas/Adminstrator/Views/Shared/_LayoutAdmin.cshtml";
+    ViewData["Title"] = "Brand Management";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Index</h1>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Initialize DataTables
+            let table = $('#brandTable').DataTable();
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Slug)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Logo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedBy)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdateDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Slug)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Logo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdatedBy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UpdateDate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.BrandId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.BrandId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.BrandId">Delete</a>
-            </td>
-        </tr>
+            // Make alert message disappear after 10 seconds
+            var alertMessage = $("#alert-message");
+            if (alertMessage.length) {
+                setTimeout(function () {
+                    alertMessage.remove();
+                }, 10000); // 10000 milliseconds = 10 seconds
+            }
+        });
+    </script>
 }
-    </tbody>
-</table>
+
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Brand Management</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li>
+                        <a class="btn btn-sm btn-success text-center">
+                            <i class="fa-solid fa-house fa-sm"></i>
+                            Home
+                        </a>
+                    </li>
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col">
+                                <strong class="card-title">Brand Information</strong>
+                            </div>
+
+                            <div class="col">
+                                @Html.Partial("Message")
+                            </div>
+
+                            <div class="col text-end">
+                                <a asp-action="Create" class="btn btn-sm btn-success text-center">
+                                    <i class="fa-solid fa-plus fa-sm"></i>
+                                    Create New
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body py-0">
+                        <table class="table table-bordered table-striped" id="brandTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Name)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Slug)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Logo)
+                                    </th>
+                                    <th>Function</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Slug)
+                                        </td>
+                                        <td>
+                                            <img src="~/img/BrandLogo/@item.Logo" alt="Advertisement" width="150" height="150" />
+                                        </td>
+                                        <td>
+                                            <a asp-action="Edit" asp-route-id="@item.BrandId" class="btn btn-sm btn-primary text-center btn-custom">
+                                                <i class="fa-solid fa-pen-to-square fa-sm"></i>
+                                                <span class="hover-text">Edit</span>
+                                            </a>
+
+                                            <a asp-action="Details" asp-route-id="@item.BrandId" class="btn btn-sm btn-info text-center btn-custom">
+                                                <i class="fa-solid fa-circle-info fa-sm"></i>
+                                                <span class="hover-text">Details</span>
+                                            </a>
+
+                                            <a asp-action="Delete" asp-route-id="@item.BrandId" class="btn btn-sm btn-danger text-center btn-custom">
+                                                <i class="fa-solid fa-trash fa-sm"></i>
+                                                <span class="hover-text">Delete</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div> <!-- /.card-body -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->
