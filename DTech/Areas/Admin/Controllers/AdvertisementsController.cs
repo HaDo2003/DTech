@@ -105,6 +105,10 @@ namespace DTech.Areas.Admin.Controllers
                 }
 
                 //Save to database
+                if(advertisement.Status == null)
+                {
+                    advertisement.Status = 1;
+                }
                 advertisement.Image = imageName;
                 advertisement.CreateDate = DateTime.Now;
                 advertisement.CreatedBy = "Admin1";
@@ -245,6 +249,7 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
             ViewBag.Status = new Dictionary<int, string>
             {
                     { 1, "Available" },

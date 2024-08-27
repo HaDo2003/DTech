@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DTech.Models.EF;
 
 public partial class Category
 {
+    [Key]
     public int CategoryId { get; set; }
 
+    [Required(ErrorMessage = "Please enter name of catefory")]
     public string? Name { get; set; }
 
+    [Display(Name = "Parent")]
     public int? ParentId { get; set; }
 
     public string? Slug { get; set; }
