@@ -18,7 +18,7 @@ namespace DTech.Library
             while (!stoppingToken.IsCancellationRequested)
             {
                 await CheckAndUpdateCodeStatus();
-                await Task.Delay(TimeSpan.FromHours(1), stoppingToken); // Runs every hour
+                await Task.Delay(TimeSpan.FromHours(24), stoppingToken); // Runs every 24 hours
             }
         }
 
