@@ -1,3 +1,4 @@
+using DTech.Library;
 using DTech.Models.EF;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,9 @@ builder.Services.AddDbContext<EcommerceWebContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DTech"));
 });
+
+// Register the background service
+builder.Services.AddHostedService<CodeStatusCheckerService>();
 
 var app = builder.Build();
 
