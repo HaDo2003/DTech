@@ -25,6 +25,8 @@ public partial class Product
 
     public decimal? Discount { get; set; }
 
+    public DateOnly? EndDateDiscount { get; set; }
+
     public int? Views { get; set; }
 
     public DateOnly? DateOfManufacture { get; set; }

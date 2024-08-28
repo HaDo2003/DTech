@@ -43,12 +43,25 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            ViewBag.Status = new Dictionary<int, string>
+            {
+                { 2, "Expired" },
+                { 1, "Available" },
+                { 0, "Unavailable" },
+            };
+
             return View(coupon);
         }
 
         // GET: Admin/Coupons/Create
         public IActionResult Create()
         {
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
             return View();
         }
 
@@ -57,7 +70,7 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CouponId,Name,Slug,Code,Discount,Condition,Detail,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Coupon coupon)
+        public async Task<IActionResult> Create([Bind("CouponId,Name,Slug,Code,Discount,Condition,Detail,EndDate,Status,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Coupon coupon)
         {
             if (ModelState.IsValid)
             {
@@ -85,6 +98,13 @@ namespace DTech.Areas.Admin.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
             return View(coupon);
         }
 
@@ -101,6 +121,14 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "2", Text = "Expired" },
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
             return View(coupon);
         }
 
@@ -109,7 +137,7 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CouponId,Name,Slug,Code,Discount,Condition,Detail,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Coupon coupon)
+        public async Task<IActionResult> Edit(int id, [Bind("CouponId,Name,Slug,Code,Discount,Condition,Detail,EndDate,Status,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Coupon coupon)
         {
             if (id != coupon.CouponId)
             {
@@ -155,6 +183,14 @@ namespace DTech.Areas.Admin.Controllers
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "2", Text = "Expired" },
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
             return View(coupon);
         }
 
@@ -172,6 +208,13 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Status = new Dictionary<int, string>
+            {
+                { 2, "Expired" },
+                { 1, "Available" },
+                { 0, "Unavailable" },
+            };
 
             return View(coupon);
         }
@@ -195,6 +238,32 @@ namespace DTech.Areas.Admin.Controllers
         private bool CouponExists(int id)
         {
             return _context.Coupons.Any(e => e.CouponId == id);
+        }
+
+        public async Task<IActionResult> StatusChange(int id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var coupon = await _context.Coupons
+                .FirstOrDefaultAsync(m => m.CouponId == id);
+
+            if (coupon == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            coupon.Status = (coupon.Status == 1) ? 0 : 1;
+            coupon.UpdateDate = DateTime.Now;
+            coupon.UpdatedBy = "Admin1";
+
+            _context.Update(coupon);
+            await _context.SaveChangesAsync();
+
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
+            return RedirectToAction(nameof(Index));
         }
     }
 }

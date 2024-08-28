@@ -26,6 +26,10 @@ public partial class Coupon
     [Required(ErrorMessage = "Please enter detail")]
     public string? Detail { get; set; }
 
+    public DateOnly? EndDate { get; set; }
+
+    public int? Status { get; set; }
+
     [Display(Name = "Created By")]
     public string? CreatedBy { get; set; }
 
@@ -39,5 +43,4 @@ public partial class Coupon
     public DateTime? UpdateDate { get; set; }
 
     public virtual ICollection<CustomerCoupon> CustomerCoupons { get; set; } = new List<CustomerCoupon>();
-
 }

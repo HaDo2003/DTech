@@ -73,6 +73,23 @@
                                         <td>@Html.DisplayFor(model => model.Detail)</td>
                                     </tr>
                                     <tr>
+                                        <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+                                        <td>@Html.DisplayFor(model => model.EndDate)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Status)</th>
+                                        <td>
+                                            @if (Model.Status.HasValue && ViewBag.Status.ContainsKey(Model.Status.Value))
+                                            {
+                                                @ViewBag.Status[Model.Status.Value]
+                                            }
+                                            else
+                                            {
+                                                <span>Unknown Status</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>
                                         <td>@Html.DisplayFor(model => model.CreatedBy)</td>
                                     </tr>
