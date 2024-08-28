@@ -1,0 +1,123 @@
+﻿@model IEnumerable<DTech.Models.EF.Feedback>
+
+@{
+    ViewData["Title"] = "Feedback Management";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        let table = $('#myTable').DataTable();
+    </script>
+}
+
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Feedback</h3>
+            </div>
+            <div class="col-sm-6" aria-label="breadcrumb">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item">
+                        <a class="btn btn-sm btn-success text-center">
+                            <i class="fa-solid fa-house fa-sm"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Feedback
+                    </li>
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col">
+                                <strong class="card-title">Feedback Information</strong>
+                            </div>
+
+                            <div class="col">
+                                @Html.Partial("Message")
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body py-0">
+                        <table class="table table-bordered table-striped" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Name)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Email)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Detail)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Fbdate)
+                                    </th>
+                                    <th>
+                                        Function
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Email)
+                                        </td>
+                                        <td>
+                                            @if (item.Detail.Length > 50)
+                                            {
+                                                <span>@item.Detail.Substring(0, 50)...</span>
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => item.Detail)
+                                            }
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Fbdate)
+                                        </td>
+                                        <td>
+                                            <a asp-action="Details" asp-route-id="@item.FeedbackId" class="btn btn-sm btn-info text-center btn-custom">
+                                                <i class="fa-solid fa-circle-info fa-sm"></i>
+                                                <span class="hover-text">Details</span>
+                                            </a>
+
+                                            <a asp-action="Delete" asp-route-id="@item.FeedbackId" class="btn btn-sm btn-danger text-center btn-custom">
+                                                <i class="fa-solid fa-trash fa-sm"></i>
+                                                <span class="hover-text">Delete</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div> <!-- /.card-body -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->
