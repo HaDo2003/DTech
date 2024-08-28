@@ -16,11 +16,19 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
-                    <li>
-                        <a asp-action="Index" class="btn btn-sm btn-success text-center">
-                            <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
-                            Back to List
+                    <li class="breadcrumb-item">
+                        <a class="btn btn-sm btn-success text-center">
+                            <i class="fa-solid fa-house fa-sm"></i>
+                            Home
                         </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index">
+                            Brand
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Details
                     </li>
                 </ol>
             </div>
@@ -91,6 +99,10 @@
                         <a asp-action="Edit" asp-route-id="@Model?.BrandId" class="btn btn-sm btn-primary text-center btn-custom">
                             <i class="fa-solid fa-pen-to-square fa-sm"></i>
                             Edit
+                        </a> |
+                        <a asp-action="Index" class="btn btn-sm btn-success text-center" style="padding-bottom: 0.3em; padding-top: 0.27em;">
+                            <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+                            Back to List
                         </a>
                     </div> <!-- /.card-footer-->
                 </div> <!-- /.card -->

@@ -7,7 +7,7 @@
 
 @section Scripts {
     <script type="text/javascript">
-        let table = $('#categoryTable').DataTable();
+        let table = $('#myTable').DataTable();
     </script>
 }
 
@@ -22,11 +22,14 @@
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-end">
-                    <li>
+                    <li class="breadcrumb-item">
                         <a class="btn btn-sm btn-success text-center">
                             <i class="fa-solid fa-house fa-sm"></i>
                             Home
                         </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Category
                     </li>
                 </ol>
             </div>
@@ -61,7 +64,7 @@
                         </div>
                     </div>
                     <div class="card-body py-0">
-                        <table class="table table-bordered table-striped" id="categoryTable">
+                        <table class="table table-bordered table-striped" id="myTable">
                             <thead>
                                 <tr>
                                     <th>

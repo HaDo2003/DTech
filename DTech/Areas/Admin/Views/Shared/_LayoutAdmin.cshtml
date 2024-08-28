@@ -17,6 +17,8 @@
     <link href="~/dist/css/adminlte.css" rel="stylesheet" />
     <link href="~/css/adminsite.css" rel="stylesheet" />
     <link href="~/css/datatables.datatables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/26.2.4/material.css" />
+    <script src="https://cdn.syncfusion.com/ej2/26.2.4/dist/ej2.min.js"></script>
     <script src="https://kit.fontawesome.com/75ef677eac.js" crossorigin="anonymous"></script>
     @RenderSection("header", required: false)
     <!--end::Required Plugin(AdminLTE)-->
@@ -183,6 +185,13 @@
                                     <a asp-controller="Brands" asp-action="Index" class="nav-link">
                                         <i class="nav-icon bi bi-circle"></i>
                                         <p>Brand</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a asp-controller="Categories" asp-action="Index" class="nav-link">
+                                        <i class="nav-icon bi bi-circle"></i>
+                                        <p>Category</p>
                                     </a>
                                 </li>
                             </ul>
@@ -593,6 +602,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/datatables.min.js"></script>
     <script src="~/js/adminsite.js"></script>
+    <ejs-scripts></ejs-scripts>
     @RenderSection("Scripts", required: false)
     <!--end::OverlayScrollbars Configure--> <!--end::Script-->
 </body><!--end::Body-->
