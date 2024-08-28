@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
+using DTech.Library;
+using Newtonsoft.Json;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -58,8 +60,28 @@ namespace DTech.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Check if Category already exist
+                coupon.Slug = coupon.Name.ToLower().Replace(" ", "-");
+
+                var slug = await _context.Coupons
+                    .FirstOrDefaultAsync(a => a.Slug == coupon.Slug);
+
+                if (slug != null)
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Coupon already exists!"));
+                    return View(coupon);
+                }
+
+                //Save to database
+                coupon.CreateDate = DateTime.Now;
+                coupon.CreatedBy = "Admin1";
+
                 _context.Add(coupon);
                 await _context.SaveChangesAsync();
+
+                //Success message
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
+
                 return RedirectToAction(nameof(Index));
             }
             return View(coupon);
@@ -97,6 +119,21 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
+                    //Check if category already exist
+                    coupon.Slug = coupon.Name.ToLower().Replace(" ", "-");
+
+                    var slug = await _context.Coupons
+                        .FirstOrDefaultAsync(a => a.Slug == coupon.Slug);
+
+                    if (slug != null)
+                    {
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Coupon already exists!"));
+                        return View(coupon);
+                    }
+
+                    coupon.UpdateDate = DateTime.Now;
+                    coupon.UpdatedBy = "Admin1";
+
                     _context.Update(coupon);
                     await _context.SaveChangesAsync();
                 }
@@ -111,6 +148,7 @@ namespace DTech.Areas.Admin.Controllers
                         throw;
                     }
                 }
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
             return View(coupon);
@@ -146,6 +184,7 @@ namespace DTech.Areas.Admin.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Deleted successfully"));
             return RedirectToAction(nameof(Index));
         }
 

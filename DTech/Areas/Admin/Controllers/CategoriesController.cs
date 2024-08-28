@@ -82,7 +82,7 @@ namespace DTech.Areas.Admin.Controllers
 
                 if (slug != null)
                 {
-                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Advertisement already exists!"));
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Category already exists!"));
                     return View(category);
                 }
 
@@ -162,7 +162,7 @@ namespace DTech.Areas.Admin.Controllers
 
                     if (slug != null)
                     {
-                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Advertisement already exists!"));
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Category already exists!"));
                         return View(category);
                     }
 

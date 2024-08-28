@@ -17,12 +17,16 @@ public partial class Category
 
     public string? Slug { get; set; }
 
+    [Display(Name = "Created By")]
     public string? CreatedBy { get; set; }
 
+    [Display(Name = "Create Date")]
     public DateTime? CreateDate { get; set; }
 
+    [Display(Name = "Updated By")]
     public string? UpdatedBy { get; set; }
 
+    [Display(Name = "Update Date")]
     public DateTime? UpdateDate { get; set; }
 
     public int? Status { get; set; }
