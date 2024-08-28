@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
 using DTech.Library;
 using Newtonsoft.Json;
+using System.Drawing.Drawing2D;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -154,17 +155,20 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
-                    //Check if category already exist
-                    category.Slug = category.Name.ToLower().Replace(" ", "-");
+                    // Generate slug from the updated name
+                    string newSlug = category.Name.ToLower().Replace(" ", "-");
 
-                    var slug = await _context.Categories
-                        .FirstOrDefaultAsync(a => a.Slug == category.Slug);
+                    // Check if the slug is already used by another category
+                    var existingBrand = await _context.Categories
+                        .FirstOrDefaultAsync(a => a.Slug == newSlug && a.CategoryId != category.CategoryId);
 
-                    if (slug != null)
+                    if (existingBrand != null)
                     {
-                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Category already exists!"));
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Brand already exists!"));
                         return View(category);
                     }
+
+                    category.Slug = newSlug;
 
                     category.UpdateDate = DateTime.Now;
                     category.UpdatedBy = "Admin1";

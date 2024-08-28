@@ -168,17 +168,20 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
-                    //Check if adv already exist
-                    advertisement.Slug = advertisement.Name.ToLower().Replace(" ", "-");
+                    // Generate slug from the updated name
+                    string newSlug = advertisement.Name.ToLower().Replace(" ", "-");
 
-                    var slug = await _context.Advertisements
-                        .FirstOrDefaultAsync(a => a.Slug == advertisement.Slug);
+                    // Check if the slug is already used by another advertisement
+                    var existingAdvertisement = await _context.Advertisements
+                        .FirstOrDefaultAsync(a => a.Slug == newSlug && a.AdvId != advertisement.AdvId);
 
-                    if (slug != null)
+                    if (existingAdvertisement != null)
                     {
                         TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Advertisement already exists!"));
                         return View(advertisement);
                     }
+
+                    advertisement.Slug = newSlug;
 
                     //Change Photo
                     if (advertisement.ImageUpload != null && advertisement.ImageUpload.Length > 0)

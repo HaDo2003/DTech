@@ -163,16 +163,20 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
-                    //Change name
-                    brand.Slug = brand.Name.ToLower().Replace(" ", "-");
-                    var slug = await _context.Brands
-                    .FirstOrDefaultAsync(a => a.Slug == brand.Slug);
+                    // Generate slug from the updated name
+                    string newSlug = brand.Name.ToLower().Replace(" ", "-");
 
-                    if (slug != null)
+                    // Check if the slug is already used by another brand
+                    var existingBrand = await _context.Brands
+                        .FirstOrDefaultAsync(a => a.Slug == newSlug && a.BrandId != brand.BrandId);
+
+                    if (existingBrand != null)
                     {
                         TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Brand already exists!"));
                         return View(brand);
                     }
+
+                    brand.Slug = newSlug;
 
                     //Change Photo
                     if (brand.LogoUpload != null && brand.LogoUpload.Length > 0)
