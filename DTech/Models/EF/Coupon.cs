@@ -15,8 +15,7 @@ public partial class Coupon
     public string? Slug { get; set; }
 
     [Required(ErrorMessage = "Please enter code")]
-    [Display(Name = "Integer Code")]
-    public int? Code { get; set; }
+    public string? Code { get; set; }
 
     [Required(ErrorMessage = "Please enter discount")]
     public decimal? Discount { get; set; }
@@ -38,4 +37,7 @@ public partial class Coupon
 
     [Display(Name = "Update Date")]
     public DateTime? UpdateDate { get; set; }
+
+    public virtual ICollection<CustomerCoupon> CustomerCoupons { get; set; } = new List<CustomerCoupon>();
+
 }

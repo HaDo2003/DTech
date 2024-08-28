@@ -33,6 +33,8 @@ public partial class EcommerceWebContext : DbContext
 
     public virtual DbSet<CustomerAddress> CustomerAddresses { get; set; }
 
+    public virtual DbSet<CustomerCoupon> CustomerCoupons { get; set; }
+
     public virtual DbSet<Feedback> Feedbacks { get; set; }
 
     public virtual DbSet<Link> Links { get; set; }
@@ -214,6 +216,7 @@ public partial class EcommerceWebContext : DbContext
             entity.ToTable("Coupon");
 
             entity.Property(e => e.CouponId).HasColumnName("CouponID");
+            entity.Property(e => e.Code).IsUnicode(false);
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
@@ -280,6 +283,23 @@ public partial class EcommerceWebContext : DbContext
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Customer_CustomerAddress");
+        });
+
+        modelBuilder.Entity<CustomerCoupon>(entity =>
+        {
+            entity.ToTable("CustomerCoupon");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CouponId).HasColumnName("CouponID");
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+
+            entity.HasOne(d => d.Coupon).WithMany(p => p.CustomerCoupons)
+                .HasForeignKey(d => d.CouponId)
+                .HasConstraintName("FK_CustomerCoupon_Coupon");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.CustomerCoupons)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("FK_CustomerCoupon_Customer");
         });
 
         modelBuilder.Entity<Feedback>(entity =>

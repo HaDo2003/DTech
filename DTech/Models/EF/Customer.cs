@@ -29,5 +29,7 @@ public partial class Customer
 
     public virtual Cart Cart { get; set; } = null!;
 
+    public virtual ICollection<CustomerCoupon> CustomerCoupons { get; set; } = new List<CustomerCoupon>();
+
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }
