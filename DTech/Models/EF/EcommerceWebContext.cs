@@ -235,6 +235,8 @@ public partial class EcommerceWebContext : DbContext
         {
             entity.ToTable("Customer");
 
+            entity.HasIndex(e => e.CartId, "UQ__Customer__51BCD7964DA8315F").IsUnique();
+
             entity.HasIndex(e => e.Phone, "UQ__Customer__5C7E359EE36E1E26").IsUnique();
 
             entity.HasIndex(e => e.Email, "UQ__Customer__A9D10534BADAFA34").IsUnique();
@@ -271,8 +273,8 @@ public partial class EcommerceWebContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.Cart).WithMany(p => p.Customers)
-                .HasForeignKey(d => d.CartId)
+            entity.HasOne(d => d.Cart).WithOne(p => p.Customer)
+                .HasForeignKey<Customer>(d => d.CartId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Customer_Cart");
         });

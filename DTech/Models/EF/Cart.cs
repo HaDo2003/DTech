@@ -7,5 +7,5 @@ public partial class Cart
 {
     public int CartId { get; set; }
 
-    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
+    public virtual Customer? Customer { get; set; }
 }
