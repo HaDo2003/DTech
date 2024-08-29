@@ -30,105 +30,112 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                             <a asp-controller="Admins" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "admin" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "admin" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Admin Account</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Advertisements" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "advertisement" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "advertisement" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Advertisement</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Brands" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "brand" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "brand" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Brand</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Categories" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "category" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "category" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Category</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Coupons" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "coupon" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "coupon" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Coupon</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
+                            <a asp-controller="Customers" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "customer" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "customer" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
+                                <p>Customer</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
                             <a asp-controller="Feedbacks" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "feedback" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "feedback" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Feedback</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Menus" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "menu" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "menu" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Menu</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Orders" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "order" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "order" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Order</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Payments" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "payment" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "payment" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Payment</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="PaymentMethods" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "paymentmethod" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "paymentmethod" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Payment Method</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Posts" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "post" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "post" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Post</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="PostCategories" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "postcategory" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "postcategory" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Post Category</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Products" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "product" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "product" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Product</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Suppliers" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "supplier" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "supplier" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Supplier</p>
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a asp-controller="Topics" asp-action="Index" class="@string.Join(" ", new[] { "nav-link", page == "topic" ? "active" : "" }.Where(c => !string.IsNullOrEmpty(c)))">
-                                <i class="nav-icon bi bi-circle"></i>
+                                <i class="@string.Join(" ", new[] { "nav-icon bi", page == "topic" ? "bi-record-circle" : "bi-circle" }.Where(c => !string.IsNullOrEmpty(c)))"></i>
                                 <p>Topic</p>
                             </a>
                         </li>
