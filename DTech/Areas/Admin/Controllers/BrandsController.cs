@@ -212,8 +212,8 @@ namespace DTech.Areas.Admin.Controllers
 
             ViewBag.Status = new Dictionary<int, string>
             {
-                    { 1, "Available" },
-                    { 0, "Unavailable" },
+                { 1, "Available" },
+                { 0, "Unavailable" },
             };
 
             return View(brand);

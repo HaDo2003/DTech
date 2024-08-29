@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
 using DTech.Library;
 using Newtonsoft.Json;
-using DTech.Library.Helper;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -17,13 +16,11 @@ namespace DTech.Areas.Admin.Controllers
     {
         private readonly EcommerceWebContext _context;
         private readonly SettingImage _settingImg;
-        private readonly AdminHelper _adminHelper;
 
-        public AdminsController(EcommerceWebContext context, SettingImage settingImg, AdminHelper adminHelper)
+        public AdminsController(EcommerceWebContext context, SettingImage settingImg)
         {
             _context = context;
             _settingImg = settingImg;
-            _adminHelper = adminHelper;
         }
 
         // GET: Admin/Admins
@@ -35,7 +32,18 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Admins/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var admin = await _adminHelper.CheckExistAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var admin = await _context.Admins
+                .FirstOrDefaultAsync(m => m.AdminId == id);
+            if (admin == null)
+            {
+                return NotFound();
+            }
+
             return View(admin);
         }
 
@@ -87,7 +95,16 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Admins/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            var admin = await _adminHelper.CheckExistAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var admin = await _context.Admins.FindAsync(id);
+            if (admin == null)
+            {
+                return NotFound();
+            }
             return View(admin);
         }
 
@@ -140,7 +157,18 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Admins/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            var admin = await _adminHelper.CheckExistAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var admin = await _context.Admins
+                .FirstOrDefaultAsync(m => m.AdminId == id);
+            if (admin == null)
+            {
+                return NotFound();
+            }
+
             return View(admin);
         }
 
