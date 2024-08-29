@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
+using DTech.Library;
+using Newtonsoft.Json;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -57,10 +59,20 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,CartId,FirstName,LastName,Gender,DayOfBirth,Phone,Email,Account,Password,Image")] Customer customer)
+        public async Task<IActionResult> Create([Bind("CustomerId,CartId,FirstName,LastName,Gender,DayOfBirth,Phone,Email,Account,Password,Image,ImageUpload")] Customer customer)
         {
             if (ModelState.IsValid)
             {
+                //Check account existed
+                var existingAccount = await _context.Customers
+                    .FirstOrDefaultAsync(a => a.Account == customer.Account);
+
+                if (existingAccount != null)
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Account already exists!"));
+                    return View(customer);
+                }
+
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

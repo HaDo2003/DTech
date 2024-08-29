@@ -7,74 +7,176 @@
     ViewBag.page = "customer";
 }
 
-<h1>Create</h1>
-
-<h4>Customer</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-12">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="CartId" class="control-label"></label>
-                <select asp-for="CartId" class ="form-control" asp-items="ViewBag.CartId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gender" class="control-label"></label>
-                <input asp-for="Gender" class="form-control" />
-                <span asp-validation-for="Gender" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DayOfBirth" class="control-label"></label>
-                <input asp-for="DayOfBirth" class="form-control" />
-                <span asp-validation-for="DayOfBirth" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Account" class="control-label"></label>
-                <input asp-for="Account" class="form-control" />
-                <span asp-validation-for="Account" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Create</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item">
+                                    <a class="btn btn-sm btn-success text-center">
+                                        <i class="fa-solid fa-house fa-sm"></i>
+                                        Home
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a asp-action="Index">
+                                        Customer
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    Create
+                                </li>
+                            </ol>
+                        </div>
+                    </div> <!--end::Row-->
+                </div> <!--end::Container-->
+            </div> <!--end::App Content Header-->
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Default box -->
+                            <div class="card">
+                                <div class="card-header text-center">
+                                    @Html.Partial("Message")
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="form-group">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-2 col-sm-4 text-center">
+                                                <img src="#" id="imgpreview" class="py-2" alt="" />
+                                            </div>
+
+                                            <div class="col-lg-10 col-sm-8 p-0">
+                                                <label for="input-file" class="custom-upload ms-2">Upload Photo</label>
+                                            </div>
+                                        </div>
+                                        <input asp-for="ImageUpload" class="form-control custom-photo-input" id="input-file" onchange="img_pathUrl(this)" />
+                                        <span asp-validation-for="ImageUpload" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="FirstName" class="control-label"></label>
+                                                <input asp-for="FirstName" class="form-control" />
+                                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="LastName" class="control-label"></label>
+                                                <input asp-for="LastName" class="form-control" />
+                                                <span asp-validation-for="LastName" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group py-2 custom-radio-container">
+                                        <label asp-for="Gender" class="control-label"></label>
+                                        <div class="custom-radio-group">
+                                            <div>
+                                                <input asp-for="Gender" type="radio" value="Male" id="Male" class="custom-radio" />
+                                                <label class="custom-label-radio" for="Male">Male</label>
+                                            </div>
+                                            <div>
+                                                <input asp-for="Gender" type="radio" value="Female" id="Female" class="custom-radio" />
+                                                <label class="custom-label-radio" for="Female">Female</label>
+                                            </div>
+                                            <div>
+                                                <input asp-for="Gender" type="radio" value="Other" id="Other" class="custom-radio" />
+                                                <label class="custom-label-radio" for="Other">Other</label>
+                                            </div>
+                                        </div>
+
+                                        <span asp-validation-for="Gender" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="DayOfBirth" class="control-label"></label>
+                                                <input asp-for="DayOfBirth" class="form-control" />
+                                                <span asp-validation-for="DayOfBirth" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Phone" class="control-label"></label>
+                                                <input asp-for="Phone" class="form-control" />
+                                                <span asp-validation-for="Phone" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="Email" class="control-label"></label>
+                                        <input asp-for="Email" class="form-control" />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Account" class="control-label"></label>
+                                                <input asp-for="Account" class="form-control" />
+                                                <span asp-validation-for="Account" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Password" class="control-label"></label>
+                                                <input asp-for="Password" class="form-control" />
+                                                <span asp-validation-for="Password" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <div class="form-group">
+                                        <button type="submit" value="Create" class="btn btn-primary">
+                                            <i class="fa-solid fa-floppy-disk fa-sm"></i>
+                                            Save
+                                        </button> |
+                                        <a asp-action="Index" class="btn btn-sm btn-success text-center" style="padding-bottom: 0.5em; padding-top: 0.5em;">
+                                            <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+                                            Back to List
+                                        </a>
+                                    </div>
+                                </div> <!-- /.card-footer-->
+                            </div> <!-- /.card -->
+                        </div>
+                    </div> <!--end::Row-->
+                </div> <!--end::Container-->
+            </div> <!--end::App Content-->
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function img_pathUrl(input) {
+            $("img#imgpreview")[0].src = URL.createObjectURL(input.files[0]);
+        }
+    </script>
 }
