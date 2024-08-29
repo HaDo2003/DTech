@@ -248,6 +248,10 @@ public partial class EcommerceWebContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.CartId).HasColumnName("CartID");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.FirstName)
                 .HasMaxLength(50)
@@ -263,6 +267,10 @@ public partial class EcommerceWebContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
                 .IsUnicode(false);
 
             entity.HasOne(d => d.Cart).WithMany(p => p.Customers)
@@ -462,7 +470,15 @@ public partial class EcommerceWebContext : DbContext
 
             entity.Property(e => e.PaymentId).HasColumnName("PaymentID");
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.PaymentMethodId).HasColumnName("PaymentMethodID");
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
 
             entity.HasOne(d => d.PaymentMethod).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.PaymentMethodId)
@@ -475,7 +491,15 @@ public partial class EcommerceWebContext : DbContext
             entity.ToTable("PaymentMethod");
 
             entity.Property(e => e.PaymentMethodId).HasColumnName("PaymentMethodID");
+            entity.Property(e => e.CreateDate).HasColumnType("datetime");
+            entity.Property(e => e.CreatedBy)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Description)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.UpdateDate).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });

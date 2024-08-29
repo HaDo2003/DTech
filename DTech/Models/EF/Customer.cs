@@ -42,6 +42,18 @@ public partial class Customer
 
     public string? Image { get; set; }
 
+    [Display(Name = "Created By")]
+    public string? CreatedBy { get; set; }
+
+    [Display(Name = "Create Date")]
+    public DateTime? CreateDate { get; set; }
+
+    [Display(Name = "Updated By")]
+    public string? UpdatedBy { get; set; }
+
+    [Display(Name = "Update Date")]
+    public DateTime? UpdateDate { get; set; }
+
     public virtual Cart Cart { get; set; } = null!;
 
     public virtual ICollection<CustomerCoupon> CustomerCoupons { get; set; } = new List<CustomerCoupon>();

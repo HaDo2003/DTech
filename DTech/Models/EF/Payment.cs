@@ -15,6 +15,14 @@ public partial class Payment
 
     public decimal? Amount { get; set; }
 
+    public string? CreatedBy { get; set; }
+
+    public DateTime? CreateDate { get; set; }
+
+    public string? UpdatedBy { get; set; }
+
+    public DateTime? UpdateDate { get; set; }
+
     public virtual Order? Order { get; set; }
 
     public virtual PaymentMethod PaymentMethod { get; set; } = null!;
