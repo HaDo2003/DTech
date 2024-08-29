@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
 using DTech.Library;
 using Newtonsoft.Json;
+using DTech.Library.Helper;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -15,10 +16,14 @@ namespace DTech.Areas.Admin.Controllers
     public class CustomersController : Controller
     {
         private readonly EcommerceWebContext _context;
+        private readonly SettingImage _settingImage;
+        private readonly CartHelper _cartHelper;
 
-        public CustomersController(EcommerceWebContext context)
+        public CustomersController(EcommerceWebContext context, SettingImage settingImage, CartHelper cartHelper)
         {
             _context = context;
+            _settingImage = settingImage;
+            _cartHelper = cartHelper;
         }
 
         // GET: Admin/Customers
@@ -50,7 +55,6 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Customers/Create
         public IActionResult Create()
         {
-            ViewData["CartId"] = new SelectList(_context.Carts, "CartId", "CartId");
             return View();
         }
 
@@ -59,7 +63,7 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,CartId,FirstName,LastName,Gender,DayOfBirth,Phone,Email,Account,Password,Image,ImageUpload")] Customer customer)
+        public async Task<IActionResult> Create([Bind("CustomerId,CartId,FirstName,LastName,Gender,DayOfBirth,Phone,Email,Account,Password,Image,CreatedBy,CreateDate,UpdatedBy,UpdateDate,ImageUpload")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -73,11 +77,22 @@ namespace DTech.Areas.Admin.Controllers
                     return View(customer);
                 }
 
+                //Photo Upload
+                string imageName = await _settingImage.UploadImageAsync(customer.ImageUpload, "img/CusImg");
+
+                //Save to database
+                Cart cart = new();
+                await _cartHelper.CreateAsync(cart);
+
+                customer.CartId = cart.CartId;
+                customer.Image = imageName;
+                customer.CreateDate = DateTime.Now;
+                customer.CreatedBy = "Admin1";
+
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CartId"] = new SelectList(_context.Carts, "CartId", "CartId", customer.CartId);
             return View(customer);
         }
 
@@ -103,7 +118,7 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,CartId,FirstName,LastName,Gender,DayOfBirth,Phone,Email,Account,Password,Image")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,CartId,FirstName,LastName,Gender,DayOfBirth,Phone,Email,Account,Password,Image,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Customer customer)
         {
             if (id != customer.CustomerId)
             {

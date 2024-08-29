@@ -31,7 +31,7 @@
                         </a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
-                        Customer
+                        Customer Management
                     </li>
                 </ol>
             </div>
@@ -52,11 +52,9 @@
                             <div class="col">
                                 <strong class="card-title">Customer Information</strong>
                             </div>
-
                             <div class="col">
                                 @Html.Partial("Message")
                             </div>
-
                             <div class="col text-end">
                                 <a asp-action="Create" class="btn btn-sm btn-success text-center">
                                     <i class="fa-solid fa-plus fa-sm"></i>
@@ -91,6 +89,9 @@
                                         @Html.DisplayNameFor(model => model.Account)
                                     </th>
                                     <th>
+                                        @Html.DisplayNameFor(model => model.Cart.CartId)
+                                    </th>
+                                    <th>
                                         Function
                                     </th>
                                 </tr>
@@ -121,9 +122,17 @@
                                             @Html.DisplayFor(modelItem => item.Account)
                                         </td>
                                         <td>
+                                            @Html.DisplayFor(modelItem => item.Cart.CartId)
+                                        </td>
+                                        <td>
                                             <a asp-action="Details" asp-route-id="@item.CustomerId" class="btn btn-sm btn-info text-center btn-custom">
                                                 <i class="fa-solid fa-circle-info fa-sm"></i>
                                                 <span class="hover-text">Details</span>
+                                            </a>
+
+                                            <a asp-action="Delete" asp-route-id="@item.CustomerId" class="btn btn-sm btn-danger text-center btn-custom">
+                                                <i class="fa-solid fa-trash fa-sm"></i>
+                                                <span class="hover-text">Delete</span>
                                             </a>
                                         </td>
                                     </tr>

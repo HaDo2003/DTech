@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DTech.Library.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,15 +14,18 @@ public partial class Customer
     public int CartId { get; set; }
 
     [Required(ErrorMessage = "Please enter first name")]
+    [Display(Name = "First Name")]
     public string? FirstName { get; set; }
 
     [Required(ErrorMessage = "Please enter last name")]
+    [Display(Name = "Last Name")]
     public string? LastName { get; set; }
 
     [Required(ErrorMessage = "Please check gender")]
     public string? Gender { get; set; }
 
     [Required(ErrorMessage = "Please enter Day Of Birth")]
+    [Display(Name = "Date Of Birth")]
     public DateOnly? DayOfBirth { get; set; }
 
     [Required(ErrorMessage = "Please enter phone number")]
@@ -61,6 +65,6 @@ public partial class Customer
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     [NotMapped]
-    [FileExtensions]
+    [FileExtension]
     public IFormFile? ImageUpload { get; set; }
 }

@@ -18,7 +18,7 @@
                     <!--begin::Row-->
                     <div class="row">
                         <div class="col-sm-6">
-                            <h3 class="mb-0">Create</h3>
+                            <h3 class="mb-0">Create Customer</h3>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-end">
@@ -108,14 +108,17 @@
                                     </div>
 
                                     <div class="row">
+
                                         <div class="col">
                                             <div class="form-group">
                                                 <label asp-for="DayOfBirth" class="control-label"></label>
-                                                <input asp-for="DayOfBirth" class="form-control" />
+                                                <input asp-for="DayOfBirth" type="date" class="form-control" />
                                                 <span asp-validation-for="DayOfBirth" class="text-danger"></span>
                                             </div>
                                         </div>
+                                    </div>
 
+                                    <div class="row">
                                         <div class="col">
                                             <div class="form-group">
                                                 <label asp-for="Phone" class="control-label"></label>
@@ -123,12 +126,14 @@
                                                 <span asp-validation-for="Phone" class="text-danger"></span>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="form-group">
-                                        <label asp-for="Email" class="control-label"></label>
-                                        <input asp-for="Email" class="form-control" />
-                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Email" class="control-label"></label>
+                                                <input asp-for="Email" class="form-control" />
+                                                <span asp-validation-for="Email" class="text-danger"></span>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="row">

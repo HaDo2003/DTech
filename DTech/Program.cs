@@ -1,4 +1,5 @@
 using DTech.Library;
+using DTech.Library.Helper;
 using DTech.Models.EF;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,9 @@ builder.Services.AddHostedService<CodeStatusCheckerService>();
 
 // Register the setting image service
 builder.Services.AddScoped<SettingImage>();
+
+// Register the setting helper
+builder.Services.AddScoped<CartHelper>();
 
 var app = builder.Build();
 
