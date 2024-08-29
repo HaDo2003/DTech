@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
 using DTech.Library;
 using Newtonsoft.Json;
+using DTech.Library.Helper;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -15,12 +16,14 @@ namespace DTech.Areas.Admin.Controllers
     public class AdminsController : Controller
     {
         private readonly EcommerceWebContext _context;
-        private readonly IWebHostEnvironment _environment;
+        private readonly SettingImage _settingImg;
+        private readonly AdminHelper _adminHelper;
 
-        public AdminsController(EcommerceWebContext context, IWebHostEnvironment environment)
+        public AdminsController(EcommerceWebContext context, SettingImage settingImg, AdminHelper adminHelper)
         {
             _context = context;
-            _environment = environment;
+            _settingImg = settingImg;
+            _adminHelper = adminHelper;
         }
 
         // GET: Admin/Admins
@@ -32,18 +35,7 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Admins/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var admin = await _context.Admins
-                .FirstOrDefaultAsync(m => m.AdminId == id);
-            if (admin == null)
-            {
-                return NotFound();
-            }
-
+            var admin = await _adminHelper.CheckExistAsync(id);
             return View(admin);
         }
 
@@ -74,25 +66,7 @@ namespace DTech.Areas.Admin.Controllers
                 }
 
                 //Photo Upload
-                string imageName;
-
-                if(admin.PhotoUpload != null)
-                {
-                    string uploadDir = Path.Combine(_environment.WebRootPath, "img/AdminImg");
-                    imageName = Path.GetFileName(admin.PhotoUpload.FileName);
-
-                    string filePath = Path.Combine(uploadDir, imageName);
-
-                    using (var fs = new FileStream(filePath, FileMode.Create))
-                    {
-                        await admin.PhotoUpload.CopyToAsync(fs);
-                    }
-
-                }
-                else
-                {
-                    imageName = "noimgge.png";
-                }
+                string imageName = await _settingImg.UploadImageAsync(admin.PhotoUpload, "img/AdminImg");
 
                 //Save to database
                 admin.Photo = imageName;
@@ -113,16 +87,7 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Admins/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var admin = await _context.Admins.FindAsync(id);
-            if (admin == null)
-            {
-                return NotFound();
-            }
+            var admin = await _adminHelper.CheckExistAsync(id);
             return View(admin);
         }
 
@@ -145,27 +110,7 @@ namespace DTech.Areas.Admin.Controllers
                     //Change Photo
                     if (admin.PhotoUpload != null && admin.PhotoUpload.Length > 0)
                     {
-                        string uploadDir = Path.Combine(_environment.WebRootPath, "img/AdminImg");
-
-                        //Delete old imgae
-                        if (!string.Equals(admin.Photo, "noimage.png"))
-                        {
-                            string oldImagePath = Path.Combine(uploadDir, admin.Photo);
-
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
-                        string imageName = Path.GetFileName(admin.PhotoUpload.FileName);
-
-                        string filePath = Path.Combine(uploadDir, imageName);
-
-                        using (var fs = new FileStream(filePath, FileMode.Create))
-                        {
-                            await admin.PhotoUpload.CopyToAsync(fs);
-                        }
-
+                        string imageName = await _settingImg.ChangeImageAsync(admin.Photo, admin.PhotoUpload, "img/AdminImg");
                         admin.Photo = imageName;
                     }
 
@@ -195,18 +140,7 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Admins/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var admin = await _context.Admins
-                .FirstOrDefaultAsync(m => m.AdminId == id);
-            if (admin == null)
-            {
-                return NotFound();
-            }
-
+            var admin = await _adminHelper.CheckExistAsync(id);
             return View(admin);
         }
 
@@ -218,18 +152,8 @@ namespace DTech.Areas.Admin.Controllers
             var admin = await _context.Admins.FindAsync(id);
             if (admin != null)
             {
-
-                //Delete old imgae
-                if (!string.Equals(admin.Photo, "noimage.png"))
-                {
-                    string PhotoPath = Path.Combine(_environment.WebRootPath, "img/AdminImg/" + admin.Photo);
-
-                    if (System.IO.File.Exists(PhotoPath))
-                    {
-                        System.IO.File.Delete(PhotoPath);
-                    }
-                }
-
+                //Delete image
+                await _settingImg.DeleteImageAsync(admin.Photo, "img/AdminImg/");
                 _context.Admins.Remove(admin);
             }
 

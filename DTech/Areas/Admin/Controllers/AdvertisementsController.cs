@@ -16,11 +16,13 @@ namespace DTech.Areas.Admin.Controllers
     {
         private readonly EcommerceWebContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly SettingImage _settingImg;
 
-        public AdvertisementsController(EcommerceWebContext context, IWebHostEnvironment environment)
+        public AdvertisementsController(EcommerceWebContext context, IWebHostEnvironment environment, SettingImage settingImg)
         {
             _context = context;
             _environment = environment;
+            _settingImg = settingImg;
         }
 
         // GET: Admin/Advertisements
@@ -83,29 +85,11 @@ namespace DTech.Areas.Admin.Controllers
                     return View(advertisement);
                 }
 
-                //ImageUpload
-                string imageName;
-
-                if (advertisement.ImageUpload != null)
-                {
-                    string uploadDir = Path.Combine(_environment.WebRootPath, "img/AdvImg");
-                    imageName = Path.GetFileName(advertisement.ImageUpload.FileName);
-
-                    string filePath = Path.Combine(uploadDir, imageName);
-
-                    using (var fs = new FileStream(filePath, FileMode.Create))
-                    {
-                        await advertisement.ImageUpload.CopyToAsync(fs);
-                    }
-
-                }
-                else
-                {
-                    imageName = "noimgge.png";
-                }
+                //Image Upload
+                string imageName = await _settingImg.UploadImageAsync(advertisement.ImageUpload, "img/AdvImg");
 
                 //Save to database
-                if(advertisement.Status == null)
+                if (advertisement.Status == null)
                 {
                     advertisement.Status = 1;
                 }
@@ -186,27 +170,7 @@ namespace DTech.Areas.Admin.Controllers
                     //Change Photo
                     if (advertisement.ImageUpload != null && advertisement.ImageUpload.Length > 0)
                     {
-                        string uploadDir = Path.Combine(_environment.WebRootPath, "img/AdvImg");
-
-                        //Delete old imgae
-                        if (!string.Equals(advertisement.Image, "noimage.png"))
-                        {
-                            string oldImagePath = Path.Combine(uploadDir, advertisement.Image);
-
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
-                        string imageName = Path.GetFileName(advertisement.ImageUpload.FileName);
-
-                        string filePath = Path.Combine(uploadDir, imageName);
-
-                        using (var fs = new FileStream(filePath, FileMode.Create))
-                        {
-                            await advertisement.ImageUpload.CopyToAsync(fs);
-                        }
-
+                        string imageName = await _settingImg.ChangeImageAsync(advertisement.Image, advertisement.ImageUpload, "img/AdvImg");
                         advertisement.Image = imageName;
                     }
 
@@ -270,17 +234,8 @@ namespace DTech.Areas.Admin.Controllers
             var advertisement = await _context.Advertisements.FindAsync(id);
             if (advertisement != null)
             {
-                //Delete old image
-                if (!string.Equals(advertisement.Image, "noimage.png"))
-                {
-                    string PhotoPath = Path.Combine(_environment.WebRootPath, "img/AdvImg/" + advertisement.Image);
-
-                    if (System.IO.File.Exists(PhotoPath))
-                    {
-                        System.IO.File.Delete(PhotoPath);
-                    }
-                }
-
+                //Delete image
+                await _settingImg.DeleteImageAsync(advertisement.Image, "img/AdvImg/");
                 _context.Advertisements.Remove(advertisement);
             }
 

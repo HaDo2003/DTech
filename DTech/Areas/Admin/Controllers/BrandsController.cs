@@ -15,12 +15,12 @@ namespace DTech.Areas.Admin.Controllers
     public class BrandsController : Controller
     {
         private readonly EcommerceWebContext _context;
-        private readonly IWebHostEnvironment _environment;
+        private readonly SettingImage _settingImg;
 
-        public BrandsController(EcommerceWebContext context, IWebHostEnvironment environment)
+        public BrandsController(EcommerceWebContext context, SettingImage settingImg)
         {
             _context = context;
-            _environment = environment;
+            _settingImg = settingImg;
         }
 
         // GET: Admin/Brands
@@ -85,26 +85,8 @@ namespace DTech.Areas.Admin.Controllers
                     return View(brand);
                 }
 
-                //ImageUpload
-                string imageName;
-
-                if (brand.LogoUpload != null)
-                {
-                    string uploadDir = Path.Combine(_environment.WebRootPath, "img/BrandLogo");
-                    imageName = Path.GetFileName(brand.LogoUpload.FileName);
-
-                    string filePath = Path.Combine(uploadDir, imageName);
-
-                    using (var fs = new FileStream(filePath, FileMode.Create))
-                    {
-                        await brand.LogoUpload.CopyToAsync(fs);
-                    }
-
-                }
-                else
-                {
-                    imageName = "noimgge.png";
-                }
+                //Logo Upload
+                string imageName = await _settingImg.UploadImageAsync(brand.LogoUpload, "img/BrandLogo");
 
                 //Save to database
                 brand.Logo = imageName;
@@ -181,27 +163,7 @@ namespace DTech.Areas.Admin.Controllers
                     //Change Photo
                     if (brand.LogoUpload != null && brand.LogoUpload.Length > 0)
                     {
-                        string uploadDir = Path.Combine(_environment.WebRootPath, "img/BrandLogo");
-
-                        //Delete old imgae
-                        if (!string.Equals(brand.Logo, "noimage.png"))
-                        {
-                            string oldImagePath = Path.Combine(uploadDir, brand.Logo);
-
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
-                        string imageName = Path.GetFileName(brand.LogoUpload.FileName);
-
-                        string filePath = Path.Combine(uploadDir, imageName);
-
-                        using (var fs = new FileStream(filePath, FileMode.Create))
-                        {
-                            await brand.LogoUpload.CopyToAsync(fs);
-                        }
-
+                        string imageName = await _settingImg.ChangeImageAsync(brand.Logo, brand.LogoUpload, "img/BrandLogo");
                         brand.Logo = imageName;
                     }
                     
@@ -265,16 +227,8 @@ namespace DTech.Areas.Admin.Controllers
             var brand = await _context.Brands.FindAsync(id);
             if (brand != null)
             {
-                //Delete old image
-                if (!string.Equals(brand.Logo, "noimage.png"))
-                {
-                    string PhotoPath = Path.Combine(_environment.WebRootPath, "img/BrandLogo/" + brand.Logo);
-
-                    if (System.IO.File.Exists(PhotoPath))
-                    {
-                        System.IO.File.Delete(PhotoPath);
-                    }
-                }
+                //Delete image
+                await _settingImg.DeleteImageAsync(brand.Logo, "img/BrandLogo/");
                 _context.Brands.Remove(brand);
             }
 
