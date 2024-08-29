@@ -159,9 +159,7 @@ public partial class EcommerceWebContext : DbContext
         {
             entity.ToTable("Cart");
 
-            entity.Property(e => e.CartId)
-                .ValueGeneratedNever()
-                .HasColumnName("CartID");
+            entity.Property(e => e.CartId).HasColumnName("CartID");
         });
 
         modelBuilder.Entity<CartProduct>(entity =>
