@@ -160,6 +160,11 @@ public partial class EcommerceWebContext : DbContext
             entity.ToTable("Cart");
 
             entity.Property(e => e.CartId).HasColumnName("CartID");
+            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+
+            entity.HasOne(d => d.Customer).WithMany(p => p.Carts)
+                .HasForeignKey(d => d.CustomerId)
+                .HasConstraintName("FK_Cart_Customer");
         });
 
         modelBuilder.Entity<CartProduct>(entity =>
@@ -235,8 +240,6 @@ public partial class EcommerceWebContext : DbContext
         {
             entity.ToTable("Customer");
 
-            entity.HasIndex(e => e.CartId, "UQ__Customer__51BCD7964DA8315F").IsUnique();
-
             entity.HasIndex(e => e.Phone, "UQ__Customer__5C7E359EE36E1E26").IsUnique();
 
             entity.HasIndex(e => e.Email, "UQ__Customer__A9D10534BADAFA34").IsUnique();
@@ -247,7 +250,6 @@ public partial class EcommerceWebContext : DbContext
             entity.Property(e => e.Account)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.CartId).HasColumnName("CartID");
             entity.Property(e => e.CreateDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedBy)
                 .HasMaxLength(50)
@@ -272,11 +274,6 @@ public partial class EcommerceWebContext : DbContext
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-
-            entity.HasOne(d => d.Cart).WithOne(p => p.Customer)
-                .HasForeignKey<Customer>(d => d.CartId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Customer_Cart");
         });
 
         modelBuilder.Entity<CustomerAddress>(entity =>
@@ -416,8 +413,6 @@ public partial class EcommerceWebContext : DbContext
                 .HasNoKey()
                 .ToTable("OrderCoupon");
 
-            entity.HasIndex(e => e.OrderId, "UQ__OrderCou__C3905BAE05F7FA29").IsUnique();
-
             entity.Property(e => e.CouponId).HasColumnName("CouponID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
@@ -425,8 +420,8 @@ public partial class EcommerceWebContext : DbContext
                 .HasForeignKey(d => d.CouponId)
                 .HasConstraintName("FK__OrderCoup__Coupo__00200768");
 
-            entity.HasOne(d => d.Order).WithOne()
-                .HasForeignKey<OrderCoupon>(d => d.OrderId)
+            entity.HasOne(d => d.Order).WithMany()
+                .HasForeignKey(d => d.OrderId)
                 .HasConstraintName("FK__OrderCoup__Order__7F2BE32F");
         });
 

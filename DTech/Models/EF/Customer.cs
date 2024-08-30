@@ -7,8 +7,6 @@ public partial class Customer
 {
     public int CustomerId { get; set; }
 
-    public int CartId { get; set; }
-
     public string? FirstName { get; set; }
 
     public string? LastName { get; set; }
@@ -35,7 +33,7 @@ public partial class Customer
 
     public DateTime? UpdateDate { get; set; }
 
-    public virtual Cart Cart { get; set; } = null!;
+    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
     public virtual ICollection<CustomerCoupon> CustomerCoupons { get; set; } = new List<CustomerCoupon>();
 
