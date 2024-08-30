@@ -60,6 +60,8 @@ public partial class Customer
 
     public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
 
+    public virtual ICollection<CustomerAddress> CustomerAddresses { get; set; } = new List<CustomerAddress>();
+
     public virtual ICollection<CustomerCoupon> CustomerCoupons { get; set; } = new List<CustomerCoupon>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
@@ -67,4 +69,7 @@ public partial class Customer
     [NotMapped]
     [FileExtension]
     public IFormFile? ImageUpload { get; set; }
+
+    [NotMapped]
+    public string? Address { get; set; }
 }

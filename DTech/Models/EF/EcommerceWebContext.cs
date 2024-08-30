@@ -278,13 +278,14 @@ public partial class EcommerceWebContext : DbContext
 
         modelBuilder.Entity<CustomerAddress>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("CustomerAddress");
+            entity.HasKey(e => e.AddressId);
 
+            entity.ToTable("CustomerAddress");
+
+            entity.Property(e => e.AddressId).HasColumnName("AddressID");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
 
-            entity.HasOne(d => d.Customer).WithMany()
+            entity.HasOne(d => d.Customer).WithMany(p => p.CustomerAddresses)
                 .HasForeignKey(d => d.CustomerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Customer_CustomerAddress");

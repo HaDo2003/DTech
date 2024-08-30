@@ -14,7 +14,7 @@ namespace DTech.Library.Helper
 
         public async Task CreateAsync(Cart cart)
         {
-            _context.Add(cart);
+            _context.Carts.Add(cart);
             await _context.SaveChangesAsync();
 
             await Task.CompletedTask;
@@ -24,7 +24,8 @@ namespace DTech.Library.Helper
         {
             if (cart != null)
             {
-                _context.Remove(cart);
+                _context.Carts.Remove(cart);
+                await _context.SaveChangesAsync();
             }
             await Task.CompletedTask;
         }

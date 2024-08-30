@@ -18,12 +18,17 @@ namespace DTech.Areas.Admin.Controllers
         private readonly EcommerceWebContext _context;
         private readonly ImageSetter _imageSetter;
         private readonly CartHelper _cartHelper;
+        private readonly CustomerAddressHelper _cAH;
 
-        public CustomersController(EcommerceWebContext context, ImageSetter imageSetter, CartHelper cartHelper)
+        public CustomersController(EcommerceWebContext context, 
+                                   ImageSetter imageSetter, 
+                                   CartHelper cartHelper,
+                                   CustomerAddressHelper cAH)
         {
             _context = context;
             _imageSetter = imageSetter;
             _cartHelper = cartHelper;
+            _cAH = cAH;
         }
 
         // GET: Admin/Customers
@@ -41,6 +46,7 @@ namespace DTech.Areas.Admin.Controllers
             }
 
             var customer = await _context.Customers
+                .Include(c => c.CustomerAddresses)
                 .FirstOrDefaultAsync(m => m.CustomerId == id);
             if (customer == null)
             {
@@ -61,7 +67,9 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,FirstName,LastName,Gender,DayOfBirth,Phone,Email,Account,Password,Image,CreatedBy,CreateDate,UpdatedBy,UpdateDate,ImageUpload")] Customer customer)
+        public async Task<IActionResult> Create(
+            [Bind("CustomerId,FirstName,LastName,Gender,DayOfBirth,Phone,Email,Account,Password,Image,CreatedBy,CreateDate,UpdatedBy,UpdateDate,ImageUpload,Address")] 
+            Customer customer)
         { 
             if (ModelState.IsValid)
             {
@@ -104,9 +112,19 @@ namespace DTech.Areas.Admin.Controllers
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
 
+                //Create address
+                CustomerAddress customerAddress = new()
+                {
+                    CustomerId = customer.CustomerId,
+                    Address = customer.Address,
+                };
+                await _cAH.CreateAsync(customerAddress);
+
                 //Create Cart for new customer
-                Cart cart = new Cart();
-                cart.CustomerId = customer.CustomerId;
+                Cart cart = new()
+                {
+                    CustomerId = customer.CustomerId
+                };
                 await _cartHelper.CreateAsync(cart);
                 
                 //Success message
@@ -200,6 +218,12 @@ namespace DTech.Areas.Admin.Controllers
                 var cart = await _context.Carts.FirstOrDefaultAsync(c => c.CustomerId == id);
                 await _cartHelper.DeleteAsync(cart);
 
+                //Delete address
+                var customerAddress = await _context.CustomerAddresses
+                                            .Where(c => c.CustomerId == id)
+                                            .ToListAsync();
+                await _cAH.DeleteAsync(customerAddress);
+
                 _context.Customers.Remove(customer);
             }
 
@@ -212,5 +236,88 @@ namespace DTech.Areas.Admin.Controllers
         {
             return _context.Customers.Any(e => e.CustomerId == id);
         }
+
+        // GET: Customer/CreateAddress
+        public IActionResult CreateAddress(int customerId)
+        {
+            var model = new CustomerAddress
+            {
+                CustomerId = customerId
+            };
+            return View(model);
+        }
+
+        // POST: Customer/CreateAddress
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAddress([Bind("AddressId,CustomerId,Address")] CustomerAddress model)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.CustomerAddresses.Add(model);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Details), new { id = model.CustomerId });
+            }
+            return View(model);
+        }
+
+
+        // GET: Customer/EditAddress/5
+        public async Task<IActionResult> EditAddress(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var customerAddress = await _context.CustomerAddresses
+                .FirstOrDefaultAsync(m => m.AddressId == id);
+
+            if (customerAddress == null)
+            {
+                return NotFound();
+            }
+
+            return View(customerAddress);
+        }
+
+        // POST: Customer/EditAddress/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAddress(int id, CustomerAddress model)
+        {
+            if (id != model.AddressId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(model);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CustomerAddressExists(model.AddressId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Details), new { id = model.CustomerId });
+            }
+            return View(model);
+        }
+
+        private bool CustomerAddressExists(int id)
+        {
+            return _context.CustomerAddresses.Any(e => e.AddressId == id);
+        }
+
     }
 }

@@ -46,6 +46,10 @@
             <div class="col-12">
                 <!-- Default box -->
                 <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Customer Information</h3>
+                        <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" title="Collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button> <button type="button" class="btn btn-tool" data-lte-toggle="card-remove" title="Remove"> <i class="bi bi-x-lg"></i> </button> </div>
+                    </div>
                     <div class="card-body py-0">
                         <div class="row">
                             <div class="col-9">
@@ -112,6 +116,60 @@
                         <a asp-action="Index" class="btn btn-sm btn-success text-center" style="padding-bottom: 0.3em; padding-top: 0.27em;">
                             <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
                             Back to List
+                        </a>
+                    </div> <!-- /.card-footer-->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Customer Addresses</h3>
+                        <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" title="Collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button> <button type="button" class="btn btn-tool" data-lte-toggle="card-remove" title="Remove"> <i class="bi bi-x-lg"></i> </button> </div>
+                    </div>
+                    <div class="card-body">
+                        @if(Model.CustomerAddresses != null && Model.CustomerAddresses.Any())
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Address</th>
+                                        <th>Edit</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach(var address in Model.CustomerAddresses)
+                                    {
+                                        <tr>
+                                            <td>@address.AddressId</td>
+                                            <td>@address.Address</td>
+                                            <td>
+                                                <a asp-action="EditAddress" asp-route-id="@address.AddressId" class="btn btn-sm btn-info">
+                                                    <i class="fa-solid fa-edit"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>No addresses available</p>
+                        }
+                    </div> <!-- /.card-body -->
+                    <div class="card-footer">
+                        <a asp-action="CreateAddress" asp-route-customerId="@Model.CustomerId" class="btn btn-sm btn-success">
+                            <i class="fa-solid fa-plus"></i> Add Address
                         </a>
                     </div> <!-- /.card-footer-->
                 </div> <!-- /.card -->
