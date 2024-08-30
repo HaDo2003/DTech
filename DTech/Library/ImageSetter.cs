@@ -2,11 +2,11 @@
 
 namespace DTech.Library
 {
-    public class SettingImage
+    public class ImageSetter
     {
         private readonly IWebHostEnvironment _environment;
 
-        public SettingImage(IWebHostEnvironment environment)
+        public ImageSetter(IWebHostEnvironment environment)
         {
             _environment = environment;
         }

@@ -15,9 +15,9 @@ namespace DTech.Areas.Admin.Controllers
     public class AdminsController : Controller
     {
         private readonly EcommerceWebContext _context;
-        private readonly SettingImage _settingImg;
+        private readonly ImageSetter _settingImg;
 
-        public AdminsController(EcommerceWebContext context, SettingImage settingImg)
+        public AdminsController(EcommerceWebContext context, ImageSetter settingImg)
         {
             _context = context;
             _settingImg = settingImg;

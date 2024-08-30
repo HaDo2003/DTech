@@ -16,9 +16,9 @@ namespace DTech.Areas.Admin.Controllers
     {
         private readonly EcommerceWebContext _context;
         private readonly IWebHostEnvironment _environment;
-        private readonly SettingImage _settingImg;
+        private readonly ImageSetter _settingImg;
 
-        public AdvertisementsController(EcommerceWebContext context, IWebHostEnvironment environment, SettingImage settingImg)
+        public AdvertisementsController(EcommerceWebContext context, IWebHostEnvironment environment, ImageSetter settingImg)
         {
             _context = context;
             _environment = environment;

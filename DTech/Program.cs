@@ -16,7 +16,7 @@ builder.Services.AddDbContext<EcommerceWebContext>(options =>
 builder.Services.AddHostedService<CodeStatusCheckerService>();
 
 // Register the setting image service
-builder.Services.AddScoped<SettingImage>();
+builder.Services.AddScoped<ImageSetter>();
 
 // Register the setting helper
 builder.Services.AddScoped<CartHelper>();

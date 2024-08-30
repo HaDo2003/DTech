@@ -15,9 +15,9 @@ namespace DTech.Areas.Admin.Controllers
     public class BrandsController : Controller
     {
         private readonly EcommerceWebContext _context;
-        private readonly SettingImage _settingImg;
+        private readonly ImageSetter _settingImg;
 
-        public BrandsController(EcommerceWebContext context, SettingImage settingImg)
+        public BrandsController(EcommerceWebContext context, ImageSetter settingImg)
         {
             _context = context;
             _settingImg = settingImg;
