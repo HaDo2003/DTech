@@ -418,8 +418,6 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasIndex(e => e.OrderId, "UQ__OrderCou__C3905BAE05F7FA29").IsUnique();
 
-            entity.HasIndex(e => e.OrderId, "UQ__OrderCou__C3905BAE1313E49C").IsUnique();
-
             entity.Property(e => e.CouponId).HasColumnName("CouponID");
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
 
