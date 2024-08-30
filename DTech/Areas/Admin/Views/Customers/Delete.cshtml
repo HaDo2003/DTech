@@ -1,0 +1,131 @@
+﻿@model DTech.Models.EF.Customer
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.mainPage = "information";
+    ViewBag.page = "customer";
+}
+
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Delete</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item">
+                        <a class="btn btn-sm btn-success text-center">
+                            <i class="fa-solid fa-house fa-sm"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index">
+                            Customer
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Delete
+                    </li>
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Are you sure to delete this ?</strong>
+                    </div>
+                    <div class="card-body py-0">
+                        <div class="row">
+                            <div class="col-9">
+                                <table class="table">
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Account)</th>
+                                        <td>@Html.DisplayFor(model => model.Account)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Password)</th>
+                                        <td>@Html.DisplayFor(model => model.Password)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.FirstName)</th>
+                                        <td>@Html.DisplayFor(model => model.FirstName)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.LastName)</th>
+                                        <td>@Html.DisplayFor(model => model.LastName)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Gender)</th>
+                                        <td>@Html.DisplayFor(model => model.Gender)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.DayOfBirth)</th>
+                                        <td>@Html.DisplayFor(model => model.DayOfBirth)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Phone)</th>
+                                        <td>@Html.DisplayFor(model => model.Phone)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.Email)</th>
+                                        <td>@Html.DisplayFor(model => model.Email)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>
+                                        <td>@Html.DisplayFor(model => model.CreatedBy)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.CreateDate)</th>
+                                        <td>@Html.DisplayFor(model => model.CreateDate)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.UpdatedBy)</th>
+                                        <td>@Html.DisplayFor(model => model.UpdatedBy)</td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.UpdateDate)</th>
+                                        <td>@Html.DisplayFor(model => model.UpdateDate)</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="col-3 text-center">
+                                @Html.DisplayNameFor(model => model.Image)
+                                <br />
+                                <img src="~/img/CusImg/@Model.Image" alt="Customer Photo" width="150" />
+                            </div>
+                        </div>
+                    </div> <!-- /.card-body -->
+                    <div class="card-footer">
+                        <form asp-action="Delete">
+                            <input type="hidden" asp-for="CustomerId" />
+                            <button type="submit" value="Delete" class="btn btn-danger text-center">
+                                <i class="fa-solid fa-trash fa-sm"></i>
+                                Delete
+                            </button> |
+                            <a asp-action="Index" class="btn btn-sm btn-success text-center" style="padding-bottom: 0.5em; padding-top: 0.5em;">
+                                <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+                                Back to List
+                            </a>
+                        </form>
+                    </div> <!-- /.card-footer-->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->

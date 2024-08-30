@@ -19,5 +19,14 @@ namespace DTech.Library.Helper
 
             await Task.CompletedTask;
         }
+
+        public async Task DeleteAsync(Cart cart)
+        {
+            if (cart != null)
+            {
+                _context.Remove(cart);
+            }
+            await Task.CompletedTask;
+        }
     }
 }
