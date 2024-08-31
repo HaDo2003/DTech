@@ -178,12 +178,10 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Cart).WithMany()
                 .HasForeignKey(d => d.CartId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartProduct_Cart");
 
             entity.HasOne(d => d.Product).WithMany()
                 .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_CartProduct_Product");
         });
 
@@ -287,7 +285,6 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.CustomerAddresses)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Customer_CustomerAddress");
         });
 
@@ -389,7 +386,6 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CustomerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Order_Customer");
 
             entity.HasOne(d => d.OrderNavigation).WithOne(p => p.Order)
@@ -399,12 +395,10 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Shipping).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.ShippingId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Order_Shipping");
 
             entity.HasOne(d => d.Status).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.StatusId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Order_OrderStatus");
         });
 
@@ -437,12 +431,10 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany()
                 .HasForeignKey(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderProduct_Order");
 
             entity.HasOne(d => d.Product).WithMany()
                 .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderProduct_Product");
         });
 
@@ -476,7 +468,6 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.PaymentMethod).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.PaymentMethodId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Payment_PaymentMethod");
         });
 
@@ -513,7 +504,6 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Cate).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.CateId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Post_PostCategory");
         });
 
@@ -556,7 +546,6 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Post).WithMany(p => p.PostComments)
                 .HasForeignKey(d => d.PostId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PostComment_Post");
         });
 
@@ -591,17 +580,14 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Brand).WithMany(p => p.Products)
                 .HasForeignKey(d => d.BrandId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Product_Brand");
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Product_Category");
 
             entity.HasOne(d => d.Supplier).WithMany(p => p.Products)
                 .HasForeignKey(d => d.SupplierId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Product_Supplier");
         });
 
@@ -622,7 +608,6 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.ProductComments)
                 .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductComment_Product");
         });
 
@@ -636,7 +621,6 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany()
                 .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProductImage_Product");
         });
 
@@ -661,7 +645,6 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.Specifications)
                 .HasForeignKey(d => d.ProductId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Specifications_Product");
         });
 

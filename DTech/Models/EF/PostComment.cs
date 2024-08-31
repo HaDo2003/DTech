@@ -7,7 +7,7 @@ public partial class PostComment
 {
     public int CommentId { get; set; }
 
-    public int PostId { get; set; }
+    public int? PostId { get; set; }
 
     public string? Name { get; set; }
 
@@ -19,5 +19,5 @@ public partial class PostComment
 
     public int? Status { get; set; }
 
-    public virtual Post Post { get; set; } = null!;
+    public virtual Post? Post { get; set; }
 }

@@ -7,11 +7,11 @@ public partial class Product
 {
     public int ProductId { get; set; }
 
-    public int BrandId { get; set; }
+    public int? BrandId { get; set; }
 
-    public int SupplierId { get; set; }
+    public int? SupplierId { get; set; }
 
-    public int CategoryId { get; set; }
+    public int? CategoryId { get; set; }
 
     public string? Name { get; set; }
 
@@ -49,13 +49,13 @@ public partial class Product
 
     public int? Status { get; set; }
 
-    public virtual Brand Brand { get; set; } = null!;
+    public virtual Brand? Brand { get; set; }
 
-    public virtual Category Category { get; set; } = null!;
+    public virtual Category? Category { get; set; }
 
     public virtual ICollection<ProductComment> ProductComments { get; set; } = new List<ProductComment>();
 
     public virtual ICollection<Specification> Specifications { get; set; } = new List<Specification>();
 
-    public virtual Supplier Supplier { get; set; } = null!;
+    public virtual Supplier? Supplier { get; set; }
 }

@@ -7,7 +7,7 @@ public partial class Post
 {
     public int PostId { get; set; }
 
-    public int CateId { get; set; }
+    public int? CateId { get; set; }
 
     public string? Name { get; set; }
 
@@ -23,7 +23,7 @@ public partial class Post
 
     public int? Status { get; set; }
 
-    public virtual PostCategory Cate { get; set; } = null!;
+    public virtual PostCategory? Cate { get; set; }
 
     public virtual ICollection<PostComment> PostComments { get; set; } = new List<PostComment>();
 }

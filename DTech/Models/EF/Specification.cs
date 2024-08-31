@@ -7,7 +7,7 @@ public partial class Specification
 {
     public int SpecId { get; set; }
 
-    public int ProductId { get; set; }
+    public int? ProductId { get; set; }
 
     public string? SpecName { get; set; }
 
@@ -15,5 +15,5 @@ public partial class Specification
 
     public string? Detail { get; set; }
 
-    public virtual Product Product { get; set; } = null!;
+    public virtual Product? Product { get; set; }
 }

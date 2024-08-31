@@ -12,14 +12,14 @@ public partial class Admin
     public int AdminId { get; set; }
 
     [Required(ErrorMessage = "Please enter account")]
-    [MaxLength(50, ErrorMessage = "Account can only have a maximum of 50 characters ")]
-    [MinLength(6, ErrorMessage = "Account must have at least 6 characters ")]
-    public string Account { get; set; } = null!;
+    [MinLength(6, ErrorMessage = "Account must have a least 6 characters")]
+    [MaxLength(50, ErrorMessage = "Account can only have a maximum of 50 characters")]
+    public string? Account { get; set; }
 
     [Required(ErrorMessage = "Please enter password")]
-    [MaxLength(50, ErrorMessage = "Password can only have a maximum of 50 characters ")]
-    [MinLength(6, ErrorMessage = "Password must have at least 6 characters ")]
-    public string Password { get; set; } = null!;
+    [MinLength(6, ErrorMessage = "Password must have a least 6 characters")]
+    [MaxLength(50, ErrorMessage = "Password can only have a maximum of 50 characters")]
+    public string? Password { get; set; }
 
     [Required(ErrorMessage = "Please enter first name")]
     [Display(Name = "First Name")]

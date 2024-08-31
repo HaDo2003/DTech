@@ -7,13 +7,13 @@ public partial class Order
 {
     public int OrderId { get; set; }
 
-    public int CustomerId { get; set; }
+    public int? CustomerId { get; set; }
 
-    public int PaymentId { get; set; }
+    public int? PaymentId { get; set; }
 
-    public int ShippingId { get; set; }
+    public int? ShippingId { get; set; }
 
-    public int StatusId { get; set; }
+    public int? StatusId { get; set; }
 
     public DateOnly? OrderDate { get; set; }
 
@@ -33,11 +33,11 @@ public partial class Order
 
     public string? Note { get; set; }
 
-    public virtual Customer Customer { get; set; } = null!;
+    public virtual Customer? Customer { get; set; }
 
     public virtual Payment OrderNavigation { get; set; } = null!;
 
-    public virtual Shipping Shipping { get; set; } = null!;
+    public virtual Shipping? Shipping { get; set; }
 
-    public virtual OrderStatus Status { get; set; } = null!;
+    public virtual OrderStatus? Status { get; set; }
 }

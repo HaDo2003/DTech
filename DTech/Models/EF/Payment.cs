@@ -7,7 +7,7 @@ public partial class Payment
 {
     public int PaymentId { get; set; }
 
-    public int PaymentMethodId { get; set; }
+    public int? PaymentMethodId { get; set; }
 
     public int? Status { get; set; }
 
@@ -25,5 +25,5 @@ public partial class Payment
 
     public virtual Order? Order { get; set; }
 
-    public virtual PaymentMethod PaymentMethod { get; set; } = null!;
+    public virtual PaymentMethod? PaymentMethod { get; set; }
 }
