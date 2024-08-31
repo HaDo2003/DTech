@@ -131,6 +131,7 @@ namespace DTech.Areas.Admin.Controllers
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
                 return RedirectToAction(nameof(Index));
             }
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Create failed, please check again!"));
             return View(customer);
         }
 

@@ -15,13 +15,11 @@ namespace DTech.Areas.Admin.Controllers
     public class AdvertisementsController : Controller
     {
         private readonly EcommerceWebContext _context;
-        private readonly IWebHostEnvironment _environment;
         private readonly ImageSetter _settingImg;
 
-        public AdvertisementsController(EcommerceWebContext context, IWebHostEnvironment environment, ImageSetter settingImg)
+        public AdvertisementsController(EcommerceWebContext context, ImageSetter settingImg)
         {
             _context = context;
-            _environment = environment;
             _settingImg = settingImg;
         }
 
@@ -111,7 +109,7 @@ namespace DTech.Areas.Admin.Controllers
                 new() { Value = "1", Text = "Available" },
                 new() { Value = "0", Text = "Unavailable" },
             };
-
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Create fail, please check again!"));
             return View(advertisement);
         }
 
@@ -199,6 +197,7 @@ namespace DTech.Areas.Admin.Controllers
                 new() { Value = "1", Text = "Available" },
                 new() { Value = "0", Text = "Unavailable" },
             };
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
             return View(advertisement);
         }
 

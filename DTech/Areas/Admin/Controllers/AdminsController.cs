@@ -89,6 +89,7 @@ namespace DTech.Areas.Admin.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Create failed, please check again!"));
             return View(admin);
         }
 
@@ -151,6 +152,7 @@ namespace DTech.Areas.Admin.Controllers
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
             return View(admin);
         }
 

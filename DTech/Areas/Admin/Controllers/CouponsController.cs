@@ -104,7 +104,7 @@ namespace DTech.Areas.Admin.Controllers
                 new() { Value = "1", Text = "Available" },
                 new() { Value = "0", Text = "Unavailable" },
             };
-
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Create fail, please check again!"));
             return View(coupon);
         }
 
@@ -157,7 +157,7 @@ namespace DTech.Areas.Admin.Controllers
 
                     if (existingBrand != null)
                     {
-                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Brand already exists!"));
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Coupon already exists!"));
                         return View(coupon);
                     }
 
@@ -190,7 +190,7 @@ namespace DTech.Areas.Admin.Controllers
                 new() { Value = "1", Text = "Available" },
                 new() { Value = "0", Text = "Unavailable" },
             };
-
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
             return View(coupon);
         }
 
