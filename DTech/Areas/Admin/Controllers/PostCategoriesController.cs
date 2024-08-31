@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
+using DTech.Library;
+using Newtonsoft.Json;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -40,12 +42,23 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            ViewBag.Status = new Dictionary<int, string>
+            {
+                { 1, "Available" },
+                { 0, "Unavailable" },
+            };
+
             return View(postCategory);
         }
 
         // GET: Admin/PostCategories/Create
         public IActionResult Create()
         {
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
             return View();
         }
 
@@ -58,10 +71,37 @@ namespace DTech.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Check if Category already exist
+                postCategory.Slug = postCategory.Name.ToLower().Replace(" ", "-");
+
+                var slug = await _context.PostCategories
+                    .FirstOrDefaultAsync(a => a.Slug == postCategory.Slug);
+
+                if (slug != null)
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Category already exists!"));
+                    return View(postCategory);
+                }
+
+                //Save to database     
+                postCategory.CreateDate = DateTime.Now;
+                postCategory.CreatedBy = "Admin1";
+
                 _context.Add(postCategory);
                 await _context.SaveChangesAsync();
+
+                //Success message
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
+
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
             return View(postCategory);
         }
 
@@ -78,6 +118,13 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
             return View(postCategory);
         }
 
@@ -97,6 +144,24 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
+                    // Generate slug from the updated name
+                    string newSlug = postCategory.Name.ToLower().Replace(" ", "-");
+
+                    // Check if the slug is already used by another category
+                    var existingBrand = await _context.PostCategories
+                        .FirstOrDefaultAsync(a => a.Slug == newSlug && a.CateId != postCategory.CateId);
+
+                    if (existingBrand != null)
+                    {
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Brand already exists!"));
+                        return View(postCategory);
+                    }
+
+                    postCategory.Slug = newSlug;
+
+                    postCategory.UpdateDate = DateTime.Now;
+                    postCategory.UpdatedBy = "Admin1";
+
                     _context.Update(postCategory);
                     await _context.SaveChangesAsync();
                 }
@@ -111,8 +176,16 @@ namespace DTech.Areas.Admin.Controllers
                         throw;
                     }
                 }
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
             return View(postCategory);
         }
 
@@ -131,6 +204,12 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            ViewBag.Status = new Dictionary<int, string>
+            {
+                { 1, "Available" },
+                { 0, "Unavailable" },
+            };
+
             return View(postCategory);
         }
 
@@ -146,12 +225,39 @@ namespace DTech.Areas.Admin.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Deleted successfully"));
             return RedirectToAction(nameof(Index));
         }
 
         private bool PostCategoryExists(int id)
         {
             return _context.PostCategories.Any(e => e.CateId == id);
+        }
+
+        public async Task<IActionResult> StatusChange(int id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var postCategory = await _context.PostCategories
+                .FirstOrDefaultAsync(m => m.CateId == id);
+
+            if (postCategory == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            postCategory.Status = (postCategory.Status == 1) ? 0 : 1;
+            postCategory.UpdateDate = DateTime.Now;
+            postCategory.UpdatedBy = "Admin1";
+
+            _context.Update(postCategory);
+            await _context.SaveChangesAsync();
+
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
+            return RedirectToAction(nameof(Index));
         }
     }
 }

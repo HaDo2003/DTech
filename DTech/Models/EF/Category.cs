@@ -9,7 +9,7 @@ public partial class Category
     [Key]
     public int CategoryId { get; set; }
 
-    [Required(ErrorMessage = "Please enter name of catefory")]
+    [Required(ErrorMessage = "Please enter name of category")]
     public string? Name { get; set; }
 
     [Display(Name = "Parent")]
