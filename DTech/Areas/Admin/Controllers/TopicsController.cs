@@ -36,6 +36,7 @@ namespace DTech.Areas.Admin.Controllers
             }
 
             var topic = await _context.Topics
+                .Include(c => c.Parent)
                 .FirstOrDefaultAsync(m => m.TopicId == id);
             if (topic == null)
             {
@@ -205,11 +206,18 @@ namespace DTech.Areas.Admin.Controllers
             }
 
             var topic = await _context.Topics
+                .Include(c => c.Parent)
                 .FirstOrDefaultAsync(m => m.TopicId == id);
             if (topic == null)
             {
                 return NotFound();
             }
+
+            ViewBag.Status = new Dictionary<int, string>
+            {
+                    { 1, "Available" },
+                    { 0, "Unavailable" },
+            };
 
             return View(topic);
         }

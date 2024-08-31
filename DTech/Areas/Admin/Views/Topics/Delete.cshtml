@@ -63,7 +63,7 @@
                                     </tr>
                                     <tr>
                                         <th>@Html.DisplayNameFor(model => model.ParentId)</th>
-                                        <td>@Html.DisplayFor(model => model.ParentId)</td>
+                                        <td>@Html.DisplayFor(model => model.Parent.Name)</td>
                                     </tr>
                                     <tr>
                                         <th>@Html.DisplayNameFor(model => model.Orders)</th>
@@ -87,7 +87,16 @@
                                     </tr>
                                     <tr>
                                         <th>@Html.DisplayNameFor(model => model.Status)</th>
-                                        <td>@Html.DisplayFor(model => model.Status)</td>
+                                        <td>
+                                            @if (Model.Status.HasValue && ViewBag.Status.ContainsKey(Model.Status.Value))
+                                            {
+                                                @ViewBag.Status[Model.Status.Value]
+                                            }
+                                            else
+                                            {
+                                                <span>Unknown Status</span>
+                                            }
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
