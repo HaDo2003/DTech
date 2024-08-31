@@ -270,8 +270,7 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var customerAddress = await _context.CustomerAddresses
-                .FirstOrDefaultAsync(m => m.AddressId == id);
+            var customerAddress = await _context.CustomerAddresses.FindAsync(id);
 
             if (customerAddress == null)
             {
