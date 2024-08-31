@@ -52,6 +52,8 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Topics/Create
         public IActionResult Create()
         {
+            ViewData["ParentId"] = new SelectList(_context.Topics, "TopicId", "Name");
+
             ViewBag.Status = new List<SelectListItem>
             {
                 new() { Value = "1", Text = "Available" },
@@ -93,11 +95,14 @@ namespace DTech.Areas.Admin.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["ParentId"] = new SelectList(_context.Topics, "TopicId", "Name", topic.ParentId);
+
             ViewBag.Status = new List<SelectListItem>
             {
                 new() { Value = "1", Text = "Available" },
                 new() { Value = "0", Text = "Unavailable" },
             };
+
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Create fail, please check again!"));
             return View(topic);
         }
@@ -115,6 +120,9 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["ParentId"] = new SelectList(_context.Topics, "TopicId", "Name");
+
             ViewBag.Status = new List<SelectListItem>
             {
                 new() { Value = "1", Text = "Available" },
@@ -172,14 +180,18 @@ namespace DTech.Areas.Admin.Controllers
                         throw;
                     }
                 }
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["ParentId"] = new SelectList(_context.Topics, "TopicId", "Name", topic.ParentId);
 
             ViewBag.Status = new List<SelectListItem>
             {
                 new() { Value = "1", Text = "Available" },
                 new() { Value = "0", Text = "Unavailable" },
             };
+
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
             return View(topic);
         }
@@ -214,6 +226,7 @@ namespace DTech.Areas.Admin.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Deleted successfully"));
             return RedirectToAction(nameof(Index));
         }
 

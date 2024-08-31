@@ -14,6 +14,7 @@ public partial class Topic
 
     public string? Slug { get; set; }
 
+    [Display(Name = "Parent")]
     public int? ParentId { get; set; }
 
     public int? Orders { get; set; }

@@ -74,7 +74,9 @@
                                                 <label asp-for="ParentId" class="control-label">
                                                     @Html.DisplayNameFor(model => model.ParentId)
                                                 </label>
-                                                <input asp-for="ParentId" class="form-control" />
+                                                <select asp-for="ParentId" class="form-control" asp-items="ViewBag.ParentId">
+                                                    <option value="">Select parent(if any)</option>
+                                                </select>
                                                 <span asp-validation-for="ParentId" class="text-danger"></span>
                                             </div>
                                         </div>
