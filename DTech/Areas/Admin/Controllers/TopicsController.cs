@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
+using DTech.Library;
+using Newtonsoft.Json;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -39,13 +41,22 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.Status = new Dictionary<int, string>
+            {
+                { 1, "Available" },
+                { 0, "Unavailable" },
+            };
             return View(topic);
         }
 
         // GET: Admin/Topics/Create
         public IActionResult Create()
         {
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
             return View();
         }
 
@@ -58,10 +69,36 @@ namespace DTech.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Check if Category already exist
+                topic.Slug = topic.Name.ToLower().Replace(" ", "-");
+
+                var slug = await _context.Topics
+                    .FirstOrDefaultAsync(a => a.Slug == topic.Slug);
+
+                if (slug != null)
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Post category already exists!"));
+                    return View(topic);
+                }
+
+                //Save to database     
+                topic.CreateDate = DateTime.Now;
+                topic.CreatedBy = "Admin1";
+
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
+
+                //Success message
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
+
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Create fail, please check again!"));
             return View(topic);
         }
 
@@ -78,6 +115,12 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
             return View(topic);
         }
 
@@ -97,6 +140,24 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
+                    // Generate slug from the updated name
+                    string newSlug = topic.Name.ToLower().Replace(" ", "-");
+
+                    // Check if the slug is already used by another category
+                    var existingBrand = await _context.Topics
+                        .FirstOrDefaultAsync(a => a.Slug == newSlug && a.TopicId != topic.TopicId);
+
+                    if (existingBrand != null)
+                    {
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Topic already exists!"));
+                        return View(topic);
+                    }
+
+                    topic.Slug = newSlug;
+
+                    topic.UpdateDate = DateTime.Now;
+                    topic.UpdatedBy = "Admin1";
+
                     _context.Update(topic);
                     await _context.SaveChangesAsync();
                 }
@@ -113,6 +174,13 @@ namespace DTech.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
             return View(topic);
         }
 
