@@ -32,13 +32,14 @@ namespace DTech.Library.Helper
             await Task.CompletedTask;
         }
 
-        public async Task UpdateAddressAsync(CustomerAddress address)
+        public async Task UpdateAsync(CustomerAddress address)
         {
             if (address != null)
             {
                 _context.CustomerAddresses.Update(address);
                 await _context.SaveChangesAsync();
             }
+            await Task.CompletedTask;
         }
 
         // Method to retrieve an address by ID

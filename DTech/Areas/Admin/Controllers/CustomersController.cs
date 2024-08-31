@@ -240,25 +240,24 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Customer/CreateAddress
         public IActionResult CreateAddress(int customerId)
         {
-            var model = new CustomerAddress
+            var customerAddress = new CustomerAddress
             {
                 CustomerId = customerId
             };
-            return View(model);
+            return View(customerAddress);
         }
 
         // POST: Customer/CreateAddress
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAddress([Bind("AddressId,CustomerId,Address")] CustomerAddress model)
+        public async Task<IActionResult> CreateAddress([Bind("AddressId,CustomerId,Address")] CustomerAddress customerAddress)
         {
             if (ModelState.IsValid)
             {
-                _context.CustomerAddresses.Add(model);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Details), new { id = model.CustomerId });
+                await _cAH.CreateAsync(customerAddress);
+                return RedirectToAction(nameof(Details), new { id = customerAddress.CustomerId });
             }
-            return View(model);
+            return View(customerAddress);
         }
 
 
@@ -283,9 +282,9 @@ namespace DTech.Areas.Admin.Controllers
         // POST: Customer/EditAddress/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditAddress(int id, CustomerAddress model)
+        public async Task<IActionResult> EditAddress(int id, CustomerAddress customerAddress)
         {
-            if (id != model.AddressId)
+            if (id != customerAddress.AddressId)
             {
                 return NotFound();
             }
@@ -294,12 +293,11 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(model);
-                    await _context.SaveChangesAsync();
+                    await _cAH.UpdateAsync(customerAddress);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CustomerAddressExists(model.AddressId))
+                        if (!CustomerAddressExists(customerAddress.AddressId))
                     {
                         return NotFound();
                     }
@@ -308,9 +306,9 @@ namespace DTech.Areas.Admin.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Details), new { id = model.CustomerId });
+                return RedirectToAction(nameof(Details), new { id = customerAddress.CustomerId });
             }
-            return View(model);
+            return View(customerAddress);
         }
 
         private bool CustomerAddressExists(int id)
