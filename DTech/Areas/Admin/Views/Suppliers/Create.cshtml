@@ -7,80 +7,142 @@
     ViewBag.page = "supplier";
 }
 
-<h1>Create</h1>
-
-<h4>Supplier</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-12">
+        <form asp-action="Create" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Slug" class="control-label"></label>
-                <input asp-for="Slug" class="form-control" />
-                <span asp-validation-for="Slug" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ResponsiblePerson" class="control-label"></label>
-                <input asp-for="ResponsiblePerson" class="form-control" />
-                <span asp-validation-for="ResponsiblePerson" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdateDate" class="control-label"></label>
-                <input asp-for="UpdateDate" class="form-control" />
-                <span asp-validation-for="UpdateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedBy" class="control-label"></label>
-                <input asp-for="CreatedBy" class="form-control" />
-                <span asp-validation-for="CreatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreateDate" class="control-label"></label>
-                <input asp-for="CreateDate" class="form-control" />
-                <span asp-validation-for="CreateDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedBy" class="control-label"></label>
-                <input asp-for="UpdatedBy" class="form-control" />
-                <span asp-validation-for="UpdatedBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Create</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item">
+                                    <a class="btn btn-sm btn-success text-center">
+                                        <i class="fa-solid fa-house fa-sm"></i>
+                                        Home
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a asp-action="Index">
+                                        Supplier
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    Create
+                                </li>
+                            </ol>
+                        </div>
+                    </div> <!--end::Row-->
+                </div> <!--end::Container-->
+            </div> <!--end::App Content Header-->
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Default box -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="col text-center">
+                                        @Html.Partial("Message")
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Name" class="control-label">
+                                                    @Html.DisplayNameFor(Model => Model.Name)
+                                                    <span class="text-danger">(*)</span>
+                                                </label>
+                                                <input asp-for="Name" class="form-control" />
+                                                <span asp-validation-for="Name" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Email" class="control-label">
+                                                    @Html.DisplayNameFor(Model => Model.Email)
+                                                </label>
+                                                <input asp-for="Email" class="form-control" />
+                                                <span asp-validation-for="Email" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="ResponsiblePerson" class="control-label">
+                                                    @Html.DisplayNameFor(Model => Model.ResponsiblePerson)
+                                                </label>
+                                                <input asp-for="ResponsiblePerson" class="form-control" />
+                                                <span asp-validation-for="ResponsiblePerson" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Phone" class="control-label">
+                                                    @Html.DisplayNameFor(Model => Model.Phone)
+                                                </label>
+                                                <input asp-for="Phone" class="form-control" />
+                                                <span asp-validation-for="Phone" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="Address" class="control-label">
+                                            @Html.DisplayNameFor(Model => Model.Address)
+                                        </label>
+                                        <input asp-for="Address" class="form-control" />
+                                        <span asp-validation-for="Address" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label asp-for="Description" class="control-label">
+                                            @Html.DisplayNameFor(Model => Model.Description)
+                                        </label>
+                                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                                        <span asp-validation-for="Description" class="text-danger"></span>
+                                    </div>
+
+                                </div> <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <div class="form-group">
+                                        <button type="submit" value="Create" class="btn btn-primary">
+                                            <i class="fa-solid fa-floppy-disk fa-sm"></i>
+                                            Save
+                                        </button> |
+                                        <a asp-action="Index" class="btn btn-sm btn-success text-center" style="padding-bottom: 0.5em; padding-top: 0.5em;">
+                                            <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+                                            Back to List
+                                        </a>
+                                    </div>
+                                </div> <!-- /.card-footer-->
+                            </div> <!-- /.card -->
+                        </div>
+                    </div> <!--end::Row-->
+                </div> <!--end::Container-->
+            </div> <!--end::App Content-->
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
+using DTech.Library;
+using Newtonsoft.Json;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -58,8 +60,28 @@ namespace DTech.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                //Check if supplier already exist
+                supplier.Slug = supplier.Name.ToLower().Replace(" ", "-");
+
+                var slug = await _context.Categories
+                    .FirstOrDefaultAsync(a => a.Slug == supplier.Slug);
+
+                if (slug != null)
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Supplier already exists!"));
+                    return View(supplier);
+                }
+
+                //Save to database
+                supplier.CreateDate = DateTime.Now;
+                supplier.CreatedBy = "Admin1";
+
                 _context.Add(supplier);
                 await _context.SaveChangesAsync();
+
+                //Success message
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
+
                 return RedirectToAction(nameof(Index));
             }
             return View(supplier);
@@ -97,6 +119,24 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
+                    // Generate slug from the updated name
+                    string newSlug = supplier.Name.ToLower().Replace(" ", "-");
+
+                    // Check if the slug is already used by another category
+                    var existingBrand = await _context.Suppliers
+                        .FirstOrDefaultAsync(a => a.Slug == newSlug && a.SupplierId != supplier.SupplierId);
+
+                    if (existingBrand != null)
+                    {
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Supplier already exists!"));
+                        return View(supplier);
+                    }
+
+                    supplier.Slug = newSlug;
+
+                    supplier.UpdateDate = DateTime.Now;
+                    supplier.UpdatedBy = "Admin1";
+
                     _context.Update(supplier);
                     await _context.SaveChangesAsync();
                 }
@@ -111,6 +151,7 @@ namespace DTech.Areas.Admin.Controllers
                         throw;
                     }
                 }
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
             return View(supplier);
@@ -146,6 +187,7 @@ namespace DTech.Areas.Admin.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Deleted successfully"));
             return RedirectToAction(nameof(Index));
         }
 

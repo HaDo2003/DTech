@@ -79,7 +79,7 @@ namespace DTech.Areas.Admin.Controllers
 
                 if (slug != null)
                 {
-                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Category already exists!"));
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Post category already exists!"));
                     return View(postCategory);
                 }
 
@@ -153,7 +153,7 @@ namespace DTech.Areas.Admin.Controllers
 
                     if (existingBrand != null)
                     {
-                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Brand already exists!"));
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Post category already exists!"));
                         return View(postCategory);
                     }
 
