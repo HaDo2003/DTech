@@ -32,4 +32,8 @@ public partial class Topic
     public DateTime? UpdateDate { get; set; }
 
     public int? Status { get; set; }
+
+    public virtual ICollection<Topic> InverseParent { get; set; } = new List<Topic>();
+
+    public virtual Topic? Parent { get; set; }
 }

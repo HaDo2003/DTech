@@ -30,4 +30,8 @@ public partial class Menu
     public DateTime? UpdateDate { get; set; }
 
     public int? Status { get; set; }
+
+    public virtual ICollection<Menu> InverseParent { get; set; } = new List<Menu>();
+
+    public virtual Menu? Parent { get; set; }
 }

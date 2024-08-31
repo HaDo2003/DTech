@@ -361,6 +361,10 @@ public partial class EcommerceWebContext : DbContext
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
+                .HasForeignKey(d => d.ParentId)
+                .HasConstraintName("FK_Menu_Menu");
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -695,6 +699,10 @@ public partial class EcommerceWebContext : DbContext
             entity.Property(e => e.UpdatedBy)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
+                .HasForeignKey(d => d.ParentId)
+                .HasConstraintName("FK_Topic_Topic");
         });
 
         OnModelCreatingPartial(modelBuilder);
