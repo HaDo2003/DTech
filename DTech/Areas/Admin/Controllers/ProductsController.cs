@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
+using DTech.Library;
+using Newtonsoft.Json;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -171,6 +173,32 @@ namespace DTech.Areas.Admin.Controllers
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id);
+        }
+
+        public async Task<IActionResult> StatusChange(int id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var product = await _context.Products
+                .FirstOrDefaultAsync(m => m.ProductId == id);
+
+            if (product == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            product.Status = (product.Status == 1) ? 0 : 1;
+            product.UpdateDate = DateTime.Now;
+            product.UpdatedBy = "Admin1";
+
+            _context.Update(product);
+            await _context.SaveChangesAsync();
+
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
+            return RedirectToAction(nameof(Index));
         }
     }
 }

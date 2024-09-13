@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DTech.Models.EF;
 
@@ -15,6 +16,7 @@ public partial class ProductComment
 
     public string? Detail { get; set; }
 
+    [Display(Name = "Comment Date")]
     public DateTime? CmtDate { get; set; }
 
     public decimal? Rate { get; set; }
