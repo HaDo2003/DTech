@@ -75,7 +75,7 @@ public partial class EcommerceWebContext : DbContext
 
 //    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-//        => optionsBuilder.UseSqlServer("Data Source=LAPTOP-L1BPEKHQ;Initial Catalog=ECommerceWeb;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+//        => optionsBuilder.UseSqlServer("Data Source=LAPTOPMSI;Initial Catalog=ECommerceWeb;Integrated Security=True;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -617,13 +617,14 @@ public partial class EcommerceWebContext : DbContext
 
         modelBuilder.Entity<ProductImage>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("ProductImage");
+            entity.HasKey(e => e.ImageId);
 
+            entity.ToTable("ProductImage");
+
+            entity.Property(e => e.ImageId).HasColumnName("ImageID");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
-            entity.HasOne(d => d.Product).WithMany()
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductImages)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("FK_ProductImage_Product");
         });

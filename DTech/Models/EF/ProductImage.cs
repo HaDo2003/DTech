@@ -5,6 +5,8 @@ namespace DTech.Models.EF;
 
 public partial class ProductImage
 {
+    public int ImageId { get; set; }
+
     public int? ProductId { get; set; }
 
     public string? Image { get; set; }

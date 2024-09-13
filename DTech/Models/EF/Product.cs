@@ -55,6 +55,8 @@ public partial class Product
 
     public virtual ICollection<ProductComment> ProductComments { get; set; } = new List<ProductComment>();
 
+    public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+
     public virtual ICollection<Specification> Specifications { get; set; } = new List<Specification>();
 
     public virtual Supplier? Supplier { get; set; }
