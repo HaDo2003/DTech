@@ -41,6 +41,7 @@ public partial class Product
     [Display(Name = "Date of Manufacture")]
     public DateOnly? DateOfManufacture { get; set; }
 
+    [Display(Name = "Made In")]
     public string? MadeIn { get; set; }
 
     [Display(Name = "Promotion Gift")]
