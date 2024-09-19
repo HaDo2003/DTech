@@ -1,0 +1,59 @@
+﻿@model IEnumerable<DTech.Models.EF.Specification>
+
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Specification</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" title="Collapse">
+                                <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-remove" title="Remove">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @if (Model != null && Model.Any())
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Specification Name</th>
+                                        <th>Detail</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var specification in Model)
+                                    {
+                                        <tr>
+                                            <td>
+
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>No specification available</p>
+                        }
+                    </div> <!-- /.card-body -->
+                    <div class="card-footer">
+                        <a asp-action="CreateSpec" asp-route-producId="@ViewBag.ProducId" class="btn btn-sm btn-success">
+                            <i class="fa-solid fa-plus"></i> Add Specification
+                        </a>
+                    </div> <!-- /.card-footer-->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->

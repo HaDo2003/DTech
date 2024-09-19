@@ -21,6 +21,8 @@ builder.Services.AddScoped<ImageSetter>();
 // Register the setting helper
 builder.Services.AddScoped<CartHelper>();
 builder.Services.AddScoped<CustomerAddressHelper>();
+builder.Services.AddScoped<SpecificationHelper>();
+builder.Services.AddScoped<ProductImageHelper>();
 
 var app = builder.Build();
 

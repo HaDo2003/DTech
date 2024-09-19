@@ -15,16 +15,21 @@ namespace DTech.Areas.Admin.Controllers
     public class ProductsController : Controller
     {
         private readonly EcommerceWebContext _context;
+        private readonly ImageSetter _settingImg;
 
-        public ProductsController(EcommerceWebContext context)
+        public ProductsController(EcommerceWebContext context, ImageSetter settingImg)
         {
             _context = context;
+            _settingImg = settingImg;
         }
 
         // GET: Admin/Products
         public async Task<IActionResult> Index()
         {
-            var ecommerceWebContext = _context.Products.Include(p => p.Brand).Include(p => p.Category).Include(p => p.Supplier);
+            var ecommerceWebContext = _context.Products
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
+                .Include(p => p.Supplier);
             return View(await ecommerceWebContext.ToListAsync());
         }
 
@@ -52,9 +57,22 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Products/Create
         public IActionResult Create()
         {
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
+            ViewBag.StatusProduct = new List<SelectListItem>
+            {
+                new() { Value = "True", Text = "In stock" },
+                new() { Value = "False", Text = "Out of stock" },
+            };
+
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "Name");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name");
-            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierId");
+            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Name");
+            
             return View();
         }
 
@@ -63,17 +81,57 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,BrandId,SupplierId,CategoryId,Name,Slug,Warranty,StatusProduct,Price,Discount,EndDateDiscount,Views,DateOfManufacture,MadeIn,PromotionalGift,Photo,Description,UpdateDate,CreatedBy,CreateDate,UpdatedBy,Status")] Product product)
+        public async Task<IActionResult> Create(
+            [Bind("ProductId,BrandId,SupplierId,CategoryId,Name,Slug,Warranty,StatusProduct,Price,Discount,EndDateDiscount,Views,DateOfManufacture,MadeIn,PromotionalGift,Photo,Description,UpdateDate,CreatedBy,CreateDate,UpdatedBy,Status,PhotoUpload")] 
+            Product product)
         {
             if (ModelState.IsValid)
             {
+                //Check if adv already exist
+                product.Slug = product.Name.ToLower().Replace(" ", "-");
+
+                var slug = await _context.Products
+                    .FirstOrDefaultAsync(a => a.Slug == product.Slug);
+
+                if (slug != null)
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Advertisement already exists!"));
+                    return View(product);
+                }
+
+                //Image Upload
+                string imageName = await _settingImg.UploadImageAsync(product.PhotoUpload, "img/ProductImg");
+
+                product.Photo = imageName;
+                product.Views = 0;
+                product.CreateDate = DateTime.Now;
+                product.CreatedBy = "Admin1";
+
                 _context.Add(product);
                 await _context.SaveChangesAsync();
+
+                //Success message
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
+
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
+            ViewBag.StatusProduct = new List<SelectListItem>
+            {
+                new() { Value = "True", Text = "In stock" },
+                new() { Value = "False", Text = "Out of stock" },
+            };
+
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "Name", product.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
-            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierId", product.SupplierId);
+            ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Name", product.SupplierId);
+            
             return View(product);
         }
 
@@ -90,9 +148,23 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
+            ViewBag.StatusProduct = new List<SelectListItem>
+            {
+                new() { Value = "True", Text = "In stock" },
+                new() { Value = "False", Text = "Out of stock" },
+            };
+
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "Name", product.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
             ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierId", product.SupplierId);
+            ViewBag.ProductId = id;
             return View(product);
         }
 
@@ -101,7 +173,9 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,BrandId,SupplierId,CategoryId,Name,Slug,Warranty,StatusProduct,Price,Discount,EndDateDiscount,Views,DateOfManufacture,MadeIn,PromotionalGift,Photo,Description,UpdateDate,CreatedBy,CreateDate,UpdatedBy,Status")] Product product)
+        public async Task<IActionResult> Edit(int id, 
+            [Bind("ProductId,BrandId,SupplierId,CategoryId,Name,Slug,Warranty,StatusProduct,Price,Discount,EndDateDiscount,Views,DateOfManufacture,MadeIn,PromotionalGift,Photo,Description,UpdateDate,CreatedBy,CreateDate,UpdatedBy,Status,PhotoUpload")] 
+            Product product)
         {
             if (id != product.ProductId)
             {
@@ -112,6 +186,31 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
+                    // Generate slug from the updated name
+                    string newSlug = product.Name.ToLower().Replace(" ", "-");
+
+                    // Check if the slug is already used by another advertisement
+                    var existingAdvertisement = await _context.Products
+                        .FirstOrDefaultAsync(a => a.Slug == newSlug && a.ProductId != product.ProductId);
+
+                    if (existingAdvertisement != null)
+                    {
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Product already exists!"));
+                        return View(product);
+                    }
+
+                    product.Slug = newSlug;
+
+                    //Change Photo
+                    if (product.PhotoUpload != null && product.PhotoUpload.Length > 0)
+                    {
+                        string imageName = await _settingImg.ChangeImageAsync(product.Photo, product.PhotoUpload, "img/ProductImg");
+                        product.Photo = imageName;
+                    }
+
+                    product.UpdateDate = DateTime.Now;
+                    product.UpdatedBy = "Admin1";
+
                     _context.Update(product);
                     await _context.SaveChangesAsync();
                 }
@@ -128,9 +227,25 @@ namespace DTech.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewBag.Status = new List<SelectListItem>
+            {
+                new() { Value = "1", Text = "Available" },
+                new() { Value = "0", Text = "Unavailable" },
+            };
+
+            ViewBag.StatusProduct = new List<SelectListItem>
+            {
+                new() { Value = "True", Text = "In stock" },
+                new() { Value = "False", Text = "Out of stock" },
+            };
+
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "Name", product.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
             ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierId", product.SupplierId);
+            
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
+
             return View(product);
         }
 

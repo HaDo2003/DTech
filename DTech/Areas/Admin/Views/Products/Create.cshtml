@@ -110,7 +110,7 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <label asp-for="StatusProduct" class="control-label"></label>
-                                                <input asp-for="StatusProduct" class="form-control" />
+                                                <select asp-for="StatusProduct" class="form-control" asp-items="ViewBag.StatusProduct"></select>
                                                 <span asp-validation-for="StatusProduct" class="text-danger"></span>
                                             </div>
                                         </div>
@@ -118,7 +118,7 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <label asp-for="Status" class="control-label"></label>
-                                                <input asp-for="Status" class="form-control" />
+                                                <select asp-for="Status" class="form-control" asp-items="ViewBag.Status"></select>
                                                 <span asp-validation-for="Status" class="text-danger"></span>
                                             </div>
                                         </div>
@@ -128,7 +128,7 @@
                                         <div class="col">
                                             <div class="form-group">
                                                 <label asp-for="DateOfManufacture" class="control-label"></label>
-                                                <input asp-for="DateOfManufacture" class="form-control" />
+                                                <input asp-for="DateOfManufacture" type="date" class="form-control" />
                                                 <span asp-validation-for="DateOfManufacture" class="text-danger"></span>
                                             </div>
                                         </div>

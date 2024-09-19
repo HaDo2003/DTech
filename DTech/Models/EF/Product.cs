@@ -9,6 +9,7 @@ namespace DTech.Models.EF;
 public partial class Product
 {
     [Key]
+    [Display(Name = "ID")]
     public int ProductId { get; set; }
 
     public int? BrandId { get; set; }

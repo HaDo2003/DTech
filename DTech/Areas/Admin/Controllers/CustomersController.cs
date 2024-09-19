@@ -52,7 +52,7 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+            ViewBag.CustomerId = id;
             return View(customer);
         }
 
