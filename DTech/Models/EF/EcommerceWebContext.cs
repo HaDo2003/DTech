@@ -640,6 +640,8 @@ public partial class EcommerceWebContext : DbContext
         {
             entity.HasKey(e => e.SpecId);
 
+            entity.ToTable("Specification");
+
             entity.Property(e => e.SpecId).HasColumnName("SpecID");
             entity.Property(e => e.Detail).IsUnicode(false);
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
@@ -650,7 +652,7 @@ public partial class EcommerceWebContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.Specifications)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK_Specifications_Product");
+                .HasConstraintName("FK_Specification_Product");
         });
 
         modelBuilder.Entity<Supplier>(entity =>
