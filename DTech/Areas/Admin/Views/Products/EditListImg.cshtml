@@ -1,0 +1,131 @@
+﻿@model IEnumerable<DTech.Models.EF.ProductImage>
+
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">List Images</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" title="Collapse">
+                                <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-remove" title="Remove">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="SaveImages" method="post">
+                            <input type="hidden" name="productId" value="@ViewBag.ProductId" />
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-8">Images</th>
+                                        <th class="col-4"></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="imgTable">
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        var index = 0;
+                                        foreach (var specification in Model)
+                                        {
+                                            <tr>
+                                                
+
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-custom removeSpec" data-id="">
+                                                        <i class="fa-solid fa-trash fa-sm"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            index++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3">No Images available.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <!-- Row for adding a new specification -->
+                            <div class="form-inline">
+                                
+                            </div>
+                            <button type="submit" class="btn btn-primary mt-3">
+                                <i class="fa-solid fa-floppy-disk fa-sm"></i>
+                                Save
+                            </button>
+                        </form>
+                    </div> <!-- /.card-body -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->
+
+<script>
+    $(document).ready(function () {
+        var specIndex = @Model.Count(); // Tracks the index of the new specifications
+
+        // Add new specification to the main table
+        $('#addSpec').on('click', function () {
+            var specName = $('#newSpecName').val();
+            var specDetail = $('#newSpecDetail').val();
+
+            if (specName && specDetail) {
+                // Append the new specification to the main table (above the add section)
+                var newRow = '<tr>' +
+                    '<td><div class="form-group"><input type="hidden" name="Specifications[' + specIndex + '].SpecificationId" value="0" />' +
+                    '<input type="text" name="Specifications[' + specIndex + '].SpecName" value="' + specName + '" class="form-control" /></div></td>' +
+                    '<td><div class="form-group"><input type="text" name="Specifications[' + specIndex + '].Detail" value="' + specDetail + '" class="form-control" /></div></td>' +
+                    '<td><button type="button" class="btn btn-danger btn-custom removeSpec"><i class="fa-solid fa-trash fa-sm"></i></button></td>' +
+                    '</tr>';
+
+                $('#specTable').append(newRow); // Append to main table
+
+                // Increment index for the next specification
+                specIndex++;
+
+                // Clear the input fields
+                $('#newSpecName').val('');
+                $('#newSpecDetail').val('');
+            } else {
+                alert('Please enter both Specification Name and Detail.');
+            }
+        });
+
+        $(document).on('click', '.removeSpec', function () {
+            var row = $(this).closest('tr'); // Cache the row
+            var specificationId = row.find('input[name*="SpecificationId"]').val();
+            if (confirm("Are you sure you want to delete this specification?")) {
+                $.ajax({
+                    url: '@Url.Action("RemoveSpecification", "Products")', // Ensure this is correct
+                    type: 'POST',
+                    data: { specificationId: specificationId },
+                    success: function (response) {
+                        if (response.success) {
+                            row.remove(); // Remove the cached row here
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Error deleting specification: " + textStatus + " - " + errorThrown);
+                    }
+                });
+            }
+        });
+
+
+    });
+</script>

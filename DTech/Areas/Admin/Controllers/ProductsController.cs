@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
 using DTech.Library;
 using Newtonsoft.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -101,6 +103,16 @@ namespace DTech.Areas.Admin.Controllers
 
                 //Image Upload
                 string imageName = await _settingImg.UploadImageAsync(product.PhotoUpload, "img/ProductImg");
+
+                // Check if there was an error in the upload process
+                if (imageName.StartsWith("Error:"))
+                {
+                    // Add the error message to the ModelState
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", imageName));
+
+                    // Return the view with the error message
+                    return View(product);
+                }
 
                 product.Photo = imageName;
                 product.Views = 0;
