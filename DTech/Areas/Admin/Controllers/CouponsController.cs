@@ -13,6 +13,7 @@ using System.Drawing.Drawing2D;
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [SetViewBagAttributes]
     public class CouponsController : Controller
     {
         private readonly EcommerceWebContext _context;
@@ -56,11 +57,6 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Coupons/Create
         public IActionResult Create()
         {
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
 
             return View();
         }
@@ -99,11 +95,6 @@ namespace DTech.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Create fail, please check again!"));
             return View(coupon);
         }

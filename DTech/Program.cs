@@ -24,6 +24,13 @@ builder.Services.AddScoped<CustomerAddressHelper>();
 builder.Services.AddScoped<SpecificationHelper>();
 builder.Services.AddScoped<ProductImageHelper>();
 
+// Resgister the ViewBag
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<SetViewBagAttributesAttribute>();
+});
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

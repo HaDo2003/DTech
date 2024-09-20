@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [SetViewBagAttributes]
     public class TopicsController : Controller
     {
         private readonly EcommerceWebContext _context;
@@ -55,11 +56,6 @@ namespace DTech.Areas.Admin.Controllers
         {
             ViewData["ParentId"] = new SelectList(_context.Topics, "TopicId", "Name");
 
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
             return View();
         }
 
@@ -98,12 +94,6 @@ namespace DTech.Areas.Admin.Controllers
             }
             ViewData["ParentId"] = new SelectList(_context.Topics, "TopicId", "Name", topic.ParentId);
 
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
-
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Create fail, please check again!"));
             return View(topic);
         }
@@ -123,12 +113,6 @@ namespace DTech.Areas.Admin.Controllers
             }
 
             ViewData["ParentId"] = new SelectList(_context.Topics, "TopicId", "Name");
-
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
 
             return View(topic);
         }
@@ -186,12 +170,6 @@ namespace DTech.Areas.Admin.Controllers
             }
 
             ViewData["ParentId"] = new SelectList(_context.Topics, "TopicId", "Name", topic.ParentId);
-
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
 
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
             return View(topic);

@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [SetViewBagAttributes]
     public class PostCategoriesController : Controller
     {
         private readonly EcommerceWebContext _context;
@@ -54,11 +55,6 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/PostCategories/Create
         public IActionResult Create()
         {
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
             return View();
         }
 
@@ -96,11 +92,6 @@ namespace DTech.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Create fail, please check again!"));
             return View(postCategory);
         }
@@ -118,12 +109,6 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
 
             return View(postCategory);
         }
@@ -180,11 +165,6 @@ namespace DTech.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
             return View(postCategory);
         }

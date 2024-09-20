@@ -14,6 +14,7 @@ using System.Diagnostics;
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [SetViewBagAttributes]
     public class ProductsController : Controller
     {
         private readonly EcommerceWebContext _context;
@@ -59,17 +60,6 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Products/Create
         public IActionResult Create()
         {
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
-
-            ViewBag.StatusProduct = new List<SelectListItem>
-            {
-                new() { Value = "True", Text = "In stock" },
-                new() { Value = "False", Text = "Out of stock" },
-            };
 
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "Name");
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name");
@@ -127,19 +117,6 @@ namespace DTech.Areas.Admin.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
-
-            ViewBag.StatusProduct = new List<SelectListItem>
-            {
-                new() { Value = "True", Text = "In stock" },
-                new() { Value = "False", Text = "Out of stock" },
-            };
-
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "Name", product.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
             ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "Name", product.SupplierId);
@@ -162,19 +139,6 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
-
-            ViewBag.StatusProduct = new List<SelectListItem>
-            {
-                new() { Value = "True", Text = "In stock" },
-                new() { Value = "False", Text = "Out of stock" },
-            };
-
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "Name", product.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
             ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierId", product.SupplierId);
@@ -241,19 +205,6 @@ namespace DTech.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
-
-            ViewBag.StatusProduct = new List<SelectListItem>
-            {
-                new() { Value = "True", Text = "In stock" },
-                new() { Value = "False", Text = "Out of stock" },
-            };
-
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "Name", product.BrandId);
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Name", product.CategoryId);
             ViewData["SupplierId"] = new SelectList(_context.Suppliers, "SupplierId", "SupplierId", product.SupplierId);
