@@ -143,7 +143,9 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Include(p => p.Specifications)
+                .FirstOrDefaultAsync(p => p.ProductId == id);
             if (product == null)
             {
                 return NotFound();
@@ -314,6 +316,74 @@ namespace DTech.Areas.Admin.Controllers
 
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public IActionResult SaveSpecifications(int productId, List<Specification> specifications)
+        {
+            if (ModelState.IsValid)
+            {
+                var product = _context.Products.Include(p => p.Specifications)
+                                               .FirstOrDefault(p => p.ProductId == productId);
+                if (product != null)
+                {
+                    // Loop through the submitted specifications
+                    foreach (var spec in specifications)
+                    {
+                        // Generate slug
+                        var slug = spec.SpecName.ToLower().Replace(" ", "-");
+
+                        var existingSpec = product.Specifications
+                                                  .FirstOrDefault(s => s.SpecId == spec.SpecId);
+
+                        if (existingSpec != null)
+                        {
+                            // Update existing specification
+                            existingSpec.SpecName = spec.SpecName;
+                            existingSpec.Detail = spec.Detail;
+                            // Update slug only if the name has changed
+                            if (existingSpec.Slug != slug)
+                            {
+                                existingSpec.Slug = slug;
+                            }
+                        }
+                        else
+                        {
+                            // Add new specification
+                            product.Specifications.Add(new Specification
+                            {
+                                SpecName = spec.SpecName,
+                                Detail = spec.Detail,
+                                Slug = slug,
+                                ProductId = productId
+                            });
+                        }
+                    }
+
+                    _context.SaveChanges();
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
+                    return RedirectToAction("Edit", new { id = productId });
+                }
+            }
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited failed"));
+            return View(specifications);  // Return to the same view if invalid
+        }
+
+        [HttpPost]
+        [Route("RemoveSpecification")]
+        public IActionResult RemoveSpecification(int specificationId)
+        {
+            var specification = _context.Specifications.Find(specificationId);
+            if (specification != null)
+            {
+                _context.Specifications.Remove(specification);
+                _context.SaveChanges();
+                return Json(new { success = true, message = "Specification deleted successfully." });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Specification not found." });
+            }
         }
     }
 }
