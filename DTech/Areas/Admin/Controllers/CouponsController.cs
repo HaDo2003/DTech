@@ -44,13 +44,6 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            ViewBag.Status = new Dictionary<int, string>
-            {
-                { 2, "Expired" },
-                { 1, "Available" },
-                { 0, "Unavailable" },
-            };
-
             return View(coupon);
         }
 
@@ -113,13 +106,6 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "2", Text = "Expired" },
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
-
             return View(coupon);
         }
 
@@ -175,12 +161,6 @@ namespace DTech.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Status = new List<SelectListItem>
-            {
-                new() { Value = "2", Text = "Expired" },
-                new() { Value = "1", Text = "Available" },
-                new() { Value = "0", Text = "Unavailable" },
-            };
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
             return View(coupon);
         }
@@ -199,13 +179,6 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
-            ViewBag.Status = new Dictionary<int, string>
-            {
-                { 2, "Expired" },
-                { 1, "Available" },
-                { 0, "Unavailable" },
-            };
 
             return View(coupon);
         }

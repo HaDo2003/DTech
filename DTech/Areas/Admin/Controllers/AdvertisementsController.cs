@@ -45,11 +45,6 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            ViewBag.Status = new Dictionary<int, string>
-            {
-                { 1, "Available" },
-                { 0, "Unavailable" },
-            };
             return View(advertisement);
         }
 
@@ -195,12 +190,6 @@ namespace DTech.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
-            ViewBag.Status = new Dictionary<int, string>
-            {
-                    { 1, "Available" },
-                    { 0, "Unavailable" },
-            };
 
             return View(advertisement);
         }

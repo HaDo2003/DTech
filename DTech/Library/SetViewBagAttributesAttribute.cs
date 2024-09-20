@@ -13,10 +13,24 @@ namespace DTech.Library
 
             if (controller != null)
             {
-                controller.ViewBag.Status = new List<SelectListItem>
+                controller.ViewBag.StatusList = new List<SelectListItem>
                 {
                     new() { Value = "1", Text = "Available" },
                     new() { Value = "0", Text = "Unavailable" },
+                };
+
+                controller.ViewBag.StatusListOfThree = new List<SelectListItem>
+                {
+                    new() { Value = "2", Text = "Expired" },
+                    new() { Value = "1", Text = "Available" },
+                    new() { Value = "0", Text = "Unavailable" },
+                };
+
+                controller.ViewBag.StatusDictionary = new Dictionary<int, string>
+                {
+                    { 2, "Expired" },
+                    { 1, "Available" },
+                    { 0, "Unavailable" },
                 };
 
                 controller.ViewBag.StatusProduct = new List<SelectListItem>

@@ -64,9 +64,9 @@
                                     <tr>
                                         <th>@Html.DisplayNameFor(model => model.Status)</th>
                                         <td>
-                                            @if (Model.Status.HasValue && ViewBag.Status.ContainsKey(Model.Status.Value))
+                                            @if (Model.Status.HasValue && ViewBag.StatusDictionary.ContainsKey(Model.Status.Value))
                                             {
-                                                @ViewBag.Status[Model.Status.Value]
+                                                @ViewBag.StatusDictionary[Model.Status.Value]
                                             }
                                             else
                                             {

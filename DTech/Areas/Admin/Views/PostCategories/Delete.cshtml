@@ -63,7 +63,16 @@
                                     </tr>
                                     <tr>
                                         <th>@Html.DisplayNameFor(model => model.Status)</th>
-                                        <td>@Html.DisplayFor(model => model.Status)</td>
+                                        <td>
+                                            @if (Model.Status.HasValue && ViewBag.StatusDictionary.ContainsKey(Model.Status.Value))
+                                            {
+                                                @ViewBag.StatusDictionary[Model.Status.Value]
+                                            }
+                                            else
+                                            {
+                                                <span>Unknown Status</span>
+                                            }
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>@Html.DisplayNameFor(model => model.CreatedBy)</th>
