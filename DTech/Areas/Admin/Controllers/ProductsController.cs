@@ -340,13 +340,13 @@ namespace DTech.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("RemoveSpecification")]
-        public async Task<IActionResult> RemoveSpecification(int specificationId)
+        public async Task<IActionResult> RemoveSpecification(int SpecId)
         {
-            var specification = await _context.Specifications.FindAsync(specificationId);
+            var specification = await _context.Specifications.FindAsync(SpecId);
             if (specification != null)
             {
                 _context.Specifications.Remove(specification);
-                await _context.SaveChangesAsync(); // Save changes asynchronously
+                await _context.SaveChangesAsync();
                 return Json(new { success = true, message = "Specification deleted successfully." });
             }
             else
