@@ -39,4 +39,43 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/js/datatables.min.js"></script>
 <script src="~/js/adminsite.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "/lib/ckeditor5/ckeditor5.js",
+            "ckeditor5/": "/lib/ckeditor5/"
+        }
+    }
+</script>
+
+<script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Bold,
+        Italic,
+        Underline,
+        Font,
+        Paragraph,
+        Link,
+        Alignment
+    } from 'ckeditor5';
+
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            plugins: [Essentials, Bold, Underline, Italic, Font, Paragraph, Link, Alignment],
+            toolbar: [
+                'undo', 'redo', '|', 'bold', 'italic', 'underline', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                'link', 'alignment'
+            ]
+        })
+        .then( editor => {
+            window.editor = editor;
+        } )
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+
 <ejs-scripts></ejs-scripts>

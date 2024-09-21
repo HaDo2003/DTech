@@ -233,10 +233,6 @@
 
 @await Html.PartialAsync("EditListImg", Model.ProductImages)
 
-@section header {
-    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.css" />
-}
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
@@ -246,37 +242,5 @@
         function img_pathUrl(input) {
             $("img#imgsquare")[0].src = URL.createObjectURL(input.files[0]);
         }
-    </script>
-
-    <script type="importmap">
-        {
-            "imports": {
-                "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.1.0/ckeditor5.js",
-                "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.1.0/"
-            }
-        }
-    </script>
-
-    <script type="module">
-        import {
-            ClassicEditor,
-            Essentials,
-            Bold,
-            Italic,
-            Font,
-            Paragraph
-        } from 'ckeditor5';
-
-        ClassicEditor
-            .create(document.querySelector('#editor'), {
-                plugins: [Essentials, Bold, Italic, Font, Paragraph],
-                toolbar: [
-                    'undo', 'redo', '|', 'bold', 'italic', '|',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
-                ]
-            })
-            .catch(error => {
-                console.error(error);
-            });
     </script>
 }

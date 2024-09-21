@@ -47,7 +47,7 @@
                                                         </div>
                                                         <div class="col-7">
                                                             <div class="form-group">
-                                                                <input type="hidden" asp-for="ProductImages[@index].ImageId" value="@image.ImageId" />
+                                                                <input type="hidden" name="ProductImages[@index].ImageId" value="@image.ImageId" />
                                                                 <input type="file" name="ProductImages[@index].ImageUpload" class="form-control-file" accept="image/*" onchange="previewImage(this, @index)" />
                                                                 <span class="text-danger"></span>
                                                             </div>
