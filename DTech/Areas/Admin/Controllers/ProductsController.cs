@@ -204,6 +204,7 @@ namespace DTech.Areas.Admin.Controllers
                         throw;
                     }
                 }
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "Name", product.BrandId);

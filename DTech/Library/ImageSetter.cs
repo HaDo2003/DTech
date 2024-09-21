@@ -29,15 +29,8 @@ namespace DTech.Library
                 Directory.CreateDirectory(uploadDir);
             }
 
-            // Get the image name
-            imageName = Path.GetFileName(file.FileName);
-
-            // Combine the directory and image name to get the full file path
-            string filePath = Path.Combine(uploadDir, imageName);
-
             // Get the image name without the extension
             string imageNameWithoutExt = Path.GetFileNameWithoutExtension(file.FileName);
-            string imageExtension = Path.GetExtension(file.FileName);
 
             // Check if any file with the same name (ignoring extension) already exists
             var existingFiles = Directory.GetFiles(uploadDir, imageNameWithoutExt + ".*");
@@ -46,6 +39,13 @@ namespace DTech.Library
                 // Return a message indicating that a file with the same base name already exists, regardless of extension
                 return $"Error: A file with the base name '{imageNameWithoutExt}' already exists with a different extension.";
             }
+
+
+            // Get the image name
+            imageName = Path.GetFileName(file.FileName);
+
+            // Combine the directory and image name to get the full file path
+            string filePath = Path.Combine(uploadDir, imageName);
 
             // Save the image to the specified path
             using (var fs = new FileStream(filePath, FileMode.Create))

@@ -42,13 +42,13 @@
                                                     <div class="row">
                                                         <div class="col-5">
                                                             <div class="form-group">
-                                                                <img src="@image.Image" id="imagePreview_@index" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
+                                                                <img src="~/img/ProductImg/@image.Image" id="imagePreview_@index" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
                                                             </div>
                                                         </div>
                                                         <div class="col-7">
                                                             <div class="form-group">
+                                                                <input type="hidden" asp-for="ProductImages[@index].ImageId" value="@image.ImageId" />
                                                                 <input type="file" name="ProductImages[@index].ImageUpload" class="form-control-file" accept="image/*" onchange="previewImage(this, @index)" />
-                                                                <input type="hidden" name="ProductImages[@index].ImageId" value="@image.ImageId" />
                                                                 <span class="text-danger"></span>
                                                             </div>
                                                         </div>
