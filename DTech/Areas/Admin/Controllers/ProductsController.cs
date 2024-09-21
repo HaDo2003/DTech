@@ -360,44 +360,81 @@ namespace DTech.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveImages(int productId, List<ProductImage> images)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var product = await _context.Products.Include(p => p.ProductImages)
-                                             .FirstOrDefaultAsync(p => p.ProductId == productId);
-                if (product != null)
+                if (ModelState.IsValid)
                 {
-                    // Loop through the submitted specifications
-                    foreach (var image in images)
+                    var product = await _context.Products.Include(p => p.ProductImages)
+                                                 .FirstOrDefaultAsync(p => p.ProductId == productId);
+                    if (product != null)
                     {
+                        bool hasChanges = false; // Flag to check if changes were made
 
-                        var existingImage = product.ProductImages
-                                                  .FirstOrDefault(s => s.ImageId == image.ImageId);
-
-                        if (existingImage != null)
+                        foreach (var image in images)
                         {
-                            // Update existing image
-                            existingImage.Image = image.Image;
+                            var existingImage = product.ProductImages
+                                                      .FirstOrDefault(s => s.ImageId == image.ImageId);
+
+                            if (existingImage != null)
+                            {
+                                if (image.ImageUpload != null && image.ImageUpload.Length > 0)
+                                {
+                                    string imageName = await _settingImg.ChangeImageAsync(existingImage.Image, image.ImageUpload, "img/ProductImg");
+                                    existingImage.Image = imageName;
+                                    hasChanges = true; // Changes were made
+                                }
+                                else
+                                {
+                                    existingImage.Image = image.Image; // Update existing image name
+                                    hasChanges = true; // Changes were made
+                                }
+                            }
+                            else
+                            {
+                                if (image.ImageUpload != null && image.ImageUpload.Length > 0)
+                                {
+                                    string imageName = await _settingImg.UploadImageAsync(image.ImageUpload, "img/ProductImg");
+                                    product.ProductImages.Add(new ProductImage
+                                    {
+                                        Image = imageName,
+                                        ProductId = productId
+                                    });
+                                    hasChanges = true; // Changes were made
+                                }
+                            }
+                        }
+
+                        if (hasChanges)
+                        {
+                            await _context.SaveChangesAsync();
+                            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                         }
                         else
                         {
-                            string imageName = await _settingImg.UploadImageAsync(image.ImageUpload, "img/ProductImg");
-                            // Add new image
-                            product.ProductImages.Add(new ProductImage
-                            {
-                                Image = imageName,
-                                ProductId = productId
-                            });
+                            TempData["message"] = JsonConvert.SerializeObject(new XMessage("error", "No changes were made."));
                         }
-                    }
 
-                    await _context.SaveChangesAsync();
-                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
-                    return RedirectToAction("Edit", new { id = productId });
+                        return RedirectToAction("Edit", new { id = productId });
+                    }
+                    else
+
+                    {
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("error", "Product not found."));
+                    }
+                }
+                else
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("error", "Invalid model state."));
                 }
             }
-            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited failed"));
-            return View(images);  // Return to the same view if invalid
+            catch (Exception ex)
+            {
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("error", "Editing failed: " + ex.Message));
+            }
+
+            return View(images);
         }
+
 
         [HttpPost]
         [Route("RemoveImage")]
