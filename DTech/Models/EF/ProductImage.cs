@@ -17,5 +17,5 @@ public partial class ProductImage
 
     [NotMapped]
     [FileExtension]
-    public IFormFile ImageUpload { get; set; }
+    public IFormFile? ImageUpload { get; set; }
 }

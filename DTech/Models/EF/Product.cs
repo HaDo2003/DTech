@@ -80,5 +80,5 @@ public partial class Product
 
     [NotMapped]
     [FileExtension]
-    public IFormFile PhotoUpload { get; set; }
+    public IFormFile? PhotoUpload { get; set; }
 }
