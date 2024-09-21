@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\lib\ckfinder\**" />
+    <Content Remove="wwwroot\lib\ckfinder\**" />
+    <EmbeddedResource Remove="wwwroot\lib\ckfinder\**" />
+    <None Remove="wwwroot\lib\ckfinder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
@@ -20,20 +27,6 @@
   <ItemGroup>
     <Folder Include="wwwroot\img\CusImg\" />
     <Folder Include="wwwroot\img\PostImg\" />
-    <Folder Include="wwwroot\lib\ckfinder\App_Data\" />
-    <Folder Include="wwwroot\lib\ckfinder\src\CKFinder.Connector.WebApp\userfiles\" />
-    <Folder Include="wwwroot\lib\ckfinder\userfiles\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="wwwroot\lib\ckfinder\src\CKFinder.Connector.Plugin.DiskQuota\CKFinder.Connector.Plugin.DiskQuota.csproj" />
-    <None Include="wwwroot\lib\ckfinder\src\CKFinder.Connector.Plugin.GetFileInfo\CKFinder.Connector.Plugin.GetFileInfo.csproj" />
-    <None Include="wwwroot\lib\ckfinder\src\CKFinder.Connector.Plugin.UserActionsLogger\CKFinder.Connector.Plugin.UserActionsLogger.csproj" />
-    <None Include="wwwroot\lib\ckfinder\src\CKFinder.Connector.Plugin.Watermark\CKFinder.Connector.Plugin.Watermark.csproj" />
-    <None Include="wwwroot\lib\ckfinder\src\CKFinder.Connector.Samples.sln" />
-    <None Include="wwwroot\lib\ckfinder\src\CKFinder.Connector.WebApp\CKFinder.Connector.WebApp.csproj" />
-    <None Include="wwwroot\lib\ckfinder\src\CKFinder.Connector.WebApp\CKFinder.Connector.WebApp.csproj.user" />
-    <None Include="wwwroot\lib\ckfinder\src\CKFinder.Connector.WebApp\Properties\PublishProfiles\FolderProfile.pubxml.user" />
   </ItemGroup>
 
 </Project>
