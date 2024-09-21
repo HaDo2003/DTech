@@ -27,6 +27,7 @@
   <ItemGroup>
     <Folder Include="wwwroot\img\CusImg\" />
     <Folder Include="wwwroot\img\PostImg\" />
+    <Folder Include="wwwroot\img\ProductImg\ImgDes\" />
   </ItemGroup>
 
 </Project>
