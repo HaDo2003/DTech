@@ -73,7 +73,7 @@ public partial class EcommerceWebContext : DbContext
 
     public virtual DbSet<Topic> Topics { get; set; }
 
-////    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
 //        => optionsBuilder.UseSqlServer("Data Source=LAPTOPMSI;Initial Catalog=ECommerceWeb;Integrated Security=True;Trust Server Certificate=True");
 
@@ -423,19 +423,21 @@ public partial class EcommerceWebContext : DbContext
 
         modelBuilder.Entity<OrderProduct>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("OrderProduct");
+            entity.HasKey(e => new { e.OrderId, e.ProductId });
+
+            entity.ToTable("OrderProduct");
 
             entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
-            entity.HasOne(d => d.Order).WithMany()
+            entity.HasOne(d => d.Order).WithMany(p => p.OrderProducts)
                 .HasForeignKey(d => d.OrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderProduct_Order");
 
-            entity.HasOne(d => d.Product).WithMany()
+            entity.HasOne(d => d.Product).WithMany(p => p.OrderProducts)
                 .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_OrderProduct_Product");
         });
 

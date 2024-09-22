@@ -3,95 +3,139 @@
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.mainPage = "information";
+    ViewBag.page = "order";
 }
 
-<h1>Details</h1>
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Order Details</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item">
+                        <a class="btn btn-sm btn-success text-center">
+                            <i class="fa-solid fa-house fa-sm"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index">
+                            Orders
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Details
+                    </li>
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Order Information</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" title="Collapse">
+                                <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-remove" title="Remove">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body py-0">
+                        <div class="col-9">
+                            <table class="table">
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.OrderDate)</th>
+                                    <td>@Html.DisplayFor(model => model.OrderDate)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Address)</th>
+                                    <td>@Html.DisplayFor(model => model.Address)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.NameReceive)</th>
+                                    <td>@Html.DisplayFor(model => model.NameReceive)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.PhoneReceive)</th>
+                                    <td>@Html.DisplayFor(model => model.PhoneReceive)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.TotalCost)</th>
+                                    <td>@Html.DisplayFor(model => model.TotalCost)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.CostDiscount)</th>
+                                    <td>@Html.DisplayFor(model => model.CostDiscount)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.ShippingCost)</th>
+                                    <td>@Html.DisplayFor(model => model.ShippingCost)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.FinalCost)</th>
+                                    <td>@Html.DisplayFor(model => model.FinalCost)</td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Note)</th>
+                                    <td>@Html.DisplayFor(model => model.Note)</td>
+                                </tr>
+                                <tr>
+                                    <th>Customer Name</th>
+                                    <td>@Html.DisplayFor(model => model.Customer.FirstName) @Html.DisplayFor(model => model.Customer.LastName)</td>
+                                </tr>
+                                <tr>
+                                    <th>Payment</th>
+                                    <td>
+                                        @if (Model.Payment.Status.HasValue && ViewBag.StatusPaymentDictionary.ContainsKey(Model.Payment.Status.Value))
+                                        {
+                                            @ViewBag.StatusPaymentDictionary[Model.Payment.Status.Value]
+                                        }
+                                        else
+                                        {
+                                            <span>Unknown Status</span>
+                                        }
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>@Html.DisplayNameFor(model => model.Shipping.ShippingId)</th>
+                                    <td>@Html.DisplayFor(model => model.Shipping.ShippingId)</td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td>@Html.DisplayFor(model => model.Status.Description)</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div> <!-- /.card-body -->
+                    <div class="card-footer">
+                        <a asp-action="Index" class="btn btn-sm btn-success text-center" style="padding-bottom: 0.3em; padding-top: 0.27em;">
+                            <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+                            Back to List
+                        </a>
+                    </div> <!-- /.card-footer-->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->
 
-<div>
-    <h4>Order</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.OrderDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OrderDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NameReceive)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NameReceive)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneReceive)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneReceive)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TotalCost)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalCost)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CostDiscount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CostDiscount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ShippingCost)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ShippingCost)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FinalCost)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.FinalCost)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Note)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Note)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Customer)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Customer.Account)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Payment)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Payment.PaymentId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Shipping)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Shipping.ShippingId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Status.StatusId)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.OrderId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<!-- Include the partial view for Order product -->
+@await Html.PartialAsync("DetailProduct", Model.OrderProducts)

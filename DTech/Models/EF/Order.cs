@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
 namespace DTech.Models.EF;
 
 public partial class Order
@@ -46,6 +45,8 @@ public partial class Order
     public string? Note { get; set; }
 
     public virtual Customer? Customer { get; set; }
+
+    public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
 
     public virtual Payment? Payment { get; set; }
 

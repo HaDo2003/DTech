@@ -1,4 +1,4 @@
-﻿@model IEnumerable<DTech.Models.EF.CustomerAddress>
+﻿@model IEnumerable<DTech.Models.EF.OrderProduct>
 
 <!--begin::App Content-->
 <div class="app-content">
@@ -9,7 +9,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Customer Addresses</h3>
+                        <h3 class="card-title">Oder Detail</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" title="Collapse">
                                 <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
@@ -26,22 +26,20 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Address</th>
-                                        <th>Edit</th>
+                                        <th>Product ID</th>
+                                        <th>Product Name</th>
+                                        <th>Quantity</th>
+                                        <th>Cost At Purchase</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach (var address in Model)
+                                    @foreach (var product in Model)
                                     {
                                         <tr>
-                                            <td>@address.AddressId</td>
-                                            <td>@address.Address</td>
-                                            <td>
-                                                <a asp-action="EditAddress" asp-route-id="@address.AddressId" class="btn btn-sm btn-info">
-                                                    <i class="fa-solid fa-edit"></i>
-                                                </a>
-                                            </td>
+                                            <td>@product.ProductId</td>
+                                            <td>@product.Product.Name</td>
+                                            <td>@product.Quantity</td>
+                                            <td>@product.CostAtPurchase</td>
                                         </tr>
                                     }
                                 </tbody>
@@ -49,13 +47,19 @@
                         }
                         else
                         {
-                            <p>No addresses available</p>
+                            <p>No product available</p>
                         }
                     </div> <!-- /.card-body -->
                     <div class="card-footer">
-                        <a asp-action="CreateAddress" asp-route-customerId="@ViewBag.CustomerId" class="btn btn-sm btn-success">
-                            <i class="fa-solid fa-plus"></i> Add Address
-                        </a>
+                        @if (Model != null && Model.Any())
+                        {
+                            var totalCost = Model.Sum(product => (decimal)product.Quantity * (decimal)product.CostAtPurchase);
+                            <p><strong>Total Cost:</strong> @(totalCost.ToString("C"))</p>
+                        }
+                        else
+                        {
+                            <p>No total cost available</p>
+                        }
                     </div> <!-- /.card-footer -->
                 </div> <!-- /.card -->
             </div>

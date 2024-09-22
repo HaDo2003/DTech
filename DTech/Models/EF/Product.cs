@@ -70,6 +70,8 @@ public partial class Product
 
     public virtual Category? Category { get; set; }
 
+    public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+
     public virtual ICollection<ProductComment> ProductComments { get; set; } = new List<ProductComment>();
 
     public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();

@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
+using DTech.Library;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [SetViewBagAttributes]
     public class OrdersController : Controller
     {
         private readonly EcommerceWebContext _context;
@@ -39,12 +41,13 @@ namespace DTech.Areas.Admin.Controllers
                 .Include(o => o.Payment)
                 .Include(o => o.Shipping)
                 .Include(o => o.Status)
+                .Include(o => o.OrderProducts).ThenInclude(op => op.Product)
                 .FirstOrDefaultAsync(m => m.OrderId == id);
             if (order == null)
             {
                 return NotFound();
             }
-
+            ViewBag.OrderId = id;
             return View(order);
         }
 

@@ -130,6 +130,7 @@
             </div>
         </div> <!--end::Row-->
     </div> <!--end::Container-->
-    <!-- Include the partial view for customer addresses -->
-    @await Html.PartialAsync("DetailAddress", Model.CustomerAddresses)
 </div> <!--end::App Content-->
+
+<!-- Include the partial view for customer addresses -->
+@await Html.PartialAsync("DetailAddress", Model.CustomerAddresses)
