@@ -63,7 +63,7 @@ namespace DTech.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Check if adv already exist
+                //Check if brand already exist
                 brand.Slug = brand.Name.ToLower().Replace(" ", "-");
 
                 var slug = await _context.Brands

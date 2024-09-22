@@ -46,6 +46,11 @@
                             <div class="col">
                                 <strong class="card-title">Payment Method Information</strong>
                             </div>
+
+                            <div class="col">
+                                @Html.Partial("Message")
+                            </div>
+
                             <div class="col text-end">
                                 <a asp-action="Create" class="btn btn-sm btn-success text-center">
                                     <i class="fa-solid fa-plus fa-sm"></i>
@@ -72,20 +77,25 @@
                                 {
                                     <tr>
                                         <td>
+                                            @Html.DisplayFor(modelItem => item.PaymentMethodId)
+                                        </td>
+                                        <td>
                                             @Html.DisplayFor(modelItem => item.Description)
                                         </td>
                                         <td>
-                                            <a asp-action="Edit" asp-route-id="@item.PaymentMethodId" class="btn btn-sm btn-primary text-center">
+                                            <a asp-action="Edit" asp-route-id="@item.PaymentMethodId" class="btn btn-sm btn-primary text-center btn-custom">
                                                 <i class="fa-solid fa-pen-to-square fa-sm"></i>
-                                                Edit
+                                                <span class="hover-text">Edit</span>
                                             </a>
-                                            <a asp-action="Details" asp-route-id="@item.PaymentMethodId" class="btn btn-sm btn-info text-center">
+
+                                            <a asp-action="Details" asp-route-id="@item.PaymentMethodId" class="btn btn-sm btn-info text-center btn-custom">
                                                 <i class="fa-solid fa-circle-info fa-sm"></i>
-                                                Details
+                                                <span class="hover-text">Details</span>
                                             </a>
-                                            <a asp-action="Delete" asp-route-id="@item.PaymentMethodId" class="btn btn-sm btn-danger text-center">
+
+                                            <a asp-action="Delete" asp-route-id="@item.PaymentMethodId" class="btn btn-sm btn-danger text-center btn-custom">
                                                 <i class="fa-solid fa-trash fa-sm"></i>
-                                                Delete
+                                                <span class="hover-text">Delete</span>
                                             </a>
                                         </td>
                                     </tr>

@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
+using DTech.Library;
+using Newtonsoft.Json;
+using System.Drawing.Drawing2D;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -54,12 +57,29 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PaymentMethodId,Description")] PaymentMethod paymentMethod)
+        public async Task<IActionResult> Create([Bind("PaymentMethodId,Description,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] PaymentMethod paymentMethod)
         {
             if (ModelState.IsValid)
             {
+                //Check if payment method already exist
+                var des = await _context.PaymentMethods
+                    .FirstOrDefaultAsync(a => a.Description == paymentMethod.Description);
+
+                if (des != null)
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Payment Method already exists!"));
+                    return View(paymentMethod);
+                }
+
+                //Save to database
+                paymentMethod.CreateDate = DateTime.Now;
+                paymentMethod.CreatedBy = "Admin1";
+
                 _context.Add(paymentMethod);
                 await _context.SaveChangesAsync();
+
+                //Success message
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
                 return RedirectToAction(nameof(Index));
             }
             return View(paymentMethod);
@@ -86,7 +106,7 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PaymentMethodId,Description")] PaymentMethod paymentMethod)
+        public async Task<IActionResult> Edit(int id, [Bind("PaymentMethodId,Description,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] PaymentMethod paymentMethod)
         {
             if (id != paymentMethod.PaymentMethodId)
             {
@@ -97,6 +117,19 @@ namespace DTech.Areas.Admin.Controllers
             {
                 try
                 {
+                    //Check if payment method already exist
+                    var des = await _context.PaymentMethods
+                        .FirstOrDefaultAsync(a => a.Description == paymentMethod.Description && a.PaymentMethodId != paymentMethod.PaymentMethodId);
+
+                    if (des != null)
+                    {
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Payment Method already exists!"));
+                        return View(paymentMethod);
+                    }
+
+                    paymentMethod.UpdateDate = DateTime.Now;
+                    paymentMethod.UpdatedBy = "Admin1";
+
                     _context.Update(paymentMethod);
                     await _context.SaveChangesAsync();
                 }
@@ -111,8 +144,10 @@ namespace DTech.Areas.Admin.Controllers
                         throw;
                     }
                 }
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
             return View(paymentMethod);
         }
 
@@ -146,6 +181,7 @@ namespace DTech.Areas.Admin.Controllers
             }
 
             await _context.SaveChangesAsync();
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Deleted successfully"));
             return RedirectToAction(nameof(Index));
         }
 
