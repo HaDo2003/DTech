@@ -7,66 +7,151 @@
     ViewBag.page = "post";
 }
 
-<h1>Edit</h1>
-
-<h4>Post</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+    <div class="col-md-12">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="PostId" />
-            <div class="form-group">
-                <label asp-for="CateId" class="control-label"></label>
-                <select asp-for="CateId" class="form-control" asp-items="ViewBag.CateId"></select>
-                <span asp-validation-for="CateId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Slug" class="control-label"></label>
-                <input asp-for="Slug" class="form-control" />
-                <span asp-validation-for="Slug" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PostDate" class="control-label"></label>
-                <input asp-for="PostDate" class="form-control" />
-                <span asp-validation-for="PostDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PostBy" class="control-label"></label>
-                <input asp-for="PostBy" class="form-control" />
-                <span asp-validation-for="PostBy" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Edit Post</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end">
+                                <li class="breadcrumb-item">
+                                    <a class="btn btn-sm btn-success text-center">
+                                        <i class="fa-solid fa-house fa-sm"></i>
+                                        Home
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item">
+                                    <a asp-action="Index">
+                                        Post
+                                    </a>
+                                </li>
+                                <li class="breadcrumb-item active" aria-current="page">
+                                    Edit
+                                </li>
+                            </ol>
+                        </div>
+                    </div> <!--end::Row-->
+                </div> <!--end::Container-->
+            </div> <!--end::App Content Header-->
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-12">
+                            <!-- Default box -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <div class="row text-center">
+                                        @Html.Partial("Message")
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <input type="hidden" asp-for="PostId" />
+
+                                    <div class="form-group">
+                                        <label asp-for="Name" class="control-label">
+                                            @Html.DisplayNameFor(model => model.Name)
+                                            <span class="text-danger">(*)</span>
+                                        </label>
+                                        <input asp-for="Name" class="form-control" />
+                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="CateId" class="control-label"></label>
+                                                <select asp-for="CateId" class="form-control" asp-items="ViewBag.CateId"></select>
+                                                <span asp-validation-for="CateId" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Status" class="control-label"></label>
+                                                <select asp-for="Status" class="form-control" asp-items="ViewBag.StatusList"></select>
+                                                <span asp-validation-for="Status" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6 col-sm-4">
+                                            <div class="form-group">
+                                                <label asp-for="PostBy" class="control-label"></label>
+                                                <input asp-for="PostBy" class="form-control" readonly />
+                                                <span asp-validation-for="PostBy" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 col-sm-8">
+                                            <div class="form-group">
+                                                <label asp-for="PostDate" class="control-label"></label>
+                                                <input asp-for="PostDate" class="form-control" readonly />
+                                                <span asp-validation-for="PostDate" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="row align-items-center">
+                                            <div class="col-lg-2 col-sm-4 text-center">
+                                                <img src="~/img/PostImg/@Model.Image" id="imgsquare" class="py-2" alt="" />
+                                            </div>
+
+                                            <div class="col-lg-10 col-sm-8 p-0">
+                                                <label for="input-file" class="custom-upload ms-2">Upload Image</label>
+                                            </div>
+                                        </div>
+                                        <input asp-for="ImageUpload" class="form-control custom-photo-input" id="input-file" onchange="img_pathUrl(this)" />
+                                        <span asp-validation-for="ImageUpload" class="text-danger"></span>
+                                    </div>
+                                    <input type="hidden" asp-for="Image" />
+
+                                    <div class="form-group">
+                                        <label asp-for="Description" class="control-label"></label>
+                                        <textarea id="editor" asp-for="Description" class="form-control"></textarea>
+                                        <span asp-validation-for="Description" class="text-danger"></span>
+                                    </div>
+                                </div> <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa-solid fa-floppy-disk fa-sm"></i>
+                                            Save
+                                        </button> |
+                                        <a asp-action="Index" class="btn btn-sm btn-success text-center" style="padding-bottom: 0.5em; padding-top: 0.5em;">
+                                            <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+                                            Back to List
+                                        </a>
+                                    </div>
+                                </div> <!-- /.card-footer-->
+                            </div> <!-- /.card -->
+                        </div>
+                    </div> <!--end::Row-->
+                </div> <!--end::Container-->
+            </div> <!--end::App Content-->
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function img_pathUrl(input) {
+            $("img#imgsquare")[0].src = URL.createObjectURL(input.files[0]);
+        }
+    </script>
 }

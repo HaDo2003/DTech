@@ -1,12 +1,13 @@
-﻿using DTech.Library.Validation;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DTech.Models.EF;
 
 public partial class ProductImage
 {
+    [Key]
     public int ImageId { get; set; }
 
     public int? ProductId { get; set; }
@@ -16,6 +17,5 @@ public partial class ProductImage
     public virtual Product? Product { get; set; }
 
     [NotMapped]
-    [FileExtension]
-    public IFormFile? ImageUpload { get; set; }
+    public IFormFile? ImageUpload {  get; set; }
 }
