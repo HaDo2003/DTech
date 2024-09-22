@@ -71,7 +71,7 @@
                                 <tr>
                                     <th class="text-start col-1">@Html.DisplayNameFor(model => model.ProductId)</th>
                                     <th class="col-6">@Html.DisplayNameFor(model => model.Name)</th>
-                                    <th>@Html.DisplayNameFor(model => model.Price)</th>
+                                    <th class="text-start">@Html.DisplayNameFor(model => model.Price)</th>
                                     <th>@Html.DisplayNameFor(model => model.StatusProduct)</th>
                                     <th>Function</th>
                                 </tr>
@@ -82,7 +82,7 @@
                                     <tr>
                                         <td class="text-start">@Html.DisplayFor(modelItem => item.ProductId)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                                        <td class="text-start">@Html.DisplayFor(modelItem => item.Price)</td>
                                         <td>
                                             @if (item.StatusProduct == true)
                                             {

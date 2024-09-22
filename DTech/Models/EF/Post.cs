@@ -32,6 +32,7 @@ public partial class Post
 
     public int? Status { get; set; }
 
+    [Display(Name = "Post Category")]
     public virtual PostCategory? Cate { get; set; }
 
     public virtual ICollection<PostComment> PostComments { get; set; } = new List<PostComment>();

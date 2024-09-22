@@ -6,6 +6,7 @@ namespace DTech.Models.EF;
 public partial class Order
 {
     [Key]
+    [Display(Name = "ID")]
     public int OrderId { get; set; }
 
     [Display(Name = "Customer")]
