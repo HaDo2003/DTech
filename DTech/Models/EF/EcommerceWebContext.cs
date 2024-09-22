@@ -371,9 +371,7 @@ public partial class EcommerceWebContext : DbContext
         {
             entity.ToTable("Order");
 
-            entity.Property(e => e.OrderId)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("OrderID");
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.Address).HasMaxLength(50);
             entity.Property(e => e.CostDiscount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
@@ -392,9 +390,8 @@ public partial class EcommerceWebContext : DbContext
                 .HasForeignKey(d => d.CustomerId)
                 .HasConstraintName("FK_Order_Customer");
 
-            entity.HasOne(d => d.OrderNavigation).WithOne(p => p.Order)
-                .HasForeignKey<Order>(d => d.OrderId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+            entity.HasOne(d => d.Payment).WithMany(p => p.Orders)
+                .HasForeignKey(d => d.PaymentId)
                 .HasConstraintName("FK_Order_Payment");
 
             entity.HasOne(d => d.Shipping).WithMany(p => p.Orders)

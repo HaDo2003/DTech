@@ -23,7 +23,7 @@ public partial class Payment
 
     public DateTime? UpdateDate { get; set; }
 
-    public virtual Order? Order { get; set; }
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual PaymentMethod? PaymentMethod { get; set; }
 }

@@ -35,7 +35,7 @@ public partial class Order
 
     public virtual Customer? Customer { get; set; }
 
-    public virtual Payment OrderNavigation { get; set; } = null!;
+    public virtual Payment? Payment { get; set; }
 
     public virtual Shipping? Shipping { get; set; }
 
