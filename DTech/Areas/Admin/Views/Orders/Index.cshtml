@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
-    ViewBag.mainPage = "information";
-    ViewBag.page = "order";
 }
 
 <h1>Index</h1>
@@ -15,9 +13,6 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentId)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.OrderDate)
             </th>
@@ -49,7 +44,7 @@
                 @Html.DisplayNameFor(model => model.Customer)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OrderNavigation)
+                @Html.DisplayNameFor(model => model.Payment)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Shipping)
@@ -63,9 +58,6 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentId)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.OrderDate)
             </td>
@@ -97,7 +89,7 @@
                 @Html.DisplayFor(modelItem => item.Customer.Account)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OrderNavigation.PaymentId)
+                @Html.DisplayFor(modelItem => item.Payment.PaymentId)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Shipping.ShippingId)

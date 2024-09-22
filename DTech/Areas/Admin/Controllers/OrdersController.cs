@@ -22,7 +22,7 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Orders
         public async Task<IActionResult> Index()
         {
-            var ecommerceWebContext = _context.Orders.Include(o => o.Customer).Include(o => o.OrderNavigation).Include(o => o.Shipping).Include(o => o.Status);
+            var ecommerceWebContext = _context.Orders.Include(o => o.Customer).Include(o => o.Payment).Include(o => o.Shipping).Include(o => o.Status);
             return View(await ecommerceWebContext.ToListAsync());
         }
 
@@ -36,7 +36,7 @@ namespace DTech.Areas.Admin.Controllers
 
             var order = await _context.Orders
                 .Include(o => o.Customer)
-                .Include(o => o.OrderNavigation)
+                .Include(o => o.Payment)
                 .Include(o => o.Shipping)
                 .Include(o => o.Status)
                 .FirstOrDefaultAsync(m => m.OrderId == id);
@@ -52,7 +52,7 @@ namespace DTech.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Account");
-            ViewData["OrderId"] = new SelectList(_context.Payments, "PaymentId", "PaymentId");
+            ViewData["PaymentId"] = new SelectList(_context.Payments, "PaymentId", "PaymentId");
             ViewData["ShippingId"] = new SelectList(_context.Shippings, "ShippingId", "ShippingId");
             ViewData["StatusId"] = new SelectList(_context.OrderStatuses, "StatusId", "StatusId");
             return View();
@@ -72,7 +72,7 @@ namespace DTech.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Account", order.CustomerId);
-            ViewData["OrderId"] = new SelectList(_context.Payments, "PaymentId", "PaymentId", order.OrderId);
+            ViewData["PaymentId"] = new SelectList(_context.Payments, "PaymentId", "PaymentId", order.PaymentId);
             ViewData["ShippingId"] = new SelectList(_context.Shippings, "ShippingId", "ShippingId", order.ShippingId);
             ViewData["StatusId"] = new SelectList(_context.OrderStatuses, "StatusId", "StatusId", order.StatusId);
             return View(order);
@@ -92,7 +92,7 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Account", order.CustomerId);
-            ViewData["OrderId"] = new SelectList(_context.Payments, "PaymentId", "PaymentId", order.OrderId);
+            ViewData["PaymentId"] = new SelectList(_context.Payments, "PaymentId", "PaymentId", order.PaymentId);
             ViewData["ShippingId"] = new SelectList(_context.Shippings, "ShippingId", "ShippingId", order.ShippingId);
             ViewData["StatusId"] = new SelectList(_context.OrderStatuses, "StatusId", "StatusId", order.StatusId);
             return View(order);
@@ -131,7 +131,7 @@ namespace DTech.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "Account", order.CustomerId);
-            ViewData["OrderId"] = new SelectList(_context.Payments, "PaymentId", "PaymentId", order.OrderId);
+            ViewData["PaymentId"] = new SelectList(_context.Payments, "PaymentId", "PaymentId", order.PaymentId);
             ViewData["ShippingId"] = new SelectList(_context.Shippings, "ShippingId", "ShippingId", order.ShippingId);
             ViewData["StatusId"] = new SelectList(_context.OrderStatuses, "StatusId", "StatusId", order.StatusId);
             return View(order);
@@ -147,7 +147,7 @@ namespace DTech.Areas.Admin.Controllers
 
             var order = await _context.Orders
                 .Include(o => o.Customer)
-                .Include(o => o.OrderNavigation)
+                .Include(o => o.Payment)
                 .Include(o => o.Shipping)
                 .Include(o => o.Status)
                 .FirstOrDefaultAsync(m => m.OrderId == id);
