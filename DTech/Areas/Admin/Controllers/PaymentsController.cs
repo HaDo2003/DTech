@@ -6,10 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
+using DTech.Library;
+using Newtonsoft.Json;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [SetViewBagAttributes]
     public class PaymentsController : Controller
     {
         private readonly EcommerceWebContext _context;
@@ -48,7 +51,7 @@ namespace DTech.Areas.Admin.Controllers
         // GET: Admin/Payments/Create
         public IActionResult Create()
         {
-            ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "PaymentMethodId", "PaymentMethodId");
+            ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "PaymentMethodId", "Description");
             return View();
         }
 
@@ -61,11 +64,21 @@ namespace DTech.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                payment.CreateDate = DateTime.Now;
+                payment.CreatedBy = "Admin1";
+                if(payment.Status == 1) {
+                    payment.Date = DateOnly.FromDateTime(DateTime.Now);
+                }
+                else
+                {
+                    payment.Date = null;
+                }
+
                 _context.Add(payment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "PaymentMethodId", "PaymentMethodId", payment.PaymentMethodId);
+            ViewData["PaymentMethodId"] = new SelectList(_context.PaymentMethods, "PaymentMethodId", "Description", payment.PaymentMethodId);
             return View(payment);
         }
 
@@ -159,6 +172,32 @@ namespace DTech.Areas.Admin.Controllers
         private bool PaymentExists(int id)
         {
             return _context.Payments.Any(e => e.PaymentId == id);
+        }
+
+        public async Task<IActionResult> StatusChange(int id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var payment = await _context.Payments
+                .FirstOrDefaultAsync(m => m.PaymentId == id);
+
+            if (payment == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            payment.Status = (payment.Status == 1) ? 0 : 1;
+            payment.UpdateDate = DateTime.Now;
+            payment.UpdatedBy = "Admin1";
+
+            _context.Update(payment);
+            await _context.SaveChangesAsync();
+
+            TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
+            return RedirectToAction(nameof(Index));
         }
     }
 }

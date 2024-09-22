@@ -1,56 +1,131 @@
 ﻿@model IEnumerable<DTech.Models.EF.Payment>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Payment Management";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
     ViewBag.mainPage = "information";
     ViewBag.page = "payment";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Amount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PaymentMethod)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Amount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PaymentMethod.PaymentMethodId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.PaymentId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.PaymentId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.PaymentId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Payment Management</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item">
+                        <a class="btn btn-sm btn-success text-center">
+                            <i class="fa-solid fa-house fa-sm"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Payment
+                    </li>
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col">
+                                <strong class="card-title">Payment Information</strong>
+                            </div>
+                            <div class="col">
+                                @Html.Partial("Message")
+                            </div>
+                            <div class="col text-end">
+                                <a asp-action="Create" class="btn btn-sm btn-success text-center">
+                                    <i class="fa-solid fa-plus fa-sm"></i>
+                                    Create New
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body py-0">
+                        <table class="table table-bordered table-striped" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Date)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Amount)
+                                    </th>
+                                    <th>
+                                        Payment Method
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Status)
+                                    </th>                                   
+                                    <th>Function</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Date)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Amount)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.PaymentMethod.Description)
+                                        </td>
+                                        <td>
+                                            @if (item.Status.HasValue && ViewBag.StatusPaymentDictionary.ContainsKey(item.Status.Value))
+                                            {
+                                                @ViewBag.StatusPaymentDictionary[item.Status.Value]
+                                            }
+                                            else
+                                            {
+                                                <span>Unknown Status</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.Status == 1)
+                                            {
+                                                <a asp-for="@item.Status" asp-action="StatusChange" asp-route-id="@item.PaymentId" class="btn btn-sm btn-success text-center btn-custom">
+                                                    <i class="fa-solid fa-toggle-on fa-sm"></i>
+                                                    <span class="hover-text">Change Status</span>
+                                                </a>
+                                            }
+                                            else if (item.Status == 0)
+                                            {
+                                                <a asp-for="@item.Status" asp-action="StatusChange" asp-route-id="@item.PaymentId" class="btn btn-sm btn-danger text-center btn-custom">
+                                                    <i class="fa-solid fa-toggle-off fa-sm"></i>
+                                                    <span class="hover-text">Change Status</span>
+                                                </a>
+                                            }
+                                            <a asp-action="Details" asp-route-id="@item.PaymentId" class="btn btn-sm btn-info text-center btn-custom">
+                                                <i class="fa-solid fa-circle-info fa-sm"></i>
+                                                <span class="hover-text">Details</span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div> <!-- /.card-body -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->

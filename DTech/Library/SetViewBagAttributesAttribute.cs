@@ -38,6 +38,18 @@ namespace DTech.Library
                     new() { Value = "True", Text = "In stock" },
                     new() { Value = "False", Text = "Out of stock" },
                 };
+
+                controller.ViewBag.StatusPayment = new List<SelectListItem>
+                {
+                    new() { Value = "1", Text = "Paid" },
+                    new() { Value = "0", Text = "Unpaid" },
+                };
+
+                controller.ViewBag.StatusPaymentDictionary = new Dictionary<int, string>
+                {
+                    { 1, "Paid" },
+                    { 0, "Unpaid" },
+                };
             }
 
             base.OnActionExecuting(context);
