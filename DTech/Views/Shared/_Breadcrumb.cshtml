@@ -1,0 +1,27 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    @if (currentAction == "ForgotPassword")
+    {
+        currentAction = "Forgot Password";
+    }
+}
+
+<div class="container my-1">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb pt-1 custom-breadcrumb">
+            @if (!(currentController == "Home" && currentAction == "Index"))
+            {
+                <li class="breadcrumb-item ps-2">
+                    <a class="breadcrumb-link" href="@Url.Action("Index", "Home")">
+                        Home
+                    </a>
+                </li>
+                <li class="breadcrumb-item" aria-current="page">
+                    @currentAction
+                </li>
+            }
+        </ol>
+    </nav>
+</div>
+

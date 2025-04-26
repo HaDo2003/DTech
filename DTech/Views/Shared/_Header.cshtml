@@ -3,12 +3,13 @@
         <div class="row align-items-center">
             
             <div class="col-md-2 col-lg-2 col-2">
-                <img src="~/img/DTechlogo.png" class="img-logo" alt="DTech logo" />
+                <a asp-controller="Home" asp-action="Index">
+                    <img src="~/img/DTechlogo.png" class="img-logo" alt="DTech logo" />
+                </a>
             </div>
             @* <div class="col-md-2 col-lg-2 col-2"> *@
             @*     <img src="~/img/dtechlogosmall.png" class="img-logo-small" alt="DTech logo"/> *@
             @* </div> *@
-
             <div class="col-md-4 col-lg-4 col-4 mx-auto my-auto search-box">
                 <div class="input-group form-container">
                     <input type="text" name="search" class="form-control search-input" placeholder="Search" autocomplete="off" />
@@ -72,7 +73,7 @@
                     </li>
 
                     <li class="nav-item dropdown mt-2">
-                        <a class="nav-link dropdown-toggle active d-flex align-items-center text-light text-decoration-none" " data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle active d-flex align-items-center text-light text-decoration-none" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
                             <div class="me-1">
                                 <i class="fa-solid fa-user fa-xl"></i>
                             </div>
@@ -82,12 +83,20 @@
                             </div>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Log in</a></li>
-                            <li><a class="dropdown-item" href="#">Resgiter</a></li>
+                            @if (User.Identity?.IsAuthenticated ?? false)
+                            {
+                                <li><a class="dropdown-item" href="#">Profile</a></li>
+                                <li><a class="dropdown-item" href="#">Settings</a></li>
+                                <li><a asp-controller="Authentication" asp-action="Logout" class="dropdown-item">Logout</a></li>
+                            }
+                            else
+                            {
+                                <li><a asp-controller="Authentication" asp-action="Login" class="dropdown-item">Log in</a></li>
+                                <li><a asp-controller="Authentication" asp-action="Register" class="dropdown-item">Register</a></li>
+                            }
                         </ul>
                     </li>
                 </ul>
-
             </div>
         </div>
     </div>
@@ -99,7 +108,7 @@
             <div class="container-fluid">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-between w-100">
                         <li class="nav-item">
-                            <a class="nav-link active text-light" aria-current="page" href="#">Home</a>
+                            <a asp-controller="Home" asp-action="Index" class="nav-link active text-light" aria-current="page">Home</a>
                         </li>
 
                         <li class="nav-item text-light">

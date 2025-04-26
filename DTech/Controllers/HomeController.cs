@@ -9,9 +9,9 @@ namespace DTech.Controllers
         AdvertisementDAO advertisementDAO
     ) : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            ViewBag.Advertisements = advertisementDAO.GetOrderedListAsync().Result;
+            ViewBag.Advertisements = await advertisementDAO.GetOrderedListAsync();
 
             return View();
         }

@@ -97,13 +97,121 @@ Nav Bar
 .c-item {
     height: 400px;
 }
+
+/*=========================================================
+Breadcrum
+===========================================================*/
+.custom-breadcrumb {
+    --bs-breadcrumb-divider: '>';
+}
+
+.breadcrumb-link {
+    text-decoration: none;
+    color: inherit;
+}
+.breadcrumb-link:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
 /*=========================================================
 Slider
 ===========================================================*/
 .carousel-control-prev,
-.carousel-control-next{
+.carousel-control-next {
     width: 5% !important;
 }
+
+/*=========================================================
+Register
+===========================================================*/
+.custom-radio-container {
+    display: flex;
+    align-items: center;
+}
+
+.custom-radio-group {
+    display: flex;
+    gap: 1em;
+}
+
+    .custom-radio-group > div {
+        display: flex;
+        align-items: center;
+    }
+
+.custom-label-radio {
+    margin-left: 0.5em;
+}
+
+
+input[type="radio"].custom-radio {
+    display: none;
+}
+
+label.custom-label-radio {
+    position: relative;
+    color: #212529;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    border: 2px solid #212529;
+    padding: 0.5em 1em;
+    border-radius: 0.4em;
+    font-size: 0.875rem;
+}
+
+    label.custom-label-radio:before {
+        content: "";
+        height: 1.2em;
+        width: 1.2em;
+        border: 2px solid #212529;
+        border-radius: 50%;
+        display: inline-block;
+        vertical-align: middle;
+        background-color: transparent;
+        box-sizing: border-box;
+    }
+
+input[type="radio"].custom-radio:checked +
+label.custom-label-radio:before {
+    background-color: #212529;
+    border-width: 0.4em;
+    border-color: #ffffff;
+}
+
+input[type="radio"].custom-radio:checked +
+label.custom-label-radio {
+    background-color: #212529;
+    color: #ffffff;
+}
+
+.eye {
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.button-hover:hover {
+    background-color: #0056b3;
+    color: white;
+}
+
+.click-here {
+    text-decoration: none;
+    color: #212529;
+}
+
+/*=========================================================
+Login
+===========================================================*/
+.a-custom {
+    text-decoration: none;
+    color: #212529;
+}
+
 /*=========================================================
 NEWSLETTER
 ===========================================================*/

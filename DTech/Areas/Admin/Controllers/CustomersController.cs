@@ -59,7 +59,7 @@ namespace DTech.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 //Check account existed
-                var existingAccount = await customerDAO.CheckAccountAsync(customer.Email);
+                var existingAccount = await customerDAO.CheckEmailAsync(customer.Email);
 
                 if (existingAccount)
                 {

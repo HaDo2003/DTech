@@ -1,0 +1,74 @@
+﻿@model DTech.Models.ViewModel.LoginViewModel
+
+@{
+    ViewData["Title"] = "Authentication Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-5 mx-auto rounded border">
+        <h2 class="text-center py-2">Login</h2>
+        <form asp-action="Login" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="row m-2">
+                <div class="form-group">
+                    <input asp-for="Account" class="form-control" placeholder="Account" required />
+                    <span asp-validation-for="Account" class="text-danger"></span>
+                </div>
+            </div>
+
+
+            <div class="row m-2">
+                <div class="form-group position-relative">
+                    <input asp-for="Password" id="password" type="password" class="form-control" placeholder="Password" required/>
+                    <i id="eyeIcon1" class="fa-solid fa-eye position-absolute eye pe-3"
+                       onclick="togglePassword('password', 'eyeIcon1')"></i>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row m-2 text-center align-content-center">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-dark w-100 button-hover">
+                        Login
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="row m-2">
+            <div class="col-6 text-start">
+                <label class="control-label">
+                    <a asp-action="ForgotPassword" class="a-custom">Forgot Password ?</a>
+                </label>
+            </div>
+
+            <div class="col-6 text-end">
+                <label class="control-label">
+                    <a asp-action="Register" class="a-custom">Register new account</a>
+                </label>
+            </div>
+        </div>
+
+        <div class="m-2 text-center">
+            <div class="d-flex align-items-center m-2">
+                <hr class="flex-grow-1">
+                <span class="mx-2">Or Log In With</span>
+                <hr class="flex-grow-1">
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between my-2 mx-3 gap-3">
+            <div class="flex-fill text-center border border-1 p-2 btn btn-danger">
+                <i class="fa-brands fa-google"></i>
+                <label class="control-label">Google</label>
+            </div>
+
+            <div class="flex-fill text-center border border-1 p-2 btn btn-primary">
+                <i class="fa-brands fa-facebook"></i>
+                <label class="control-label">Facebook</label>
+            </div>
+        </div>
+    </div>
+</div>

@@ -46,10 +46,14 @@ namespace DTech.DAO
                 return null;
             }
 
-            var customer = await context.Users
-                .AsNoTracking()
-                .Include(c => c.CustomerAddresses)
-                .FirstOrDefaultAsync(a => a.Id == id);
+            var customer = await userManager.FindByIdAsync(id);
+            if (customer != null)
+            {
+                customer.CustomerAddresses = await context.CustomerAddresses
+                    .Where(ca => ca.CustomerId == customer.Id)
+                    .ToListAsync();
+            }
+
             return customer;
         }
 
@@ -83,9 +87,8 @@ namespace DTech.DAO
         {
             try
             {
-                context.Users.Update(customer);
-                await context.SaveChangesAsync();
-                return true;
+                var result = await userManager.UpdateAsync(customer);
+                return result.Succeeded;
             }
             catch (Exception ex)
             {
@@ -94,31 +97,23 @@ namespace DTech.DAO
             }
         }
 
-        // Updated DeleteAsync method to handle potential null reference
+        // DeleteAsync
         public async Task<bool> DeleteAsync(string id)
         {
             var customer = await GetByIdAsync(id);
             if (customer == null)
             {
-                // Return false if the customer does not exist
                 return false;
             }
 
             try
             {
-                var entry = context.Entry(customer);
-                if (entry.State == EntityState.Detached)
-                {
-                    // If detached, attach it first
-                    context.Users.Attach(customer);
-                }
-                context.Users.Remove(customer);
-                await context.SaveChangesAsync();
-                return true;
+                var result = await userManager.DeleteAsync(customer);
+                return result.Succeeded;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
@@ -129,10 +124,10 @@ namespace DTech.DAO
             return await context.Users.AnyAsync(e => e.Id == id);
         }
 
-        //Check if account is existing
-        public async Task<bool> CheckAccountAsync(string? email)
+        //Check if account is exsting
+        public async Task<bool> CheckAccountAsync(string? account)
         {
-            return await context.Users.AnyAsync(e => e.Email == email);
+            return await context.Users.AnyAsync(e => e.UserName == account);
         }
 
         //Check if phone is exsting

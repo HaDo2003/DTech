@@ -9,6 +9,10 @@ public partial class ApplicationUser: IdentityUser
 {
     public string RoleId { get; set; } = string.Empty;
 
+    [Required(ErrorMessage = "Please enter your full name")]
+    [Display(Name = "Full Name")]
+    public string? FullName { get; set; } = string.Empty;
+
     [Required(ErrorMessage = "Please choose gender")]
     public string? Gender { get; set; }
 
