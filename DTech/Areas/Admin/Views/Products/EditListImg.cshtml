@@ -1,0 +1,213 @@
+﻿@model IEnumerable<DTech.Models.EF.ProductImage>
+
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Product Images</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" title="Collapse">
+                                <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-remove" title="Remove">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="SaveImages" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="productId" value="@ViewBag.ProductId" />
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="col-5">Image</th>
+                                        <th class="col-5"></th>
+                                        <th class="col-2"></th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="imageTable">
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        var index = 0;
+                                        foreach (var image in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-5">
+                                                            <div class="form-group">
+                                                                <img src="@image.Image" id="imagePreview_@index" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-7">
+                                                            <div class="form-group">
+                                                                <input type="hidden" name="ProductImages[@index].ImageId" value="@image.ImageId" />
+                                                                <input type="file" name="ProductImages[@index].ImageUpload" class="form-control-file" accept="image/*" onchange="previewImage(this, @index)" />
+                                                                <span class="text-danger"></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="btn btn-danger btn-custom removeImage" data-id="@image.ImageId">
+                                                        <i class="fa-solid fa-trash fa-sm"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            index++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3">No images available.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <!-- Row for adding a new image -->
+                            <div class="form-inline">
+                                <div class="row ps-2">
+                                    <div class="col-2">
+                                        <img id="newImagePreview" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="file" id="newImageUpload" class="form-control-file" accept="image/*" style="padding-left: 10px;" />
+                                    </div>
+                                    <div class="col-7" style="padding-left: 5px;">
+                                        <button id="addImage" type="button" class="btn btn-success" >
+                                            <i class="fa-solid fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary mt-3">
+                                <i class="fa-solid fa-floppy-disk fa-sm"></i>
+                                Save
+                            </button>
+                        </form>
+                    </div> <!-- /.card-body -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->
+
+<script>
+    $(document).ready(function () {
+        var imageIndex = @Model.Count(); // Tracks the index of the new images
+
+        // Add new image to the main table
+        $('#addImage').on('click', function () {
+            var fileInput = $('#newImageUpload')[0];
+            var file = fileInput.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    // Dynamically create a new row with image on the left and file input on the right
+                    var newRow = `
+                    <tr>
+                        <td>
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="form-group">
+                                        <img src="` + e.target.result + `" id="imagePreview_${imageIndex}" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
+                                    </div>
+                                </div>
+                                <div class="col-7">
+                                    <div class="form-group">
+                                        <input type="file" name="ProductImages[${imageIndex}].ImageUpload" class="form-control-file" accept="image/*" onchange="previewImage(this, ${imageIndex})" />
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-custom removeImage">
+                                <i class="fa-solid fa-trash fa-sm"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+
+                    $('#imageTable').append(newRow); // Append the new row to the table
+
+                    // Increment the index for the next image
+                    imageIndex++;
+
+                    // Clear the input field and preview for the next input
+                    $('#newImageUpload').val('');
+                    $('#newImagePreview').attr('src', '');
+                };
+
+                reader.readAsDataURL(file); // Read the selected file and convert to base64 for preview
+            } else {
+                alert('Please select an image.');
+            }
+        });
+
+
+        // Preview image before uploading
+        window.previewImage = function (input, index) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview_' + index).attr('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        $(document).on('click', '.removeImage', function () {
+            var row = $(this).closest('tr'); // Cache the row
+            var imageId = row.find('input[name*="ImageId"]').val();
+            if (confirm("Are you sure you want to delete this image?")) {
+                $.ajax({
+                    url: '@Url.Action("RemoveImage", "Products")', // Ensure this is correct
+                    type: 'POST',
+                    data: { imageId: imageId },
+                    success: function (response) {
+                        if (response.success) {
+                            row.remove(); // Remove the cached row here
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Error deleting image: " + textStatus + " - " + errorThrown);
+                    }
+                });
+            }
+        });
+
+        $(document).ready(function () {
+            // Function to preview the selected image
+            $('#newImageUpload').on('change', function () {
+                var fileInput = this;
+                var file = fileInput.files[0];
+
+                if (file) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        // Set the preview image source to the selected file
+                        $('#newImagePreview').attr('src', e.target.result);
+                    };
+
+                    reader.readAsDataURL(file); // Read the file as a data URL
+                } else {
+                    // Clear the preview if no file is selected
+                    $('#newImagePreview').attr('src', '');
+                }
+            });
+        });
+
+    });
+</script>

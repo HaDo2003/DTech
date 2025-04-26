@@ -1,0 +1,68 @@
+﻿@model IEnumerable<DTech.Models.EF.OrderProduct>
+
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Oder Detail</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" title="Collapse">
+                                <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-remove" title="Remove">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @if (Model != null && Model.Any())
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Product ID</th>
+                                        <th>Product Name</th>
+                                        <th>Quantity</th>
+                                        <th>Cost At Purchase</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var product in Model)
+                                    {
+                                        <tr>
+                                            <td>@product.ProductId</td>
+                                            <td>@product.Product.Name</td>
+                                            <td>@product.Quantity</td>
+                                            <td>@product.CostAtPurchase</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>No product available</p>
+                        }
+                    </div> <!-- /.card-body -->
+                    <div class="card-footer">
+                        @if (Model != null && Model.Any())
+                        {
+                            var totalCost = Model.Sum(product => (decimal)product.Quantity * (decimal)product.CostAtPurchase);
+                            <p><strong>Total Cost:</strong> @(totalCost.ToString("C"))</p>
+                        }
+                        else
+                        {
+                            <p>No total cost available</p>
+                        }
+                    </div> <!-- /.card-footer -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->

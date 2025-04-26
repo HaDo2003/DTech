@@ -1,0 +1,92 @@
+﻿@model DTech.Models.EF.Payment
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.mainPage = "information";
+    ViewBag.page = "payment";
+}
+
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Payment Details</h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item">
+                        <a class="btn btn-sm btn-success text-center">
+                            <i class="fa-solid fa-house fa-sm"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a asp-action="Index">
+                            Payment
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Details
+                    </li>
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="PaymentId" class="control-label"></label>
+                            <input asp-for="PaymentId" class="form-control" readonly />
+                            <span asp-validation-for="PaymentId" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label asp-for="Date" class="control-label"></label>
+                                    <input asp-for="Date" class="form-control" readonly />
+                                    <span asp-validation-for="Date" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label asp-for="Amount" class="control-label"></label>
+                                    <input asp-for="Amount" class="form-control" readonly />
+                                    <span asp-validation-for="Amount" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Payment</label>
+                            <input class="form-control" readonly
+                                   value="@(Model.Status.HasValue && ViewBag.StatusPaymentDictionary.ContainsKey(Model.Status.Value)
+                                                    ? ViewBag.StatusPaymentDictionary[Model.Status.Value]
+                                                    : "Unknown Status")" />
+                        </div>
+                    </div> <!-- /.card-body -->
+                    <div class="card-footer">
+                        <a asp-action="Index" class="btn btn-sm btn-success text-center" style="padding-bottom: 0.3em; padding-top: 0.27em;">
+                            <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+                            Back to List
+                        </a>
+                    </div> <!-- /.card-footer-->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->

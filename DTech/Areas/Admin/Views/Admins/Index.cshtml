@@ -1,0 +1,117 @@
+﻿@model IEnumerable<DTech.Models.EF.ApplicationUser>
+
+@{
+    ViewData["Title"] = "Admin Account";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.mainPage = "information";
+    ViewBag.page = "admin";
+}
+
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">Admin Account Management</h3>
+            </div>
+            <div class="col-sm-6" aria-label="breadcrumb">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item">
+                        <a class="btn btn-sm btn-success text-center">
+                            <i class="fa-solid fa-house fa-sm"></i>
+                            Home
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        Admin Account
+                    </li>
+                </ol>
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content Header-->
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col">
+                                <strong class="card-title">Admin Account Information</strong>
+                            </div>
+
+                            <div class="col">
+                                <partial name="Message" />
+                            </div>
+
+                            <div class="col text-end">
+                                <a asp-action="Create" class="btn btn-sm btn-success text-center">
+                                    <i class="fa-solid fa-plus fa-sm"></i>
+                                    Create New Account
+                                </a>
+                                <a asp-action="CreateRole" class="btn btn-sm btn-success text-center">
+                                    <i class="fa-solid fa-plus fa-sm"></i>
+                                    Create New Role
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body py-0">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped" id="myTable">
+                                <thead>
+                                    <tr>
+                                        <th>User Name</th>
+                                        <th>@Html.DisplayNameFor(model => model.Email)</th>
+                                        <th class="text-start">Phone Number</th>
+                                        <th>@Html.DisplayNameFor(model => model.Gender)</th>
+                                        <th>Role</th>
+                                        <th>Function</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td>@Html.DisplayFor(modelItem => item.UserName)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                            <td class="text-start">@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.Gender)</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(item.RoleName))
+                                                {
+                                                    @item.RoleName
+                                                }
+                                                else
+                                                {
+                                                    <span>Unknown Role</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary text-center btn-custom">
+                                                    <i class="fa-solid fa-pen-to-square fa-sm"></i>
+                                                    <span class="hover-text">Edit</span>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger text-center btn-custom">
+                                                    <i class="fa-solid fa-trash fa-sm"></i>
+                                                    <span class="hover-text">Delete</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div> <!-- /.table-responsive -->
+                    </div> <!-- /.card-body -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->

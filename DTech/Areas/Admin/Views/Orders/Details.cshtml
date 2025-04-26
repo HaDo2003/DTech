@@ -1,0 +1,181 @@
+﻿@model DTech.Models.EF.Order
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
+    ViewBag.mainPage = "information";
+    ViewBag.page = "order";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <!--begin::App Content Header-->
+        <div class="app-content-header">
+            <!--begin::Container-->
+            <div class="container-fluid">
+                <!--begin::Row-->
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h3 class="mb-0">Edit</h3>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-end">
+                            <li class="breadcrumb-item">
+                                <a class="btn btn-sm btn-success text-center">
+                                    <i class="fa-solid fa-house fa-sm"></i>
+                                    Home
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a asp-action="Index">
+                                    Orders
+                                </a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Details
+                            </li>
+                        </ol>
+                    </div>
+                </div> <!--end::Row-->
+            </div> <!--end::Container-->
+        </div> <!--end::App Content Header--> <!--begin::App Content-->
+        <div class="app-content">
+            <!--begin::Container-->
+            <div class="container-fluid">
+                <!--begin::Row-->
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Default box -->
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-4">
+                                        <div class="form-group">
+                                            <label asp-for="Customer.UserName" class="control-label"></label>
+                                            <input asp-for="Customer.UserName" class="form-control" readonly />
+                                            <span asp-validation-for="Customer.UserName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label asp-for="OrderDate" class="control-label"></label>
+                                            <input asp-for="OrderDate" class="form-control" readonly />
+                                            <span asp-validation-for="OrderDate" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label asp-for="Address" class="control-label"></label>
+                                            <input asp-for="Address" class="form-control" readonly />
+                                            <span asp-validation-for="Address" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="NameReceive" class="control-label"></label>
+                                                <input asp-for="NameReceive" class="form-control" readonly />
+                                                <span asp-validation-for="NameReceive" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col">
+                                        <div class="form-group">
+                                            <label asp-for="PhoneReceive" class="control-label"></label>
+                                            <input asp-for="PhoneReceive" class="form-control" readonly />
+                                            <span asp-validation-for="PhoneReceive" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-4">
+                                        <div class="form-group">
+                                            <label asp-for="TotalCost" class="control-label"></label>
+                                            <input asp-for="TotalCost" class="form-control" readonly />
+                                            <span asp-validation-for="TotalCost" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-sm-8">
+                                        <div class="form-group">
+                                            <label asp-for="CostDiscount" class="control-label"></label>
+                                            <input asp-for="CostDiscount" class="form-control" readonly />
+                                            <span asp-validation-for="CostDiscount" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-4">
+                                        <div class="form-group">
+                                            <label asp-for="ShippingCost" class="control-label"></label>
+                                            <input asp-for="ShippingCost" class="form-control" readonly />
+                                            <span asp-validation-for="ShippingCost" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-sm-8">
+                                        <div class="form-group">
+                                            <label asp-for="FinalCost" class="control-label"></label>
+                                            <input asp-for="FinalCost" class="form-control" readonly />
+                                            <span asp-validation-for="FinalCost" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-sm-4">
+                                        <div class="form-group">
+                                            <label class="control-label">Payment</label>
+                                            <input class="form-control" readonly
+                                                   value="@(Model.Payment.Status.HasValue && ViewBag.StatusPaymentDictionary.ContainsKey(Model.Payment.Status.Value)
+                                                    ? ViewBag.StatusPaymentDictionary[Model.Payment.Status.Value]
+                                                    : "Unknown Status")" />
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-sm-8">
+                                        <div class="form-group">
+                                            <label asp-for="Shipping.ShippingId" class="control-label"></label>
+                                            <input asp-for="Shipping.ShippingId" class="form-control" readonly />
+                                            <span asp-validation-for="Shipping.ShippingId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-sm-8">
+                                    <div class="form-group">
+                                        <label asp-for="Note" class="control-label"></label>
+                                        <input asp-for="Note" class="form-control" readonly />
+                                        <span asp-validation-for="Note" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                            </div> <!-- /.card-body -->
+                            <div class="card-footer">
+                                <div class="form-group">
+                                    <a asp-action="Index" class="btn btn-sm btn-success text-center" style="padding-bottom: 0.5em; padding-top: 0.5em;">
+                                        <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+                                        Back to List
+                                    </a>
+                                </div>
+                            </div> <!-- /.card-footer-->
+                        </div> <!-- /.card -->
+                    </div>
+                </div> <!--end::Row-->
+            </div> <!--end::Container-->
+        </div> <!--end::App Content-->
+    </div>
+</div>
+
+<!-- Include the partial view for Order product -->
+@await Html.PartialAsync("DetailProduct", Model.OrderProducts)

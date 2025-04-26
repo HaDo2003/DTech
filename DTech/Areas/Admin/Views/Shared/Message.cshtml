@@ -1,0 +1,29 @@
+﻿<head>
+    <link href="~/css/adminsite.css" rel="stylesheet" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+</head>
+
+@using DTech.Library
+@using Newtonsoft.Json
+
+@if (TempData.ContainsKey("message"))
+{
+    var messageJson = TempData["message"].ToString();
+    XMessage message = JsonConvert.DeserializeObject<XMessage>(messageJson);
+
+    <div id="alert-message" class="alert alert-@message.TypeMsg custom-alert">
+        @message.Msg
+    </div>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Make alert message disappear after 10 seconds
+        var alertMessage = $("#alert-message");
+        if (alertMessage.length) {
+            setTimeout(function () {
+                alertMessage.remove();
+            }, 10000); // 10000 milliseconds = 10 seconds
+        }
+    });
+</script>

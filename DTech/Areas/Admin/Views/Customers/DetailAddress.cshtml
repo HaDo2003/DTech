@@ -1,0 +1,51 @@
+﻿@model IEnumerable<DTech.Models.EF.CustomerAddress>
+
+<!--begin::App Content-->
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Customer Addresses</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" title="Collapse">
+                                <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                                <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+                            </button>
+                            <button type="button" class="btn btn-tool" data-lte-toggle="card-remove" title="Remove">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        @if (Model != null && Model.Any())
+                        {
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var address in Model)
+                                    {
+                                        <tr>
+                                            <td>@address.Address</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p>No addresses available</p>
+                        }
+                    </div> <!-- /.card-body -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->

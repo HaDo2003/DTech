@@ -1,0 +1,198 @@
+﻿<!--begin::Third Party Plugin(OverlayScrollbars)-->
+<script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.3.0/browser/overlayscrollbars.browser.es6.min.js" integrity="sha256-H2VM7BKda+v2Z4+DRy69uknwxjyDRhszjXFhsL4gD3w=" crossorigin="anonymous"></script>
+<!--end::Third Party Plugin(OverlayScrollbars)-->
+<!--begin::Required Plugin(popperjs for Bootstrap 5)-->
+<script src="~/dist/js/popper.min.js"></script>
+<!--end::Required Plugin(popperjs for Bootstrap 5)-->
+<!--begin::Required Plugin(Bootstrap 5)-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha256-YMa+wAM6QkVyz999odX7lPRxkoYAan8suedu4k2Zur8=" crossorigin="anonymous"></script>
+<!--end::Required Plugin(Bootstrap 5)-->
+<!--begin::Required Plugin(AdminLTE)-->
+<script src="~/dist/js/adminlte.js"></script>
+<!--end::Required Plugin(AdminLTE)-->
+<!--begin::OverlayScrollbars Configure-->
+<script>
+    const SELECTOR_SIDEBAR_WRAPPER = ".sidebar-wrapper";
+    const Default = {
+        scrollbarTheme: "os-theme-light",
+        scrollbarAutoHide: "leave",
+        scrollbarClickScroll: true,
+    };
+    document.addEventListener("DOMContentLoaded", function () {
+        const sidebarWrapper = document.querySelector(SELECTOR_SIDEBAR_WRAPPER);
+        if (
+            sidebarWrapper &&
+            typeof OverlayScrollbarsGlobal?.OverlayScrollbars !== "undefined"
+        ) {
+            OverlayScrollbarsGlobal.OverlayScrollbars(sidebarWrapper, {
+                scrollbars: {
+                    theme: Default.scrollbarTheme,
+                    autoHide: Default.scrollbarAutoHide,
+                    clickScroll: Default.scrollbarClickScroll,
+                },
+            });
+        }
+    });
+</script>
+<!--end::OverlayScrollbars Configure-->
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/js/datatables.min.js"></script>
+<script src="~/js/adminsite.js"></script>
+<script type="importmap">
+    {
+        "imports": {
+            "ckeditor5": "/lib/ckeditor5/ckeditor5.js",
+            "ckeditor5/": "/lib/ckeditor5/"
+        }
+    }
+</script>
+
+<script type="module">
+    import {
+        ClassicEditor,
+        Essentials,
+        Bold,
+        Italic,
+        Underline,
+        Font,
+        Paragraph,
+        Link,
+        Alignment,
+        List,
+        Image,
+        ImageCaption,
+        ImageResize,
+        ImageStyle,
+        ImageToolbar,
+        LinkImage,
+        PictureEditing,
+        Heading,
+        Indent,
+        IndentBlock,
+        Table,
+        TableToolbar,
+        TableColumnResize,
+        ImageUpload,
+        SimpleUploadAdapter,
+    } from 'ckeditor5';
+
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            plugins: [Essentials,
+                      Bold,
+                      Italic,
+                      Underline,
+                      Font,
+                      Paragraph,
+                      Link,
+                      Alignment,
+                      List,
+                      Image,
+                      ImageCaption,
+                      ImageResize,
+                      ImageStyle,
+                      ImageToolbar,
+                      LinkImage,
+                      PictureEditing,
+                      Heading,
+                      Indent,
+                      IndentBlock, 
+                      Table,
+                      TableToolbar,
+                      TableColumnResize,
+                      ImageUpload,
+                      SimpleUploadAdapter],
+            toolbar: [
+                'undo', 'redo', '|', 
+                'heading', '|', 
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+                'bold', 'italic', 'underline', '|',
+                'link', 'insertTable' , 'uploadImage', '|',
+                 'alignment', 'bulletedList', 'numberedList', 'outdent', 'indent'
+            ],
+            image: {
+                resizeOptions: [
+                    {
+                        name: 'resizeImage:original',
+                        label: 'Default image width',
+                        value: null,
+                    },
+                    {
+                        name: 'resizeImage:50',
+                        label: '50% page width',
+                        value: '50',
+                    },
+                    {
+                        name: 'resizeImage:75',
+                        label: '75% page width',
+                        value: '75',
+                    },
+                ],
+                toolbar: [
+                    'imageTextAlternative',
+                    'toggleImageCaption',
+                    '|',
+                    'imageStyle:inline',
+                    'imageStyle:wrapText',
+                    'imageStyle:breakText',
+                    '|',
+                    'resizeImage',
+                ],
+            },
+            heading: {
+                options: [
+                    {
+                        model: 'paragraph',
+                        title: 'Paragraph',
+                        class: 'ck-heading_paragraph',
+                    },
+                    {
+                        model: 'heading1',
+                        view: 'h1',
+                        title: 'Heading 1',
+                        class: 'ck-heading_heading1',
+                    },
+                    {
+                        model: 'heading2',
+                        view: 'h2',
+                        title: 'Heading 2',
+                        class: 'ck-heading_heading2',
+                    },
+                    {
+                        model: 'heading3',
+                        view: 'h3',
+                        title: 'Heading 3',
+                        class: 'ck-heading_heading3',
+                    },
+                    {
+                        model: 'heading4',
+                        view: 'h4',
+                        title: 'Heading 4',
+                        class: 'ck-heading_heading4',
+                    },
+                ],
+            },
+            table: {
+                contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
+            },
+            link: {
+                addTargetToExternalLinks: true,
+                defaultProtocol: 'https://',
+            },
+            simpleUpload: {
+                uploadUrl: 'img/ProductImg/ImgDes',  // This should match the route in your controller
+            },
+        })
+        .then( editor => {
+            window.editor = editor;
+        } )
+        .catch(error => {
+            console.error(error);
+        });
+</script>
+<script type="text/javascript">
+    let table = $('#myTable').DataTable();
+</script>
+
+<ejs-scripts></ejs-scripts>
