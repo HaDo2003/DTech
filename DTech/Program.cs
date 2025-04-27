@@ -6,9 +6,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using dotenv.net;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Load environment variables from .env file
+var envFilePath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+DotEnv.Load(options: new DotEnvOptions(envFilePaths: new[] { envFilePath }));
+
+builder.Configuration
+       .AddJsonFile("appsettings.json")
+       .AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
