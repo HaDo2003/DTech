@@ -5,7 +5,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace DTech.Library
+namespace DTech.Library.Service
 {
     public class CloudinaryService
     {

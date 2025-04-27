@@ -1,8 +1,12 @@
 using DTech.DAO;
 using DTech.Library;
+using DTech.Library.Service;
 using DTech.Models.EF;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,11 +54,10 @@ foreach (var type in daoAssembly.GetTypes())
     }
 }
 
-// Register the background service
+// Register the service
 builder.Services.AddHostedService<CodeStatusCheckerService>();
-
-// Register the setting image service
 builder.Services.AddSingleton<CloudinaryService>();
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 // Register the setting helper
 foreach (var type in daoAssembly.GetTypes())

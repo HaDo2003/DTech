@@ -1,6 +1,6 @@
 ﻿using DTech.Models.EF;
 
-namespace DTech.Library
+namespace DTech.Library.Service
 {
     public class CodeStatusCheckerService : BackgroundService
     {

@@ -6,16 +6,22 @@ using DTech.DAO;
 using CloudinaryDotNet;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using DTech.Library.Service;
+using DTech.Library;
+using Newtonsoft.Json;
+using NuGet.Protocol;
+using Microsoft.EntityFrameworkCore;
 
 namespace DTech.Controllers
 {
-    public class AuthenticationController (
+    public class AuthenticationController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         CustomerDAO customerDAO,
         RoleDAO roleDAO,
         CartDAO cartDAO,
-        CustomerAddressDAO customerAddressDAO
+        CustomerAddressDAO customerAddressDAO,
+        IEmailService emailService
     ) : Controller
     {
         [HttpGet]
@@ -46,19 +52,7 @@ namespace DTech.Controllers
                     return View("Register", newUser);
                 }
 
-                if(newUser.Password.Length < 6)
-                {
-                    ModelState.AddModelError("Password", "Password must be at least 6 character.");
-                    return View("Register", newUser);
-                }
-
-                if (newUser.ConfirmPassword != newUser.Password)
-                {
-                    ModelState.AddModelError("ConfirmPassword", "Confirm Password is not match.");
-                    return View("Register", newUser);
-                }
-
-                ApplicationUser user = new ()
+                ApplicationUser user = new()
                 {
                     RoleId = await roleDAO.GetCusomerRoleId("Customer") ?? string.Empty,
                     FullName = newUser.FullName,
@@ -153,16 +147,112 @@ namespace DTech.Controllers
             ViewBag.Email = email;
             if (!ModelState.IsValid)
             {
-                ViewBag.EmailError = ModelState["email"]?.Errors.First().ErrorMessage ?? "Invalid Email Address";
+                var error = ModelState["email"]?.Errors.First().ErrorMessage ?? "Invalid Email Address";
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", error));
                 return View();
             }
             var user = await userManager.FindByEmailAsync(email);
             if (user != null)
             {
                 var token = await userManager.GeneratePasswordResetTokenAsync(user);
-                string resetLink = Url.Action("ResetPassword", "Authentication", new { token }) ?? "URL Error";
+                
+                string resetLink = Url.Action(
+                    "ResetPassword",
+                    "Authentication",
+                    new { token, email = user.Email },
+                    protocol: Request.Scheme
+                ) ?? "URL Error";
+
+                await emailService.SendEmailAsync(
+                    email,
+                    "Reset Your Password",
+                    $@"
+                    <html>
+                        <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+                            <div style='max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);'>
+                                <h2 style='color: #333;'>Password Reset Request</h2>
+                                <p>Hello,</p>
+                                <p>We received a request to reset your password. Click the button below to proceed:</p>
+                                <div style='text-align: center; margin: 30px 0;'>
+                                    <a href='{resetLink}' style='background-color: #4CAF50; color: white; padding: 14px 25px; text-align: center; text-decoration: none; display: inline-block; border-radius: 5px; font-size: 16px;'>
+                                        Reset Password
+                                    </a>
+                                </div>
+                                <p>If you did not request a password reset, please ignore this email.</p>
+                                <p>Thank you,<br/>DTeam</p>
+                            </div>
+                        </body>
+                    </html>"
+                ); 
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Please check your email to reset your password"));
+                return View();
             }
-            ViewBag.SuccessMessage = "Please check your email to reset your password.";
+            else
+            {
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Email not found"));
+                return View();
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string? token, string? email)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
+            {
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Invalid token or email"));
+                return RedirectToAction("ForgotPassword", "Authentication");
+            }
+
+            var model = new PasswordViewModel { Token = token, Email = email };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(PasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Email cannot be null or empty"));
+                return View(model);
+            }
+
+            if (string.IsNullOrEmpty(model.Token))
+            {
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Token cannot be null or empty"));
+                return View(model);
+            }
+
+            if (string.IsNullOrEmpty(model.NewPassword))
+            {
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "New password cannot be null or empty"));
+                return View(model);
+            }
+
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Invalid email address"));
+                return View(model);
+            }
+
+            var result = await userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+            if (result.Succeeded)
+            {
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Password reset successfully"));
+                return RedirectToAction("Login", "Authentication");
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
             return View();
         }
 

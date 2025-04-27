@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
-using DTech.Library;
 using System.Drawing.Drawing2D;
+using DTech.Library.Service;
 
 namespace DTech.Areas.Admin.Controllers
 {
