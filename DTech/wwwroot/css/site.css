@@ -212,6 +212,16 @@ Login
     color: #212529;
 }
 
+.a-custom-button {
+    text-decoration: none;
+    color: white;
+}
+
+.a-custom-button:hover {
+    text-decoration: none;
+    color: white;
+}
+
 /*=========================================================
 NEWSLETTER
 ===========================================================*/

@@ -13,14 +13,14 @@
 
             <div class="row m-2">
                 <div class="form-group">
-                    <input asp-for="FullName" class="form-control" placeholder="Full Name" />
+                    <input asp-for="FullName" class="form-control" placeholder="Full Name" required/>
                     <span asp-validation-for="FullName" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="row m-2">
                 <div class="form-group">
-                    <input asp-for="Account" class="form-control" placeholder="Account" />
+                    <input asp-for="Account" class="form-control" placeholder="Account" required />
                     <span asp-validation-for="Account" class="text-danger"></span>
                 </div>
             </div>
@@ -34,7 +34,7 @@
 
             <div class="row m-2">
                 <div class="form-group">
-                    <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" />
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" required />
                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
             </div>
@@ -44,7 +44,7 @@
                 <div class="form-group py-2 custom-radio-container col-10">
                     <div class="custom-radio-group">
                         <div>
-                            <input asp-for="Gender" type="radio" value="Male" id="Male" class="custom-radio" />
+                            <input asp-for="Gender" type="radio" value="Male" id="Male" class="custom-radio" required/>
                             <label class="custom-label-radio" for="Male">Male</label>
                         </div>
                         <div>

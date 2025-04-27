@@ -11,6 +11,10 @@ using DTech.Library;
 using Newtonsoft.Json;
 using NuGet.Protocol;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace DTech.Controllers
 {
@@ -54,7 +58,7 @@ namespace DTech.Controllers
 
                 ApplicationUser user = new()
                 {
-                    RoleId = await roleDAO.GetCusomerRoleId("Customer") ?? string.Empty,
+                    RoleId = "dc11b0b4-44c2-457f-a890-fce0d077dbe0",
                     FullName = newUser.FullName,
                     Email = newUser.Email,
                     UserName = newUser.Account,
@@ -256,9 +260,155 @@ namespace DTech.Controllers
             return View();
         }
 
+        //Google Login
+        public async Task GoogleLogin()
+        {
+            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme,
+                new AuthenticationProperties
+                {
+                    RedirectUri = Url.Action("GoogleResponse", "Authentication")
+                });
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            try
+            {
+                Console.WriteLine("GoogleResponse started");
+
+                var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+                if (!result.Succeeded || result.Principal == null)
+                {
+                    return Unauthorized("Google authentication failed");
+                }
+
+                // Get key information from claims
+                var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
+                var nameIdentifier = result.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(nameIdentifier))
+                {
+                    return BadRequest("Required claims missing");
+                }
+
+                // Check if user exists
+                var user = await userManager.FindByEmailAsync(email);
+
+                if (user != null)
+                {
+                    // User exists - handle login
+                    return await GoogleLogin(user, nameIdentifier, result.Principal);
+                }
+                else
+                {
+                    // User doesn't exist - handle signup
+                    return await GoogleSignup(email, nameIdentifier, result.Principal);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in GoogleResponse: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                return StatusCode(500, "An error occurred during authentication");
+            }
+        }
+
+        private async Task<IActionResult> GoogleLogin(ApplicationUser user, string nameIdentifier, ClaimsPrincipal principal)
+        {
+            try
+            {
+                // Check if this Google account is linked with the user
+                var logins = await userManager.GetLoginsAsync(user);
+                var existingGoogleLogin = logins.FirstOrDefault(l =>
+                    l.LoginProvider == "Google" && l.ProviderKey == nameIdentifier);
+
+                if (existingGoogleLogin == null)
+                {
+                    // Add the new Google login
+                    var addLoginResult = await userManager.AddLoginAsync(user, new UserLoginInfo(
+                        "Google", nameIdentifier, "Google"));
+
+                    if (!addLoginResult.Succeeded)
+                    {
+                        return BadRequest("Failed to link Google account to existing user");
+                    }
+                }
+
+                // Sign in the user
+                Console.WriteLine("Signing in existing user");
+                await signInManager.SignOutAsync(); // Clear any existing session
+                await signInManager.SignInAsync(user, isPersistent: true);
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in GoogleLogin: {ex.Message}");
+                return StatusCode(500, "An error occurred during login");
+            }
+        }
+
+        private async Task<IActionResult> GoogleSignup(string email, string nameIdentifier, ClaimsPrincipal principal)
+        {
+            try
+            {
+                Console.WriteLine($"Google signup for new user: {email}");
+
+                // Extract user information from claims
+                var name = principal.FindFirst(ClaimTypes.Name)?.Value ?? email;
+                var dob = principal.FindFirst(ClaimTypes.DateOfBirth)?.Value;
+                var gender = principal.FindFirst(ClaimTypes.Gender)?.Value;
+                var phone = principal.FindFirst(ClaimTypes.MobilePhone)?.Value;
+
+                // Create new user
+                var user = new ApplicationUser
+                {
+                    RoleId = "dc11b0b4-44c2-457f-a890-fce0d077dbe0",
+                    FullName = name,
+                    Email = email,
+                    UserName = email,
+                    PhoneNumber = phone,
+                    Gender = gender,
+                    DateOfBirth = string.IsNullOrEmpty(dob) ? null : DateOnly.Parse(dob),
+                    CreateDate = DateTime.UtcNow,
+                    CreatedBy = "Google Signup"
+                };
+
+                // Create user account
+                var createResult = await userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    Console.WriteLine($"User creation failed: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
+                    return BadRequest("Failed to create user account");
+                }
+
+                // Add external login
+                var addLoginResult = await userManager.AddLoginAsync(user, new UserLoginInfo(
+                    "Google", nameIdentifier, "Google"));
+
+                if (!addLoginResult.Succeeded)
+                {
+                    Console.WriteLine($"Failed to add login: {string.Join(", ", addLoginResult.Errors.Select(e => e.Description))}");
+                    return BadRequest("Failed to link Google account");
+                }
+
+                // Sign in the new user
+                Console.WriteLine("Signing in new user");
+                await signInManager.SignInAsync(user, isPersistent: true);
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in GoogleSignup: {ex.Message}");
+                return StatusCode(500, "An error occurred during signup");
+            }
+        }
+
         public async Task<IActionResult> Logout()
         {
             await signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
     }

@@ -57,24 +57,5 @@ namespace DTech.DAO
             var roleExists = await roleManager.RoleExistsAsync(roleName);
             return roleExists;
         }
-
-        // Return RoleId of Customer
-        public async Task<string?> GetCusomerRoleId(string? roleName)
-        {
-            if (string.IsNullOrEmpty(roleName))
-            {
-                return null;
-            }
-
-            // Use RoleManager's RoleExistsAsync method directly
-            var role = await roleManager.FindByNameAsync(roleName);
-
-            if (role != null)
-            {
-                return role.Id;
-            }
-
-            return null;
-        }
     }
 }

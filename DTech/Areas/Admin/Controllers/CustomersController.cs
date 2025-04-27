@@ -11,7 +11,6 @@ namespace DTech.Areas.Admin.Controllers
     [Area("Admin")]
     public class CustomersController(
         CustomerDAO customerDAO,
-        RoleDAO roleDAO,
         CloudinaryService cloudinaryService,
         CartDAO cartDAO,
         CustomerAddressDAO customerAddressDAO
@@ -97,7 +96,7 @@ namespace DTech.Areas.Admin.Controllers
 
                 //Save to database
                 customer.Image = imageName;
-                customer.RoleId = await roleDAO.GetCusomerRoleId("Customer") ?? string.Empty;
+                customer.RoleId = "dc11b0b4-44c2-457f-a890-fce0d077dbe0";
                 customer.CreateDate = DateTime.Now;
                 customer.CreatedBy = customer.UserName;
 
