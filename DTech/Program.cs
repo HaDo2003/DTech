@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using dotenv.net;
+using Microsoft.AspNetCore.Authentication.Facebook;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +35,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
 })
     .AddCookie(options =>
     {
@@ -46,6 +47,12 @@ builder.Services.AddAuthentication(options =>
         options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") ?? string.Empty;
         options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET") ?? string.Empty;
         options.CallbackPath = "/signin-google";
+    })
+    .AddFacebook(options =>
+    {
+        options.ClientId = Environment.GetEnvironmentVariable("FACEBOOK_CLIENT_ID") ?? string.Empty;
+        options.ClientSecret = Environment.GetEnvironmentVariable("FACEBOOK_CLIENT_SECRET") ?? string.Empty;
+        options.CallbackPath = "/signin-facebook";
     });
 
 builder.Services.AddRazorPages();

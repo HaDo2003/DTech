@@ -117,13 +117,17 @@
 
         <div class="d-flex justify-content-between my-2 mx-3 gap-3">
             <div class="flex-fill text-center border border-1 p-2 btn btn-danger">
-                <i class="fa-brands fa-google"></i>
-                <label class="control-label">Google</label>
+                <a asp-action="GoogleLogin" class="a-custom-button">
+                    <i class="fa-brands fa-google"></i>
+                    <label class="control-label">Google</label>
+                </a>
             </div>
 
             <div class="flex-fill text-center border border-1 p-2 btn btn-primary">
-                <i class="fa-brands fa-facebook"></i>
-                <label class="control-label">Facebook</label>
+                <a asp-action="FacebookLogin" class="a-custom-button">
+                    <i class="fa-brands fa-facebook"></i>
+                    <label class="control-label">Facebook</label>
+                </a>
             </div>
         </div>
     </div>

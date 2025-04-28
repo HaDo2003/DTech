@@ -21,7 +21,7 @@
 
             <div class="row m-2">
                 <div class="form-group position-relative">
-                    <input asp-for="Password" id="password" type="password" class="form-control" placeholder="Password" required/>
+                    <input asp-for="Password" id="password" type="password" class="form-control" placeholder="Password" required />
                     <i id="eyeIcon1" class="fa-solid fa-eye position-absolute eye pe-3"
                        onclick="togglePassword('password', 'eyeIcon1')"></i>
                     <span asp-validation-for="Password" class="text-danger"></span>
@@ -68,8 +68,10 @@
             </div>
 
             <div class="flex-fill text-center border border-1 p-2 btn btn-primary">
-                <i class="fa-brands fa-facebook"></i>
-                <label class="control-label">Facebook</label>
+                <a asp-action="FacebookLogin" class="a-custom-button">
+                    <i class="fa-brands fa-facebook"></i>
+                    <label class="control-label">Facebook</label>
+                </a>
             </div>
         </div>
     </div>

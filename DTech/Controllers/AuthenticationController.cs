@@ -381,6 +381,14 @@ namespace DTech.Controllers
                     Console.WriteLine($"User creation failed: {string.Join(", ", createResult.Errors.Select(e => e.Description))}");
                     return BadRequest("Failed to create user account");
                 }
+                
+                //Create Cart for new customer
+                Cart cart = new()
+                {
+                    CustomerId = user.Id
+                };
+
+                await cartDAO.CreateAsync(cart);
 
                 // Add external login
                 var addLoginResult = await userManager.AddLoginAsync(user, new UserLoginInfo(
@@ -401,6 +409,138 @@ namespace DTech.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine($"Exception in GoogleSignup: {ex.Message}");
+                return StatusCode(500, "An error occurred during signup");
+            }
+        }
+
+        //Facebook Login
+        public async Task FacebookLogin()
+        {
+            await HttpContext.ChallengeAsync("Facebook",
+                new AuthenticationProperties
+                {
+                    RedirectUri = Url.Action("FacebookResponse", "Authentication")
+                });
+        }
+
+        public async Task<IActionResult> FacebookResponse()
+        {
+            try
+            {
+                Console.WriteLine("FacebookResponse started");
+
+                var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+                if (!result.Succeeded || result.Principal == null)
+                {
+                    return Unauthorized("Facebook authentication failed");
+                }
+
+                // Get user info
+                var email = result.Principal.FindFirst(ClaimTypes.Email)?.Value;
+                var nameIdentifier = result.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(nameIdentifier))
+                {
+                    return BadRequest("Required claims missing");
+                }
+
+                // Check if user exists
+                var user = await userManager.FindByEmailAsync(email);
+
+                if (user != null)
+                {
+                    // User exists - login
+                    return await FacebookLogin(user, nameIdentifier, result.Principal);
+                }
+                else
+                {
+                    // New user - signup
+                    return await FacebookSignup(email, nameIdentifier, result.Principal);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in FacebookResponse: {ex.Message}");
+                return StatusCode(500, "An error occurred during Facebook authentication");
+            }
+        }
+
+        private async Task<IActionResult> FacebookLogin(ApplicationUser user, string nameIdentifier, ClaimsPrincipal principal)
+        {
+            try
+            {
+                var logins = await userManager.GetLoginsAsync(user);
+                var existingFacebookLogin = logins.FirstOrDefault(l =>
+                    l.LoginProvider == "Facebook" && l.ProviderKey == nameIdentifier);
+
+                if (existingFacebookLogin == null)
+                {
+                    var addLoginResult = await userManager.AddLoginAsync(user, new UserLoginInfo(
+                        "Facebook", nameIdentifier, "Facebook"));
+
+                    if (!addLoginResult.Succeeded)
+                    {
+                        return BadRequest("Failed to link Facebook account");
+                    }
+                }
+
+                await signInManager.SignOutAsync();
+                await signInManager.SignInAsync(user, isPersistent: true);
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in FacebookLogin: {ex.Message}");
+                return StatusCode(500, "An error occurred during login");
+            }
+        }
+
+        private async Task<IActionResult> FacebookSignup(string email, string nameIdentifier, ClaimsPrincipal principal)
+        {
+            try
+            {
+                var name = principal.FindFirst(ClaimTypes.Name)?.Value ?? email;
+
+                var user = new ApplicationUser
+                {
+                    RoleId = "dc11b0b4-44c2-457f-a890-fce0d077dbe0",
+                    FullName = name,
+                    Email = email,
+                    UserName = email,
+                    CreateDate = DateTime.UtcNow,
+                    CreatedBy = "Facebook Signup"
+                };
+
+                var createResult = await userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    return BadRequest("Failed to create user account");
+                }
+
+                // Create cart
+                Cart cart = new()
+                {
+                    CustomerId = user.Id
+                };
+                await cartDAO.CreateAsync(cart);
+
+                var addLoginResult = await userManager.AddLoginAsync(user, new UserLoginInfo(
+                    "Facebook", nameIdentifier, "Facebook"));
+
+                if (!addLoginResult.Succeeded)
+                {
+                    return BadRequest("Failed to link Facebook account");
+                }
+
+                await signInManager.SignInAsync(user, isPersistent: true);
+
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Exception in FacebookSignup: {ex.Message}");
                 return StatusCode(500, "An error occurred during signup");
             }
         }
