@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.ViewModel;
+using Microsoft.VisualBasic.FileIO;
 
 namespace DTech.Models.EF;
 
@@ -68,11 +69,20 @@ public partial class EcommerceWebContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
+    public DbSet<Quiz> Quizzes { get; set; }
+
+    public DbSet<UserQuizParticipation> UserQuizParticipations { get; set; }
+
+    public DbSet<SearchHistory> SearchHistories { get; set; }
 
     protected void OnModelCreatingPartial(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<IdentityUserLogin<String>>().HasNoKey();
         modelBuilder.Entity<IdentityUserToken<String>>().HasNoKey();
         modelBuilder.Entity<IdentityUserRole<String>>().HasNoKey();
+
+        modelBuilder.Entity<UserQuizParticipation>()
+            .HasIndex(u => new { u.UserId, u.ParticipationDate })
+            .IsUnique();
     }
 }

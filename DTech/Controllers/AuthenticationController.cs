@@ -13,6 +13,7 @@ using NuGet.Protocol;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Facebook;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
@@ -416,7 +417,7 @@ namespace DTech.Controllers
         //Facebook Login
         public async Task FacebookLogin()
         {
-            await HttpContext.ChallengeAsync("Facebook",
+            await HttpContext.ChallengeAsync(FacebookDefaults.AuthenticationScheme,
                 new AuthenticationProperties
                 {
                     RedirectUri = Url.Action("FacebookResponse", "Authentication")
@@ -427,8 +428,6 @@ namespace DTech.Controllers
         {
             try
             {
-                Console.WriteLine("FacebookResponse started");
-
                 var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
                 if (!result.Succeeded || result.Principal == null)
