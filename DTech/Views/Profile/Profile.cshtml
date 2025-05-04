@@ -1,0 +1,167 @@
+﻿@model DTech.Models.EF.ApplicationUser
+
+@{
+    ViewData["Title"] = "Customer Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12 m-auto">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-body py-2">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-lg-3">
+                                <div class="container p-1">
+                                    <h4 class="text-center">Customer Account</h4>
+                                    <p class="text-center">Hello, @Html.DisplayFor(model => model.FullName)</p>
+                                    <ul class="no-bullets" id="menu">
+                                        <li class="active m-3 li-custom" data-tab="info">Customer Information</li>
+                                        <li class="m-3 li-custom" data-tab="orders">Your Order</li>
+                                        <li class="m-3 li-custom" data-tab="coupons">Your Coupon</li>
+                                        <li class="m-3 li-custom" data-tab="address">Address</li>
+                                        <li class="m-3 li-custom" data-tab="password">Change Password</li>
+                                        <li class="m-3" data-tab="logout">
+                                            <a asp-controller="Authentication" asp-action="Logout" class="a-custom">
+                                                Log Out
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-lg-9 py-1" id="content">
+                                <div id="info" class="tab-content">
+                                    <h4>Customer Information</h4>
+                                    <form asp-controller="Profile" asp-action="Edit" method="post" enctype="multipart/form-data">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <input type="hidden" asp-for="Id" />
+
+                                                <div class="row m-2">
+                                                    <div class="col-3 align-content-center">
+                                                        <label asp-for="UserName" class="control-label">User Name</label>
+                                                    </div>
+                                                    <div class="form-group col-9">
+                                                        <input asp-for="UserName" class="form-control" readonly />
+                                                        <span asp-validation-for="UserName" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row m-2">
+                                                    <div class="col-3 align-content-center">
+                                                        <label asp-for="FullName" class="control-label">Full Name</label>
+                                                    </div>
+                                                    <div class="form-group col-9">
+                                                        <input asp-for="FullName" class="form-control" />
+                                                        <span asp-validation-for="FullName" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row m-2">
+                                                    <div class="col-3 align-content-center">
+                                                        <label asp-for="Email" class="control-label"></label>
+                                                    </div>
+                                                    <div class="form-group col-9">
+                                                        <input asp-for="Email" class="form-control" />
+                                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row m-2">
+                                                    <div class="col-3 align-content-center">
+                                                        <label asp-for="PhoneNumber" class="control-label">Phone Number</label>
+                                                    </div>
+                                                    <div class="form-group col-9">
+                                                        <input asp-for="PhoneNumber" class="form-control" />
+                                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row m-2">
+                                                    <div class="col-3 align-content-center">
+                                                        <label asp-for="Gender" class="control-label"></label>
+                                                    </div>
+                                                    <div class="form-group py-2 custom-radio-container col-9 ps-1">
+                                                        <div class="custom-radio-group">
+                                                            <div>
+                                                                <input asp-for="Gender" type="radio" value="Male" id="Male" class="custom-radio" />
+                                                                <label class="custom-label-radio" for="Male">Male</label>
+                                                            </div>
+                                                            <div>
+                                                                <input asp-for="Gender" type="radio" value="Female" id="Female" class="custom-radio" />
+                                                                <label class="custom-label-radio" for="Female">Female</label>
+                                                            </div>
+                                                            <div>
+                                                                <input asp-for="Gender" type="radio" value="Other" id="Other" class="custom-radio" />
+                                                                <label class="custom-label-radio" for="Other">Other</label>
+                                                            </div>
+                                                        </div>
+
+                                                        <span asp-validation-for="Gender" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row m-2">
+                                                    <div class="col-3 align-content-center">
+                                                        <label asp-for="DateOfBirth" class="control-label"></label>
+                                                    </div>
+                                                    <div class="form-group col-9">
+                                                        <input asp-for="DateOfBirth" type="date" class="form-control" />
+                                                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-3">
+                                                <div class="form-group">
+                                                    <div class="d-flex flex-column align-items-center">
+                                                        <div class="text-center">
+                                                            <img src="@Model.Image" id="imgpreview" class="py-2" alt="" style="max-width: 100%;" />
+                                                        </div>
+
+                                                        <label for="input-file" class="custom-upload text-center my-2">Update Photo</label>
+
+                                                        <input asp-for="ImageUpload" class="form-control custom-photo-input d-none" id="input-file" onchange="img_pathUrl(this)" />
+                                                        <span asp-validation-for="ImageUpload" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+
+                                                <input type="hidden" asp-for="Image" />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="ps-3">
+                                            <button type="submit" value="Save" class="btn btn-primary">
+                                                <i class="fa-solid fa-floppy-disk fa-sm"></i>
+                                                Save
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div id="orders" class="tab-content d-none">
+                                    <partial name="Orders" model="Model.Orders" />
+                                </div>
+
+                                <div id="coupons" class="tab-content d-none">
+                                </div>
+
+                                <div id="address" class="tab-content d-none">
+                                </div>
+
+                                <div id="password" class="tab-content d-none">
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- /.card-body -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->

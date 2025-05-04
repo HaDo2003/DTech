@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using DTech.DAO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin,Seller")]
     public class FeedbacksController(
         FeedbackDAO feedbackDAO
     ) : Controller

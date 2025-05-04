@@ -4,10 +4,12 @@ using DTech.Models.EF;
 using DTech.Library;
 using Newtonsoft.Json;
 using DTech.DAO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class PaymentMethodsController(
         PaymentMethodDAO paymentMethodDAO
     ) : Controller

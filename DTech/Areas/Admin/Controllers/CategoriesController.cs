@@ -5,11 +5,13 @@ using DTech.Models.EF;
 using DTech.Library;
 using Newtonsoft.Json;
 using DTech.DAO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [SetViewBagAttributes]
+    [Authorize(Roles = "Admin,Seller")]
     public class CategoriesController(
         CategoryDAO categoryDAO,
         LinkDAO linkDAO

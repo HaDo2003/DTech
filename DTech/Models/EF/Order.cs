@@ -10,7 +10,7 @@ public partial class Order
     public int OrderId { get; set; }
 
     [Display(Name = "Customer")]
-    public int? CustomerId { get; set; }
+    public string? CustomerId { get; set; }
 
     [Display(Name = "Payment")]
     public int? PaymentId { get; set; }

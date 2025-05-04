@@ -8,11 +8,13 @@ using DTech.DAO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using DTech.Library.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [SetViewBagAttributes]
+    [Authorize(Roles = "Admin")]
     public class AdminsController(
         CloudinaryService cloudinaryService,
         AdminDAO adminDAO,

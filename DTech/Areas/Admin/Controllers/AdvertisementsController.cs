@@ -6,11 +6,13 @@ using Newtonsoft.Json;
 using DTech.DAO;
 using System.Diagnostics;
 using DTech.Library.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [SetViewBagAttributes]
+    [Authorize(Roles = "Admin,Seller")]
     public class AdvertisementsController(
         AdvertisementDAO advertisementDAO,
         CloudinaryService cloudinaryService

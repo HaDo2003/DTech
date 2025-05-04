@@ -41,6 +41,24 @@ builder.Services.AddAuthentication(options =>
     {
         options.LoginPath = "/Authentication/Login";
         options.LogoutPath = "/Authentication/Logout";
+        options.AccessDeniedPath = "/Authentication/AccessDenied";
+        options.Events = new CookieAuthenticationEvents
+        {
+            OnRedirectToAccessDenied = context =>
+            {
+                
+                if (context.Request.Path.StartsWithSegments("/api"))
+                {
+                    context.Response.StatusCode = 403;
+                    context.Response.ContentType = "application/json";
+                    var result = System.Text.Json.JsonSerializer.Serialize(new { error = "You do not have permission to access this resource" });
+                    return context.Response.WriteAsync(result);
+                }
+
+                context.Response.Redirect(context.RedirectUri);
+                return Task.CompletedTask;
+            }
+        };
     })
     .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
     {
@@ -108,6 +126,15 @@ foreach (var type in daoAssembly.GetTypes())
 builder.Services.AddControllersWithViews(options =>
 {
     options.Filters.Add<SetViewBagAttributesAttribute>();
+});
+
+//Time out
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    options.SlidingExpiration = true;
+    options.LoginPath = "/Authentication/Login";
+    options.AccessDeniedPath = "/Authentication/AccessDenied";
 });
 
 var app = builder.Build();

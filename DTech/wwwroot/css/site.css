@@ -19,6 +19,7 @@ html {
 
 body {
     margin-bottom: 60px;
+    font-size: 18px;
 }
 
 html, body {
@@ -220,6 +221,48 @@ Login
 .a-custom-button:hover {
     text-decoration: none;
     color: white;
+}
+
+/*=========================================================
+Profile
+===========================================================*/
+.no-bullets {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.li-custom{
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.li-custom:hover{
+    text-decoration: none;
+    color: #1b6ec2;
+}
+
+label.custom-upload {
+    display: block;
+    width: 150px;
+    background: #e3362c;
+    color: #fff;
+    padding: 12px;
+    margin: 10px auto;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+input.custom-photo-input {
+    display: none;
+}
+
+img#imgpreview {
+    width: 150px;
+    height: 150px;
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 50%;
 }
 
 /*=========================================================

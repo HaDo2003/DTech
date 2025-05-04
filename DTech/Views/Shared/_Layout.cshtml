@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DTEch.styles.css" asp-append-version="true" />
     <script src="https://kit.fontawesome.com/75ef677eac.js" crossorigin="anonymous"></script>
+    @await RenderSectionAsync("Head", required: false)
+
 </head>
 <body>
     <header>

@@ -5,11 +5,13 @@ using DTech.Library;
 using Newtonsoft.Json;
 using DTech.DAO;
 using DTech.Library.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [SetViewBagAttributes]
+    [Authorize(Roles = "Admin,Seller")]
     public class BrandsController(
         BrandDAO brandDAO,
         CloudinaryService cloudinaryService

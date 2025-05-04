@@ -87,7 +87,20 @@ namespace DTech.DAO
         {
             try
             {
-                var result = await userManager.UpdateAsync(customer);
+                var existingUser = await userManager.FindByIdAsync(customer.Id);
+                if (existingUser == null) return false;
+
+                // Update only the fields that are allowed
+                existingUser.FullName = customer.FullName;
+                existingUser.Email = customer.Email;
+                existingUser.PhoneNumber = customer.PhoneNumber;
+                existingUser.Gender = customer.Gender;
+                existingUser.DateOfBirth = customer.DateOfBirth;
+                existingUser.Image = customer.Image;
+                existingUser.UpdatedBy = customer.UpdatedBy;
+                existingUser.UpdateDate = customer.UpdateDate;
+
+                var result = await userManager.UpdateAsync(existingUser);
                 return result.Succeeded;
             }
             catch (Exception ex)
@@ -140,6 +153,32 @@ namespace DTech.DAO
         public async Task<bool> CheckEmailAsync(string? email)
         {
             return await context.Users.AnyAsync(e => e.Email == email);
+        }
+
+        //Check if phone is exsting when editing
+        public async Task<bool> CheckPhoneAsync(string? phone, string? Id)
+        {
+            return await context.Users.AnyAsync(e => e.PhoneNumber == phone && e.Id != Id);
+        }
+
+        //Check if email is exsting when editing
+        public async Task<bool> CheckEmailAsync(string? email, string? Id)
+        {
+            return await context.Users.AnyAsync(e => e.Email == email && e.Id != Id);
+        }
+
+        //Get order by customer id
+        public async Task<List<Order>> GetOrdersByCustomerIdAsync(string? customerId)
+        {
+            if (customerId == null)
+            {
+                return [];
+            }
+            return await context.Orders
+                .Where(o => o.CustomerId == customerId)
+                .Include(o => o.OrderProducts)
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
         }
     }
 }

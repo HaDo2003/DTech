@@ -16,3 +16,32 @@ function togglePassword(inputId, iconId) {
         icon.classList.add("fa-eye");
     }
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const menuItems = document.querySelectorAll('#menu li');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    menuItems.forEach(item => {
+        item.addEventListener('click', () => {
+            // Remove 'active' from all menu items
+            menuItems.forEach(li => li.classList.remove('active'));
+
+            // Add 'active' to the clicked item
+            item.classList.add('active');
+
+            // Hide all tab contents
+            tabContents.forEach(tab => tab.classList.add('d-none'));
+
+            // Show the selected tab content
+            const tabId = item.getAttribute('data-tab');
+            const activeTab = document.getElementById(tabId);
+            if (activeTab) {
+                activeTab.classList.remove('d-none');
+            }
+        });
+    });
+});
+
+function img_pathUrl(input) {
+    $("img#imgpreview")[0].src = URL.createObjectURL(input.files[0]);
+}

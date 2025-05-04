@@ -11,11 +11,13 @@ using Newtonsoft.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics;
 using DTech.Library.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [SetViewBagAttributes]
+    [Authorize(Roles = "Admin,Seller")]
     public class ProductsController(
         EcommerceWebContext context,
         CloudinaryService cloudinaryService

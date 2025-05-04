@@ -1,10 +1,6 @@
 ﻿@{
     var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-    @if (currentAction == "ForgotPassword")
-    {
-        currentAction = "Forgot Password";
-    }
+    var currentAction = ViewData["ActionName"]?.ToString() ?? ViewContext.RouteData.Values["action"]?.ToString();
 }
 
 <div class="container my-1">

@@ -6,11 +6,13 @@ using DTech.Library;
 using Newtonsoft.Json;
 using DTech.DAO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [SetViewBagAttributes]
+    [Authorize(Roles = "Admin,Seller")]
     public class PaymentsController(
         PaymentDAO paymentDAO,
         PaymentMethodDAO paymentMethodDAO

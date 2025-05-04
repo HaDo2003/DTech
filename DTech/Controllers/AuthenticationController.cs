@@ -23,7 +23,6 @@ namespace DTech.Controllers
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         CustomerDAO customerDAO,
-        RoleDAO roleDAO,
         CartDAO cartDAO,
         CustomerAddressDAO customerAddressDAO,
         IEmailService emailService
@@ -142,6 +141,7 @@ namespace DTech.Controllers
         [HttpGet]
         public IActionResult ForgotPassword()
         {
+            ViewData["ActionName"] = "Forgot Password";
             return View();
         }
 
@@ -149,11 +149,12 @@ namespace DTech.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword([Required, EmailAddress] string email)
         {
+            ViewData["ActionName"] = "Forgot Password";
             ViewBag.Email = email;
             if (!ModelState.IsValid)
             {
                 var error = ModelState["email"]?.Errors.First().ErrorMessage ?? "Invalid Email Address";
-                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", error));
+                TempData["messageUser"] = JsonConvert.SerializeObject(new XMessage("danger", error));
                 return View();
             }
             var user = await userManager.FindByEmailAsync(email);
@@ -189,12 +190,12 @@ namespace DTech.Controllers
                         </body>
                     </html>"
                 ); 
-                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Please check your email to reset your password"));
+                TempData["messageUser"] = JsonConvert.SerializeObject(new XMessage("success", "Please check your email to reset your password"));
                 return View();
             }
             else
             {
-                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Email not found"));
+                TempData["messageUser"] = JsonConvert.SerializeObject(new XMessage("danger", "Email not found"));
                 return View();
             }
         }
@@ -204,7 +205,7 @@ namespace DTech.Controllers
         {
             if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
             {
-                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Invalid token or email"));
+                TempData["messageUser"] = JsonConvert.SerializeObject(new XMessage("danger", "Invalid token or email"));
                 return RedirectToAction("ForgotPassword", "Authentication");
             }
 
@@ -223,33 +224,33 @@ namespace DTech.Controllers
 
             if (string.IsNullOrEmpty(model.Email))
             {
-                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Email cannot be null or empty"));
+                TempData["messageUser"] = JsonConvert.SerializeObject(new XMessage("danger", "Email cannot be null or empty"));
                 return View(model);
             }
 
             if (string.IsNullOrEmpty(model.Token))
             {
-                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Token cannot be null or empty"));
+                TempData["messageUser"] = JsonConvert.SerializeObject(new XMessage("danger", "Token cannot be null or empty"));
                 return View(model);
             }
 
             if (string.IsNullOrEmpty(model.NewPassword))
             {
-                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "New password cannot be null or empty"));
+                TempData["messageUser"] = JsonConvert.SerializeObject(new XMessage("danger", "New password cannot be null or empty"));
                 return View(model);
             }
 
             var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Invalid email address"));
+                TempData["messageUser"] = JsonConvert.SerializeObject(new XMessage("danger", "Invalid email address"));
                 return View(model);
             }
 
             var result = await userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
             if (result.Succeeded)
             {
-                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Password reset successfully"));
+                TempData["messageUser"] = JsonConvert.SerializeObject(new XMessage("success", "Password reset successfully"));
                 return RedirectToAction("Login", "Authentication");
             }
 
@@ -372,7 +373,7 @@ namespace DTech.Controllers
                     Gender = gender,
                     DateOfBirth = string.IsNullOrEmpty(dob) ? null : DateOnly.Parse(dob),
                     CreateDate = DateTime.UtcNow,
-                    CreatedBy = "Google Signup"
+                    CreatedBy = name
                 };
 
                 // Create user account
@@ -509,7 +510,7 @@ namespace DTech.Controllers
                     Email = email,
                     UserName = email,
                     CreateDate = DateTime.UtcNow,
-                    CreatedBy = "Facebook Signup"
+                    CreatedBy = name
                 };
 
                 var createResult = await userManager.CreateAsync(user);
@@ -549,6 +550,13 @@ namespace DTech.Controllers
             await signInManager.SignOutAsync();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            ViewData["ActionName"] = "Access Denied";
+            return View();
         }
     }
 }

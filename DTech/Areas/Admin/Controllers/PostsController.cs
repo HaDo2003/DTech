@@ -7,11 +7,13 @@ using Newtonsoft.Json;
 using DTech.DAO;
 using System.Threading.Tasks;
 using DTech.Library.Service;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DTech.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [SetViewBagAttributes]
+    [Authorize(Roles = "Admin,Seller")]
     public class PostsController(
         PostDAO postDAO,
         PostCategoryDAO postCategoryDAO,
