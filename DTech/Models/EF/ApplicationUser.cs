@@ -48,4 +48,5 @@ public partial class ApplicationUser: IdentityUser
 
     [NotMapped]
     public string? RoleName { get; set; }
+
 }

@@ -41,7 +41,7 @@ namespace DTech.DAO
         //Return one row of table
         public async Task<ApplicationUser?> GetByIdAsync(string? id)
         {
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
             {
                 return null;
             }
@@ -177,8 +177,53 @@ namespace DTech.DAO
             return await context.Orders
                 .Where(o => o.CustomerId == customerId)
                 .Include(o => o.OrderProducts)
+                .Include(o => o.Status)
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
+        }
+
+        //Get coupon by customer id
+        public async Task<List<CustomerCoupon>> GetCouponsByCustomerIdAsync(string? customerId)
+        {
+            if (customerId == null)
+            {
+                return [];
+            }
+            return await context.CustomerCoupons
+                .Where(c => c.CustomerId == customerId)
+                .Include(c => c.Coupon)
+                .Where(predicate => predicate.Coupon!.Status == 1)
+                .ToListAsync();
+        }
+
+        // Get address by customer id
+        public async Task<List<CustomerAddress>> GetAddressesByCustomerIdAsync(string? customerId)
+        {
+            if (customerId == null)
+            {
+                return [];
+            }
+            return await context.CustomerAddresses
+                .Where(c => c.CustomerId == customerId)
+                .ToListAsync();
+        }
+
+        // Updated Password
+        public async Task<bool> ChangePasswordAsync(string id, string? oldPassword, string? newPassword)
+        {
+            if (string.IsNullOrEmpty(oldPassword) || string.IsNullOrEmpty(newPassword))
+            {
+                return false;
+            }
+
+            var user = await userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return false;
+            }
+
+            var result = await userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+            return result.Succeeded;
         }
     }
 }

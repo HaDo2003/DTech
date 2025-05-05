@@ -10,6 +10,8 @@ using DTech.Library;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using DTech.Models.ViewModel;
+using Microsoft.AspNetCore.Authentication;
 
 namespace DTech.Controllers
 {
@@ -23,6 +25,7 @@ namespace DTech.Controllers
         readonly string folderName = "Pre-thesis/Customer";
 
 
+        // GET: Profile
         [Route("")]
         [HttpGet]
         public async Task<IActionResult> Profile()
@@ -43,6 +46,7 @@ namespace DTech.Controllers
             return View(user);
         }
 
+        // POST: Profile/Edit
         [Route("")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -102,6 +106,7 @@ namespace DTech.Controllers
             return View("Profile", user);
         }
 
+        // GET: Profile/Orders
         [HttpGet]
         [Route("orders")]
         public async Task<IActionResult> Orders()
@@ -112,6 +117,79 @@ namespace DTech.Controllers
 
             var orders = await customerDAO.GetOrdersByCustomerIdAsync(userId);
             return PartialView("Orders", orders);
+        }
+
+        // GET: Profile/Coupons
+        [HttpGet]
+        [Route("coupons")]
+        public async Task<IActionResult> Coupon()
+        {
+            ViewData["ActionName"] = "Coupons";
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
+
+            var coupons = await customerDAO.GetCouponsByCustomerIdAsync(userId);
+            return PartialView("Coupons", coupons);
+        }
+
+        // GET: Profile/ChangePassword
+        [HttpGet]
+        [Route("change-password")]
+        public IActionResult ChangePassword()
+        {
+            ViewData["ActionName"] = "Change Password";
+            var model = new ChangePasswordViewModel();
+            return PartialView(model);
+        }
+
+        // POST: Profile/ChangePassword
+        [HttpPost]
+        [Route("change-password")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(
+            [Bind("CurrentPassword,NewPassword,ConfirmPassword")]
+            ChangePasswordViewModel model)
+        {
+            ViewData["ActionName"] = "Change Password";
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
+            if (ModelState.IsValid)
+            {
+                var result = await customerDAO.ChangePasswordAsync(userId, model.CurrentPassword, model.NewPassword);
+                if (result)
+                {
+                    await HttpContext.SignOutAsync();
+                    return RedirectToAction("Login", "Authentication");
+                }
+                else
+                {
+                    ModelState.AddModelError("CurrentPassword", "Current password is incorrect.");
+                }
+            }
+            ModelState.AddModelError("CurrentPassword", "Change Password Fail, please try again");
+            return PartialView(model);
+        }
+
+        // GET: Profile/Address
+        [HttpGet]
+        [Route("address")]
+        public async Task<IActionResult> Address()
+        {
+            ViewData["ActionName"] = "Address";
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
+            var addresses = await customerDAO.GetAddressesByCustomerIdAsync(userId);
+            return PartialView("Address", addresses);
+        }
+
+        // GET: Profile/Address/Create
+        [HttpGet]
+        [Route("address/create")]
+        public IActionResult CreateAddress()
+        {
+            ViewData["ActionName"] = "Create Address";
+            var model = new CustomerAddress();
+            return PartialView(model);
         }
     }
 }

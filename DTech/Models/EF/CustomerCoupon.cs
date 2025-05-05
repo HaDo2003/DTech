@@ -9,7 +9,7 @@ public partial class CustomerCoupon
     [Key]
     public int Id { get; set; }
 
-    public int? CustomerId { get; set; }
+    public string? CustomerId { get; set; }
 
     public int? CouponId { get; set; }
 

@@ -1,0 +1,31 @@
+﻿@model IEnumerable<DTech.Models.EF.CustomerCoupon>
+@{
+    ViewBag.Title = "Coupons";
+    ViewData["ActionName"] = "Coupons";
+}
+<div class="table-responsive">
+    <h4>My Coupons</h4>
+    <table class="table table-bordered table-striped" id="myTable">
+        <thead>
+            <tr>
+                <th class="text-center">@Html.DisplayNameFor(model => model.Coupon!.Code)</th>
+                <th class="text-center">@Html.DisplayNameFor(model => model.Coupon!.Detail)</th>
+                <th class="text-center">@Html.DisplayNameFor(model => model.Coupon!.Discount)</th>
+                <th class="text-center">@Html.DisplayNameFor(model => model.Coupon!.Condition)</th>
+                <th class="text-center">@Html.DisplayNameFor(model => model.Coupon!.EndDate)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.Coupon!.Code)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.Coupon!.Detail)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.Coupon!.Discount)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.Coupon!.Condition)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.Coupon!.EndDate)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

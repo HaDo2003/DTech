@@ -1,0 +1,29 @@
+﻿@model IEnumerable<DTech.Models.EF.CustomerAddress>
+@{
+    ViewBag.Title = "Address";
+    ViewData["ActionName"] = "Address";
+}
+<h4>My Address</h4>
+
+<button class="btn btn-danger" onclick="openForm()">
+    <i class="fa-solid fa-plus"></i>
+    Add new address
+</button>
+
+<partial name="CreateAdress" model="new DTech.Models.EF.CustomerAddress()" />
+
+<div class="table-responsive">
+    <table class="table">
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.FullName)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.Address)</td>
+                    <td class="text-center">@Html.DisplayFor(modelItem => item.IsDefault)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,48 @@
+﻿@model DTech.Models.EF.CustomerAddress
+
+<div id="overlay" class="overlay d-none">
+    <div class="row d-none" id="addressForm">
+        <div class="col-5 mx-auto rounded border">
+            <h2 class="text-center py-2">Add New Address</h2>
+            <form asp-action="Register" method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="row m-2">
+                    <div class="form-group">
+                        <input asp-for="FullName" class="form-control" placeholder="Full Name" required />
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row m-2">
+                    <div class="form-group">
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" required />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+                <div class="row m-2">
+                    <div class="form-group">
+                        <input asp-for="Address" class="form-control" placeholder="Address" />
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-check m-2">
+                    <input asp-for="IsDefault" class="form-check-input" type="checkbox" />
+                    <label asp-for="IsDefault" class="form-check-label">Set as default address</label>
+                    <span asp-validation-for="IsDefault" class="text-danger"></span>
+                </div>
+
+                <div class="row m-2 text-center align-content-center">
+                    <div class="form-group">
+                        <button type="submit" value="Create" class="btn btn-dark w-100 button-hover">
+                            Add Address
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

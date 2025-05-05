@@ -150,12 +150,15 @@
                                 </div>
 
                                 <div id="coupons" class="tab-content d-none">
+                                    <partial name="Coupons" model="Model.CustomerCoupons" />
                                 </div>
 
                                 <div id="address" class="tab-content d-none">
+                                    <partial name="Address"  model="Model.CustomerAddresses"/>
                                 </div>
 
                                 <div id="password" class="tab-content d-none">
+                                    <partial name="ChangePassword" model="new ChangePasswordViewModel()" />
                                 </div>
                             </div>
                         </div>

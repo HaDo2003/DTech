@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DTEch.styles.css" asp-append-version="true" />
+    <link href="~/css/datatables.datatables.min.css" rel="stylesheet" />
     <script src="https://kit.fontawesome.com/75ef677eac.js" crossorigin="anonymous"></script>
     @await RenderSectionAsync("Head", required: false)
 
@@ -31,6 +32,13 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/datatables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -74,13 +74,19 @@ namespace DTech.Controllers
 
                 if (result)
                 {
-                    //Create address
-                    CustomerAddress customerAddress = new()
+                    if (newUser.Address != null)
                     {
-                        CustomerId = user.Id,
-                        Address = newUser.Address,
-                    };
-                    await customerAddressDAO.CreateAsync(customerAddress);
+                        //Create address
+                        CustomerAddress customerAddress = new()
+                        {
+                            CustomerId = user.Id,
+                            FullName = newUser.FullName,
+                            PhoneNumber = newUser.PhoneNumber,
+                            Address = newUser.Address,
+                            IsDefault = true
+                        };
+                        await customerAddressDAO.CreateAsync(customerAddress);
+                    }
 
                     //Create Cart for new customer
                     Cart cart = new()

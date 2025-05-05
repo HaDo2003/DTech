@@ -45,3 +45,21 @@ document.addEventListener("DOMContentLoaded", function () {
 function img_pathUrl(input) {
     $("img#imgpreview")[0].src = URL.createObjectURL(input.files[0]);
 }
+
+function openForm() {
+    const form = document.getElementById("addressForm");
+    const overlay = document.getElementById("overlay");
+    form.classList.remove('d-none');
+    form.classList.add('d-block');
+    overlay.classList.remove('d-none');
+}
+
+function closeForm() {
+    const form = document.getElementById("addressForm");
+    const overlay = document.getElementById("overlay");
+    form.classList.remove('d-block');
+    form.classList.add('d-none');
+    overlay.classList.add('d-none');
+}
+
+document.getElementById("overlay").addEventListener("click", closeForm);
