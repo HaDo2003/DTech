@@ -282,6 +282,16 @@ img#imgpreview {
     left: 50%;
     transform: translate(-50%, -50%);
     background: white;
+    width: 700px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.button-custom {
+    width: 30px;
+    height: 30px;
+    line-height: 1;
 }
 
 /*=========================================================

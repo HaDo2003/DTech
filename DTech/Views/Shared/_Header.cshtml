@@ -85,7 +85,7 @@
                         <ul class="dropdown-menu">
                             @if (User.Identity?.IsAuthenticated ?? false)
                             {
-                                <li><a asp-controller="Profile" asp-action="Profile" class="dropdown-item">Profile</a></li>
+                                <li><a asp-controller="Profile" asp-action="Index" class="dropdown-item">Profile</a></li>
                                 <li><a class="dropdown-item" href="#">Settings</a></li>
                                 <li><a asp-controller="Authentication" asp-action="Logout" class="dropdown-item">Logout</a></li>
                             }

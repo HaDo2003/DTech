@@ -61,5 +61,3 @@ function closeForm() {
     form.classList.add('d-none');
     overlay.classList.add('d-none');
 }
-
-document.getElementById("overlay").addEventListener("click", closeForm);

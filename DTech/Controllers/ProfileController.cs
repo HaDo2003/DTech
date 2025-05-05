@@ -19,11 +19,26 @@ namespace DTech.Controllers
     [Route("profile")]
     public class ProfileController(
         CloudinaryService cloudinaryService,
-        CustomerDAO customerDAO
+        CustomerDAO customerDAO,
+        CustomerAddressDAO customerAddressDAO
     ) : Controller
     {
         readonly string folderName = "Pre-thesis/Customer";
 
+        public async Task<IActionResult> Index(string activeTab = "info")
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Authentication");
+
+            var user = await customerDAO.GetByIdAsync(userId);
+            if (user == null)
+                return NotFound();
+
+            ViewData["ActiveTab"] = activeTab;
+
+            return View(user);
+        }
 
         // GET: Profile
         [Route("")]
@@ -42,8 +57,7 @@ namespace DTech.Controllers
             {
                 return NotFound();
             }
-
-            return View(user);
+            return PartialView("Index", user);
         }
 
         // POST: Profile/Edit
@@ -158,8 +172,9 @@ namespace DTech.Controllers
                 var result = await customerDAO.ChangePasswordAsync(userId, model.CurrentPassword, model.NewPassword);
                 if (result)
                 {
-                    await HttpContext.SignOutAsync();
-                    return RedirectToAction("Login", "Authentication");
+                    //await HttpContext.SignOutAsync();
+                    //return RedirectToAction("Login", "Authentication");
+                    return RedirectToAction("Index", new { activeTab = "password" });
                 }
                 else
                 {
@@ -167,7 +182,7 @@ namespace DTech.Controllers
                 }
             }
             ModelState.AddModelError("CurrentPassword", "Change Password Fail, please try again");
-            return PartialView(model);
+            return RedirectToAction("Index", new { activeTab = "password" });
         }
 
         // GET: Profile/Address
@@ -190,6 +205,131 @@ namespace DTech.Controllers
             ViewData["ActionName"] = "Create Address";
             var model = new CustomerAddress();
             return PartialView(model);
+        }
+
+        // POST: Profile/Address/Create
+        [HttpPost]
+        [Route("address/create")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateAddress(
+            [Bind("Id,CustomerId,FullName,PhoneNumber,Address,IsDefault")]
+            CustomerAddress newAddress)
+        {
+            ViewData["ActionName"] = "Create Address";
+            if (ModelState.IsValid)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
+                newAddress.CustomerId = userId;
+                bool result = await customerAddressDAO.CreateAsync(newAddress);
+                if (result)
+                {
+                    return RedirectToAction("Profile", new { activeTab = "address" });
+                }
+            }
+            ModelState.AddModelError("FullName", "Create Address Fail, please try again");
+            return PartialView(newAddress);
+        }
+
+        // GET: Profile/Address/Edit
+        [HttpGet]
+        [Route("address/edit/{id}")]
+        public async Task<IActionResult> EditAddress(int? id)
+        {
+            ViewData["ActionName"] = "Edit Address";
+            if (id == null) return NotFound();
+            var address = await customerAddressDAO.GetByIdAsync(id);
+            if (address == null) return NotFound();
+            return PartialView(address);
+        }
+
+        // POST: Profile/Address/Edit
+        [HttpPost]
+        [Route("address/edit/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditAddress(
+            int? id,
+            [Bind("Id,CustomerId,FullName,PhoneNumber,Address,IsDefault")]
+            CustomerAddress editAddress)
+        {
+            ViewData["ActionName"] = "Edit Address";
+            if (id == null) return NotFound();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
+                    editAddress.CustomerId = userId;
+                    bool result = await customerAddressDAO.UpdateAsync(editAddress);
+                    if (result)
+                    {
+                        return RedirectToAction("Profile");
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await customerAddressDAO.AddressExists(id)) return NotFound();
+                    else throw;
+                }
+            }
+            ModelState.AddModelError("FullName", "Edit Address Fail, please try again");
+            return PartialView(editAddress);
+        }
+
+        // POST: Profile/Address/Delete
+        [HttpPost]
+        [Route("address/delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAddress(
+            int? id,
+            [Bind("Id,CustomerId,FullName,PhoneNumber,Address,IsDefault")]
+            CustomerAddress delAddress)
+        {
+            ViewData["ActionName"] = "Delete Address";
+            if (id == null) return NotFound();
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
+                    delAddress.CustomerId = userId;
+                    bool result = await customerAddressDAO.DeleteByIdAsync(id);
+                    if (result)
+                    {
+                        return RedirectToAction("Profile");
+                    }
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!await customerAddressDAO.AddressExists(id)) return NotFound();
+                    else throw;
+                }
+            }
+            ModelState.AddModelError("FullName", "Delete Address Fail, please try again");
+            return PartialView(delAddress);
+        }
+
+        // Post: Profile/Address/SwicthDefault
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SwitchDefault(int? id)
+        {
+            ViewData["ActionName"] = "Switch Default Address";
+            if (id == null) return NotFound();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
+            var address = await customerAddressDAO.GetByIdAsync(id);
+            if (address == null) return NotFound();
+            address.IsDefault = !address.IsDefault;
+            bool result = await customerAddressDAO.UpdateAsync(address);
+            if (result)
+            {
+                return RedirectToAction("Profile");
+            }
+            ModelState.AddModelError("FullName", "Switch Default Address Fail, please try again");
+            return PartialView(address);
         }
     }
 }

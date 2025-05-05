@@ -23,16 +23,18 @@ namespace DTech.DAO
         }
 
 
-        public async Task CreateAsync(CustomerAddress customerAddress)
+        public async Task<bool> CreateAsync(CustomerAddress customerAddress)
         {
             if (customerAddress != null)
             {
                 context.CustomerAddresses.Add(customerAddress);
                 await context.SaveChangesAsync();
+                return true;
             }
-
+            return false;
         }
 
+        //Delete all addresses of a customer
         public async Task<bool> DeleteAsync(string id)
         {
             var customerAddress = await context.CustomerAddresses
@@ -64,14 +66,47 @@ namespace DTech.DAO
             }
         }
 
-        public async Task UpdateAsync(CustomerAddress address)
+        //Delete one address by id
+        public async Task<bool> DeleteByIdAsync(int? id)
+        {
+            var customerAddress = await context.CustomerAddresses.FindAsync(id);
+            if (customerAddress != null)
+            {
+                try
+                {
+                    context.CustomerAddresses.Remove(customerAddress);
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    // Handle concurrency exception
+                    return false;
+                }
+                catch (DbUpdateException)
+                {
+                    // Handle update exception
+                    return false;
+                }
+            }
+            else
+            {
+                //customerAddress not found
+                return false;
+            }
+        }
+
+        // Method to update an address
+        public async Task<bool> UpdateAsync(CustomerAddress address)
         {
             if (address != null)
             {
                 context.CustomerAddresses.Update(address);
                 await context.SaveChangesAsync();
+                return true;
             }
             await Task.CompletedTask;
+            return false;
         }
 
         // Method to retrieve an address by ID
@@ -80,7 +115,14 @@ namespace DTech.DAO
             return await context.CustomerAddresses.FindAsync(id);
         }
 
+        // Method to retrieve all addresses of a customer
         public async Task<bool> CustomerAddressExists(int id)
+        {
+            return await context.CustomerAddresses.AnyAsync(e => e.AddressId == id);
+        }
+
+        // Method to check if an address exsists
+        public async Task<bool> AddressExists(int? id)
         {
             return await context.CustomerAddresses.AnyAsync(e => e.AddressId == id);
         }

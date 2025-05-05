@@ -1,0 +1,65 @@
+﻿@model DTech.Models.EF.ApplicationUser
+
+@{
+    ViewData["Title"] = "Customer Account";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string activeTab = ViewData["ActiveTab"]?.ToString() ?? "info";
+}
+
+<div class="app-content">
+    <!--begin::Container-->
+    <div class="container-fluid">
+        <!--begin::Row-->
+        <div class="row">
+            <div class="col-12 m-auto">
+                <!-- Default box -->
+                <div class="card">
+                    <div class="card-body py-2">
+                        <div class="row">
+                            <div class="col-xs-12 col-sm-12 col-lg-3">
+                                <div class="container p-1">
+                                    <h4 class="text-center">Customer Account</h4>
+                                    <p class="text-center">Hello, @Html.DisplayFor(model => model.FullName)</p>
+                                    <ul class="no-bullets" id="menu">
+                                        <li class="@(activeTab == "info" ? "active" : "") m-3 li-custom" data-tab="info">Customer Information</li>
+                                        <li class="@(activeTab == "orders" ? "active" : "") m-3 li-custom" data-tab="orders">Your Order</li>
+                                        <li class="@(activeTab == "coupons" ? "active" : "") m-3 li-custom" data-tab="coupons">Your Coupon</li>
+                                        <li class="@(activeTab == "address" ? "active" : "") m-3 li-custom" data-tab="address">Address</li>
+                                        <li class="@(activeTab == "password" ? "active" : "") m-3 li-custom" data-tab="password">Change Password</li>
+                                        <li class="m-3" data-tab="logout">
+                                            <a asp-controller="Authentication" asp-action="Logout" class="a-custom">
+                                                Log Out
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-lg-9 py-1" id="content">
+                                <div id="info" class="tab-content @(activeTab != "info" ? "d-none" : "")">
+                                    <partial name="Profile" model="Model" />
+                                </div>
+
+                                <div id="orders" class="tab-content @(activeTab != "orders" ? "d-none" : "")">
+                                    <partial name="Orders" model="Model.Orders" />
+                                </div>
+
+                                <div id="coupons" class="tab-content @(activeTab != "coupons" ? "d-none" : "")">
+                                    <partial name="Coupons" model="Model.CustomerCoupons" />
+                                </div>
+
+                                <div id="address" class="tab-content @(activeTab != "address" ? "d-none" : "")">
+                                    <partial name="Address"  model="Model.CustomerAddresses"/>
+                                </div>
+
+                                <div id="password" class="tab-content @(activeTab != "password" ? "d-none" : "")">
+                                    <partial name="ChangePassword" model="new ChangePasswordViewModel()" />
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- /.card-body -->
+                </div> <!-- /.card -->
+            </div>
+        </div> <!--end::Row-->
+    </div> <!--end::Container-->
+</div> <!--end::App Content-->
