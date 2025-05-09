@@ -1,0 +1,50 @@
+﻿@model DTech.Models.EF.CustomerAddress
+
+<div class="row">
+    <div class="col-10">
+        <h3 class="text-start py-2">Edit Address</h3>
+    </div>
+    <div class="col-2 text-end d-flex justify-content-end align-items-center">
+        <button type="button" onclick="closeEditForm()" class="btn btn-outline-danger btn-sm rounded-circle fw-bold button-custom">
+            ×
+        </button>
+    </div>
+</div>
+
+<form asp-action="EditAddress" asp-route-id="@Model.AddressId" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="AddressId" />
+
+    <div class="row m-2">
+        <div class="form-group">
+            <input asp-for="FullName" class="form-control" placeholder="Full Name" required />
+            <span asp-validation-for="FullName" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row m-2">
+        <div class="form-group">
+            <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" required />
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row m-2">
+        <div class="form-group">
+            <input asp-for="Address" class="form-control" placeholder="Address" required />
+            <span asp-validation-for="Address" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="form-check m-2 padding-custom">
+        <input asp-for="IsDefault" class="form-check-input" />
+        <label asp-for="IsDefault" class="form-check-label">Set as default address</label>
+    </div>
+
+    <div class="row m-2 text-center">
+        <div class="form-group">
+            <button type="submit" class="btn btn-dark w-100 button-hover">Save Changes</button>
+        </div>
+    </div>
+</form>

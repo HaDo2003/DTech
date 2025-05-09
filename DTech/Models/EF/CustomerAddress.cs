@@ -23,7 +23,7 @@ public partial class CustomerAddress
     [Display(Name = "Address")]
     public string? Address { get; set; }
 
-    public bool? IsDefault { get; set; } = false;
+    public bool IsDefault { get; set; } = false;
 
     public virtual ApplicationUser? Customer { get; set; }
 }

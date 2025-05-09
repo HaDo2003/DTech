@@ -172,9 +172,8 @@ namespace DTech.Controllers
                 var result = await customerDAO.ChangePasswordAsync(userId, model.CurrentPassword, model.NewPassword);
                 if (result)
                 {
-                    //await HttpContext.SignOutAsync();
-                    //return RedirectToAction("Login", "Authentication");
-                    return RedirectToAction("Index", new { activeTab = "password" });
+                    await HttpContext.SignOutAsync();
+                    return RedirectToAction("Login", "Authentication");
                 }
                 else
                 {
@@ -249,7 +248,7 @@ namespace DTech.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAddress(
             int? id,
-            [Bind("Id,CustomerId,FullName,PhoneNumber,Address,IsDefault")]
+            [Bind("AddressId,CustomerId,FullName,PhoneNumber,Address,IsDefault")]
             CustomerAddress editAddress)
         {
             ViewData["ActionName"] = "Edit Address";

@@ -110,10 +110,11 @@ Breadcrum
     text-decoration: none;
     color: inherit;
 }
-.breadcrumb-link:hover {
-    color: #007bff;
-    text-decoration: underline;
-}
+
+    .breadcrumb-link:hover {
+        color: #007bff;
+        text-decoration: underline;
+    }
 
 /*=========================================================
 Slider
@@ -218,10 +219,10 @@ Login
     color: white;
 }
 
-.a-custom-button:hover {
-    text-decoration: none;
-    color: white;
-}
+    .a-custom-button:hover {
+        text-decoration: none;
+        color: white;
+    }
 
 /*=========================================================
 Profile
@@ -231,15 +232,15 @@ Profile
     padding-left: 0;
 }
 
-.li-custom{
+.li-custom {
     text-decoration: none;
     cursor: pointer;
 }
 
-.li-custom:hover{
-    text-decoration: none;
-    color: #1b6ec2;
-}
+    .li-custom:hover {
+        text-decoration: none;
+        color: #1b6ec2;
+    }
 
 label.custom-upload {
     display: block;
@@ -273,9 +274,25 @@ img#imgpreview {
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1040;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #addressForm {
+    z-index: 1050;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    width: 700px;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+#editAddressForm {
     z-index: 1050;
     position: fixed;
     top: 50%;
@@ -292,6 +309,10 @@ img#imgpreview {
     width: 30px;
     height: 30px;
     line-height: 1;
+}
+
+.padding-custom{
+    padding-left: 40px;
 }
 
 /*=========================================================

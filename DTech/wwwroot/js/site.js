@@ -2,6 +2,8 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+//Hide or show the password
 function togglePassword(inputId, iconId) {
     var input = document.getElementById(inputId);
     var icon = document.getElementById(iconId);
@@ -17,6 +19,7 @@ function togglePassword(inputId, iconId) {
     }
 }
 
+//Switch Tab in profile page
 document.addEventListener("DOMContentLoaded", function () {
     const menuItems = document.querySelectorAll('#menu li');
     const tabContents = document.querySelectorAll('.tab-content');
@@ -42,10 +45,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+//Review Image
 function img_pathUrl(input) {
     $("img#imgpreview")[0].src = URL.createObjectURL(input.files[0]);
 }
 
+//Open form to add addresss
 function openForm() {
     const form = document.getElementById("addressForm");
     const overlay = document.getElementById("overlay");
@@ -54,10 +59,57 @@ function openForm() {
     overlay.classList.remove('d-none');
 }
 
+//Close add addresss form
 function closeForm() {
     const form = document.getElementById("addressForm");
     const overlay = document.getElementById("overlay");
     form.classList.remove('d-block');
     form.classList.add('d-none');
     overlay.classList.add('d-none');
+}
+
+//Datable for coupon and order table
+$(document).ready(function () {
+    if ($('#myTable').length) {
+        $('#myTable').DataTable();
+    }
+
+    if ($('#myCouponTable').length) {
+        $('#myCouponTable').DataTable();
+    }
+});
+
+//Edit address
+function loadEditAddress(url) {
+    fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error("Failed to load edit form");
+            return response.text();
+        })
+        .then(html => {
+            // Find the edit address form element
+            const editForm = document.getElementById("editAddressForm");
+            const overlay = document.getElementById("editOverlay");
+
+            // Replace the partial view content
+            editForm.innerHTML = html;
+
+            // Show the overlay and form
+            overlay.classList.remove("d-none");
+            editForm.classList.remove("d-none");
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Could not load edit form: " + error.message);
+        });
+}
+
+function closeEditForm() {
+    const overlay = document.getElementById("editOverlay");
+    const container = document.getElementById("editAddressForm");
+
+    container.innerHTML = "";  // Clear the content
+    container.classList.remove("d-block");
+    container.classList.add("d-none");
+    overlay.classList.add("d-none");
 }
