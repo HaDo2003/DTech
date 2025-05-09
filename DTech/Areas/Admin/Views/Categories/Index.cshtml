@@ -48,7 +48,7 @@
                             </div>
 
                             <div class="col">
-                                @Html.Partial("Message")
+                                <partial name="Message" />
                             </div>
 
                             <div class="col text-end">
@@ -87,7 +87,7 @@
                                                 @Html.DisplayFor(modelItem => item.Slug)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.Parent.Name)
+                                                @Html.DisplayFor(modelItem => item.Parent != null ? item.Parent.Name : "No parent")
                                             </td>
                                             <td>
                                                 @if (item.Status == 1)

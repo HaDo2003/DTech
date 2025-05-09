@@ -137,8 +137,8 @@
                                         <div class="form-group">
                                             <label class="control-label">Payment</label>
                                             <input class="form-control" readonly
-                                                   value="@(Model.Payment.Status.HasValue && ViewBag.StatusPaymentDictionary.ContainsKey(Model.Payment.Status.Value)
-                                                    ? ViewBag.StatusPaymentDictionary[Model.Payment.Status.Value]
+                                                   value="@(Model.Payment!.Status.HasValue && ViewBag.StatusPaymentDictionary.ContainsKey(Model.Payment.Status.Value)
+                                                    ? ViewBag.StatusPaymentDictionary[Model.Payment.Status!.Value]
                                                     : "Unknown Status")" />
                                         </div>
                                     </div>

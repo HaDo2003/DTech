@@ -64,13 +64,21 @@
                                     <tr>
                                         <th>@Html.DisplayNameFor(model => model.Status)</th>
                                         <td>
-                                            @if (Model.Status.HasValue && ViewBag.StatusDictionary.ContainsKey(Model.Status.Value))
+                                            @if (Model.Status != null)
                                             {
-                                                @ViewBag.StatusDictionary[Model.Status.Value]
+                                                var statusValue = Model.Status.Value;
+                                                if (ViewBag.StatusDictionary.ContainsKey(statusValue))
+                                                {
+                                                    @ViewBag.StatusDictionary[statusValue]
+                                                }
+                                                else
+                                                {
+                                                    <span>Unknown Status</span>
+                                                }
                                             }
                                             else
                                             {
-                                                <span>Unknown Status</span>
+                                                <span>Status not set</span>
                                             }
                                         </td>
                                     </tr>
@@ -92,7 +100,7 @@
                                     </tr>
                                     <tr>
                                         <th>@Html.DisplayNameFor(model => model.Parent)</th>
-                                        <td>@Html.DisplayFor(model => model.Parent.Name)</td>
+                                        <td>@Html.DisplayFor(model => model.Parent != null ? model.Parent.Name : "No parent")</td>
                                     </tr>
                                 </table>
                             </div>

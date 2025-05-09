@@ -29,7 +29,7 @@
                 @Html.DisplayFor(modelItem => item.Image)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Product.Name)
+                @Html.DisplayFor(modelItem => item.Product!.Name)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.ImageId">Edit</a> |

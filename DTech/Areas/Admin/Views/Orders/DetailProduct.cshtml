@@ -53,7 +53,9 @@
                     <div class="card-footer">
                         @if (Model != null && Model.Any())
                         {
-                            var totalCost = Model.Sum(product => (decimal)product.Quantity * (decimal)product.CostAtPurchase);
+                            //var totalCost = Model.Sum(product => (decimal)product.Quantity * (decimal)product.CostAtPurchase);
+                            var totalCost = Model.Sum(product =>
+                                product.Quantity.GetValueOrDefault() * product.CostAtPurchase.GetValueOrDefault());
                             <p><strong>Total Cost:</strong> @(totalCost.ToString("C"))</p>
                         }
                         else

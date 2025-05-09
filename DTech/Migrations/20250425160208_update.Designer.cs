@@ -13,7 +13,7 @@ namespace DTech.Migrations
 {
     [DbContext(typeof(EcommerceWebContext))]
     [Migration("20250425160208_update")]
-    partial class update
+    partial class Update
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -74,6 +74,7 @@ public partial class EcommerceWebContext : IdentityDbContext<ApplicationUser>
     public DbSet<UserQuizParticipation> UserQuizParticipations { get; set; }
 
     public DbSet<SearchHistory> SearchHistories { get; set; }
+    public DbSet<WishList> WishLists { get; set; }
 
     protected void OnModelCreatingPartial(ModelBuilder modelBuilder)
     {

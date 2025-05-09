@@ -48,7 +48,7 @@
                             </div>
 
                             <div class="col">
-                                @Html.Partial("Message")
+                                <partial name="Message" />
                             </div>
                         </div>
                     </div>
@@ -85,13 +85,13 @@
                                                 @Html.DisplayFor(modelItem => item.Email)
                                             </td>
                                             <td>
-                                                @if (item.Detail.Length > 50)
+                                                @if (!string.IsNullOrEmpty(item.Detail) && item.Detail.Length > 50)
                                                 {
                                                     <span>@item.Detail.Substring(0, 50)...</span>
                                                 }
                                                 else
                                                 {
-                                                    @Html.DisplayFor(modelItem => item.Detail)
+                                                    <span>@item.Detail</span>
                                                 }
                                             </td>
                                             <td>

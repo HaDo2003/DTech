@@ -110,7 +110,7 @@ namespace DTech.DAO
         }
 
         // Method to retrieve an address by ID
-        public async Task<CustomerAddress> GetAddressByIdAsync(int id)
+        public async Task<CustomerAddress?> GetAddressByIdAsync(int id)
         {
             return await context.CustomerAddresses.FindAsync(id);
         }

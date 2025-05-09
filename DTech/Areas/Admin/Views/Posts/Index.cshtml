@@ -48,7 +48,7 @@
                                 <strong class="card-title">Post Information</strong>
                             </div>
                             <div class="col">
-                                @Html.Partial("Message")
+                                <partial name="Message" />
                             </div>
                             <div class="col text-end">
                                 <a asp-action="Create" class="btn btn-sm btn-success text-center">
@@ -77,7 +77,16 @@
                                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                             <td>@Html.DisplayFor(modelItem => item.PostDate)</td>
                                             <td>@Html.DisplayFor(modelItem => item.PostBy)</td>
-                                            <td>@Html.DisplayFor(modelItem => item.Cate.Name)</td>
+                                            <td>
+                                                @if (item.Cate != null)
+                                                {
+                                                    @Html.DisplayFor(modelItem => item.Cate!.Name)
+                                                }
+                                                else
+                                                {
+                                                    <span>N/A</span>
+                                                }
+                                            </td>
                                             <td>
                                                 @if (item.Status == 1)
                                                 {

@@ -36,7 +36,14 @@
             @Html.DisplayNameFor(model => model.PaymentMethod)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PaymentMethod.PaymentMethodId)
+            @if (Model.PaymentMethod != null)
+            {
+                @Html.DisplayFor(model => model.PaymentMethod!.PaymentMethodId)
+            }
+            else
+            {
+                <span>N/A</span>
+            }
         </dd>
     </dl>
     

@@ -1,5 +1,4 @@
 ﻿using DTech.Library.Validation;
-using DTech.Library.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

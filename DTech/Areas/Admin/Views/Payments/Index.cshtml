@@ -47,7 +47,7 @@
                                 <strong class="card-title">Payment Information</strong>
                             </div>
                             <div class="col">
-                                @Html.Partial("Message")
+                                <partial name="Message" />
                             </div>
                         </div>
                     </div>
@@ -82,16 +82,31 @@
                                                 @Html.DisplayFor(modelItem => item.Amount)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.PaymentMethod.Description)
-                                            </td>
-                                            <td>
-                                                @if (item.Status.HasValue && ViewBag.StatusPaymentDictionary.ContainsKey(item.Status.Value))
+                                                @if (item.PaymentMethod != null)
                                                 {
-                                                    @ViewBag.StatusPaymentDictionary[item.Status.Value]
+                                                @Html.DisplayFor(modelItem => item.PaymentMethod!.Description)
                                                 }
                                                 else
                                                 {
-                                                    <span>Unknown Status</span>
+                                                <span>N/A</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.Status.HasValue)
+                                                {
+                                                    var statusValue = item.Status.Value;
+                                                    if (ViewBag.StatusPaymentDictionary.ContainsKey(statusValue))
+                                                    {
+                                                    <td>@ViewBag.StatusPaymentDictionary[statusValue]</td>
+                                                    }
+                                                    else
+                                                    {
+                                                    <td><span>Unknown Status</span></td>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                <td><span>Unknown Status</span></td>
                                                 }
                                             </td>
                                             <td>

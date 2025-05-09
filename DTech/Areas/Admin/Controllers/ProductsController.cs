@@ -58,7 +58,7 @@ namespace DTech.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 //Check if adv already exist
-                product.Slug = product.Name.ToLower().Replace(" ", "-");
+                product.Slug = product.Name?.ToLower().Replace(" ", "-");
 
                 var slug = await context.Products
                     .FirstOrDefaultAsync(a => a.Slug == product.Slug);
@@ -70,19 +70,36 @@ namespace DTech.Areas.Admin.Controllers
                 }
 
                 //Image Upload
-                string imageName = await cloudinaryService.UploadImageAsync(product.PhotoUpload, folderName);
-
-                // Check if there was an error in the upload process
-                if (imageName.StartsWith("Error:"))
+                if (product.PhotoUpload != null)
                 {
-                    // Add the error message to the ModelState
-                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", imageName));
+                    string imageName = await cloudinaryService.UploadImageAsync(product.PhotoUpload, folderName);
 
-                    // Return the view with the error message
-                    return View(product);
+                    if (imageName.StartsWith("Error:"))
+                    {
+                        // Add the error message to the ModelState
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", imageName));
+
+                        // Return the view with the error message
+                        return View(product);
+                    }
+
+                    // Check if there was an error in the upload process
+                    if (imageName.StartsWith("Error:"))
+                    {
+                        // Add the error message to the ModelState
+                        TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", imageName));
+
+                        // Return the view with the error message
+                        return View(product);
+                    }
+
+                    product.Photo = imageName;
+                }
+                else
+                {
+                    product.Photo = "noimg.png";
                 }
 
-                product.Photo = imageName;
                 product.Views = 0;
                 product.CreateDate = DateTime.Now;
                 product.CreatedBy = "Admin1";
@@ -144,7 +161,7 @@ namespace DTech.Areas.Admin.Controllers
                 try
                 {
                     // Generate slug from the updated name
-                    string newSlug = product.Name.ToLower().Replace(" ", "-");
+                    string newSlug = product.Name?.ToLower().Replace(" ", "-") ?? string.Empty;
 
                     // Check if the slug is already used by another advertisement
                     var existingAdvertisement = await context.Products
@@ -161,7 +178,7 @@ namespace DTech.Areas.Admin.Controllers
                     //Change Photo
                     if (product.PhotoUpload != null && product.PhotoUpload.Length > 0)
                     {
-                        string imageName = await cloudinaryService.ChangeImageAsync(product.Photo, product.PhotoUpload, folderName);
+                        string imageName = await cloudinaryService.ChangeImageAsync(product.Photo ?? string.Empty, product.PhotoUpload, folderName);
                         product.Photo = imageName;
                     }
 
@@ -239,7 +256,7 @@ namespace DTech.Areas.Admin.Controllers
             return context.Products.Any(e => e.ProductId == id);
         }
 
-        public async Task<IActionResult> StatusChange(int id)
+        public async Task<IActionResult> StatusChange(int? id)
         {
             if (id == null)
             {
@@ -282,7 +299,7 @@ namespace DTech.Areas.Admin.Controllers
                 foreach (var spec in specifications)
                 {
                     // Generate slug
-                    var slug = spec.SpecName.ToLower().Replace(" ", "-");
+                    var slug = spec.SpecName?.ToLower().Replace(" ", "-");
 
                     var existingSpec = product.Specifications
                                               .FirstOrDefault(s => s.SpecId == spec.SpecId);
@@ -361,7 +378,7 @@ namespace DTech.Areas.Admin.Controllers
                             {
                                 if (image.ImageUpload != null && image.ImageUpload.Length > 0)
                                 {
-                                    string imageName = await cloudinaryService.ChangeImageAsync(existingImage.Image, image.ImageUpload, folderName);
+                                    string imageName = await cloudinaryService.ChangeImageAsync(existingImage.Image ?? string.Empty, image.ImageUpload, folderName);
                                     existingImage.Image = imageName;
                                     hasChanges = true; // Changes were made
                                 }
@@ -423,7 +440,7 @@ namespace DTech.Areas.Admin.Controllers
         public async Task<IActionResult> RemoveImage(int ImageId)
         {
             var image = context.ProductImages.Find(ImageId);
-            if (image != null)
+            if (image != null && !string.IsNullOrEmpty(image.Image))
             {
                 await cloudinaryService.DeleteImageAsync(image.Image);
                 context.ProductImages.Remove(image);
@@ -432,7 +449,7 @@ namespace DTech.Areas.Admin.Controllers
             }
             else
             {
-                return Json(new { success = false, message = "Image not found." });
+                return Json(new { success = false, message = "Image not found or invalid image URL." });
             }
         }
     }

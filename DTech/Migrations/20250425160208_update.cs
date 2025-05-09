@@ -5,7 +5,7 @@
 namespace DTech.Migrations
 {
     /// <inheritdoc />
-    public partial class update : Migration
+    public partial class Update : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

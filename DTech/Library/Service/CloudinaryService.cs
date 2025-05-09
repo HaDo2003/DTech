@@ -74,7 +74,7 @@ namespace DTech.Library.Service
                 }
 
                 // Extract the public ID
-                string publicId = ExtractPublicIdFromUrl(imageUrl);
+                string? publicId = ExtractPublicIdFromUrl(imageUrl);
 
                 if (string.IsNullOrEmpty(publicId))
                 {
@@ -102,7 +102,7 @@ namespace DTech.Library.Service
             }
         }
 
-        private static string ExtractPublicIdFromUrl(string url)
+        private static string? ExtractPublicIdFromUrl(string url)
         {
             try
             {

@@ -1,16 +1,9 @@
 ﻿namespace DTech.Library
 {
-    public class XMessage
+    public class XMessage(string typeMsg, string msg)
     {
-        public string TypeMsg { get; set; }
+        public string TypeMsg { get; set; } = typeMsg;
 
-        public string Msg {  get; set; }
-
-        public XMessage() { }
-
-        public XMessage(string typeMsg, string msg) { 
-            this.TypeMsg = typeMsg;
-            this.Msg = msg;
-        }
+        public string Msg { get; set; } = msg;
     }
 }

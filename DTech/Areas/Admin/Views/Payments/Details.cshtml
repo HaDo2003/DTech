@@ -75,7 +75,7 @@
                             <label class="control-label">Payment</label>
                             <input class="form-control" readonly
                                    value="@(Model.Status.HasValue && ViewBag.StatusPaymentDictionary.ContainsKey(Model.Status.Value)
-                                                    ? ViewBag.StatusPaymentDictionary[Model.Status.Value]
+                                                    ? ViewBag.StatusPaymentDictionary[Model.Status!.Value]
                                                     : "Unknown Status")" />
                         </div>
                     </div> <!-- /.card-body -->
