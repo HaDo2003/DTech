@@ -1,6 +1,169 @@
-﻿namespace DTech.DAO
+﻿using DTech.Models.EF;
+using EFCore.BulkExtensions;
+using Microsoft.EntityFrameworkCore;
+
+namespace DTech.DAO
 {
-    public class ProductDAO
+    public class ProductDAO(
+        EcommerceWebContext context
+    )
     {
+        //Return all content of table
+        public async Task<List<Product>> GetListAsync()
+        {
+            return await context.Products
+                .AsNoTracking()
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .ToListAsync();
+        }
+        //Return one row of table
+        public async Task<Product?> GetByIdAsync(int? id)
+        {
+            if (id == null)
+            {
+                return null;
+            }
+            var product = await context.Products
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .Include(a => a.ProductImages)
+                .Include(a => a.Specifications)
+                .FirstOrDefaultAsync(a => a.ProductId == id);
+            return product;
+        }
+        //Add new row to table
+        public async Task<bool> AddAsync(Product product)
+        {
+            try
+            {
+                context.Products.Add(product);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+        //Update row in table
+        public async Task<bool> UpdateAsync(Product product)
+        {
+            try
+            {
+                context.Products.Update(product);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+        //Delete row in table
+        public async Task<bool> DeleteAsync(int id)
+        {
+            try
+            {
+                var product = await GetByIdAsync(id);
+                if (product != null)
+                {
+                    var result = await RemoveAllSpecificationsAsync(id);
+                    if (result)
+                    {
+                        context.Products.Remove(product);
+                        await context.SaveChangesAsync();
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        //Check if id exists
+        public async Task<bool> CheckIdAsync(int? id)
+        {
+            return await context.Products.AnyAsync(e => e.ProductId == id);
+        }
+
+        //Check if slug exists
+        public async Task<bool> CheckSlugAsync(string? slug)
+        {
+            return await context.Products.AnyAsync(a => a.Slug == slug);
+        }
+
+        public async Task<Product?> CheckSlugAsync(string? slug, int? id)
+        {
+            if (slug == null)
+            {
+                return null;
+            }
+            var product = await context.Products.AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Slug == slug && a.ProductId != id);
+            return product;
+        }
+
+        //Remove all specifications of a product
+        public async Task<bool> RemoveAllSpecificationsAsync(int? id)
+        {
+            try
+            {
+                var specifications = await context.Specifications
+                    .Where(a => a.ProductId == id)
+                    .ToListAsync();
+                if (specifications.Count != 0)
+                {
+                    await context.BulkDeleteAsync(specifications);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        //Save changes
+        public async Task<bool> SaveChangesAsync()
+        {
+            try
+            {
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        //Get all products by category id
+        public async Task<List<Product>> GetProductsByCategoryIdAsync(int? id)
+        {
+            if (id == null)
+            {
+                return [];
+            }
+            var products = await context.Products
+                .AsNoTracking()
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .Where(a => a.CategoryId == id)
+                .ToListAsync();
+            return products;
+        }
     }
 }

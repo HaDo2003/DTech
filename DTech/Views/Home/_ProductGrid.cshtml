@@ -1,0 +1,43 @@
+﻿@model IEnumerable<DTech.Models.EF.Product>
+@{
+    var title = ViewBag.Title as string;
+}
+
+<div class="category-section my-4">
+    <h4 class="text-uppercase fw-bold mb-3">@title</h4>
+    <div class="row g-3">
+        @foreach (var product in Model)
+        {
+            var finalPrice = product.Price * (1 - product.Discount / 100m);
+            var formattedFinalPrice = string.Format("{0:N0}", finalPrice);
+            var formattedOriginalPrice = string.Format("{0:N0}", product.Price);
+            var discountPercent = product.Discount?.ToString("0.#");
+            <div class="col-md-3 col-sm-6 col-6 mb-3">
+                <div class="card h-100 product-card position-relative border-0">
+                    @if (product.Discount > 0)
+                    {
+                        <div class="position-absolute end-0 top-0 m-2">
+                            <span class="badge bg-danger rounded-pill">-@discountPercent%</span>
+                        </div>
+                    }
+                    <img src="@product.Photo" class="card-img-top p-2" alt="@product.Name">
+                    <div class="card-body p-2">
+                        <p class="text-start small fw-semibold mb-1">@product.Name</p>
+                        <div class="d-flex flex-column text-start">
+                            @if (product.Discount > 0)
+                            {
+                                <p class="mb-0"><del class="text-muted small">$@formattedOriginalPrice</del></p>
+                                <p class="text-danger fw-bold mb-1">$@formattedFinalPrice</p>
+                            }
+                            else
+                            {
+                                <br />
+                                <p class="text-dark fw-bold mb-1">$@formattedOriginalPrice</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

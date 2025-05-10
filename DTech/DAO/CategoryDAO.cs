@@ -110,5 +110,19 @@ namespace DTech.DAO
                 .FirstOrDefaultAsync(a => a.Slug == newSlug && a.CategoryId != CategoryId);
             return category;
         }
+
+        //Get CategoryId by Name
+        public async Task<int?> GetCategoryIdByNameAsync(string? name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+            var categoryId = await context.Categories
+                .Where(c => c.Name == name)
+                .Select(c => c.CategoryId)
+                .FirstOrDefaultAsync();
+            return categoryId;
+        }
     }
 }

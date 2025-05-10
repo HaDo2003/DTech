@@ -87,7 +87,7 @@
                                                 @Html.DisplayFor(modelItem => item.Slug)
                                             </td>
                                             <td>
-                                                @Html.DisplayFor(modelItem => item.Parent != null ? item.Parent.Name : "No parent")
+                                                @(item.Parent != null ? item.Parent.Name : "No parent")
                                             </td>
                                             <td>
                                                 @if (item.Status == 1)

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using DTech.Models.EF;
 using DTech.Library;
 using Newtonsoft.Json;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Diagnostics;
 using DTech.Library.Service;
 using Microsoft.AspNetCore.Authorization;
+using DTech.DAO;
+using System.Threading.Tasks;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -19,29 +15,50 @@ namespace DTech.Areas.Admin.Controllers
     [SetViewBagAttributes]
     [Authorize(Roles = "Admin,Seller")]
     public class ProductsController(
-        EcommerceWebContext context,
+        ProductDAO productDAO,
+        BrandDAO brandDAO,
+        CategoryDAO categoryDAO,
+        SupplierDAO supplierDAO,
+        SpecificationDAO specificationDAO,
+        ProductImageDAO productImageDAO,
         CloudinaryService cloudinaryService
     ) : Controller
     {
         readonly string folderName = "Pre-thesis/Product";
+        private List<Category> categories = [];
+        private List<Brand> brands = [];
+        private List<Supplier> suppliers = [];
+
+        // Helper function to load categories, brand and supplier if not already loaded
+        private async Task LoadCategoriesAsync()
+        {
+            if (categories.Count == 0)
+            {
+                categories = await categoryDAO.GetListAsync();
+            }
+            if (brands.Count == 0)
+            {
+                brands = await brandDAO.GetListAsync();
+            }
+            if (suppliers.Count == 0)
+            {
+                suppliers = await supplierDAO.GetListAsync();
+            }
+        }
 
         // GET: Admin/Products
         public async Task<IActionResult> Index()
         {
-            var ecommerceWebContext = context.Products
-                .Include(p => p.Brand)
-                .Include(p => p.Category)
-                .Include(p => p.Supplier);
-            return View(await ecommerceWebContext.ToListAsync());
+            return View(await productDAO.GetListAsync());
         }
 
         // GET: Admin/Products/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-
-            ViewData["BrandId"] = new SelectList(context.Brands, "BrandId", "Name");
-            ViewData["CategoryId"] = new SelectList(context.Categories, "CategoryId", "Name");
-            ViewData["SupplierId"] = new SelectList(context.Suppliers, "SupplierId", "Name");
+            await LoadCategoriesAsync();
+            ViewData["BrandId"] = new SelectList(brands, "BrandId", "Name");
+            ViewData["CategoryId"] = new SelectList(categories, "CategoryId", "Name");
+            ViewData["SupplierId"] = new SelectList(suppliers, "SupplierId", "Name");
             
             return View();
         }
@@ -60,10 +77,9 @@ namespace DTech.Areas.Admin.Controllers
                 //Check if adv already exist
                 product.Slug = product.Name?.ToLower().Replace(" ", "-");
 
-                var slug = await context.Products
-                    .FirstOrDefaultAsync(a => a.Slug == product.Slug);
+                var slug = await productDAO.CheckSlugAsync(product.Slug);
 
-                if (slug != null)
+                if (slug)
                 {
                     TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Advertisement already exists!"));
                     return View(product);
@@ -104,17 +120,17 @@ namespace DTech.Areas.Admin.Controllers
                 product.CreateDate = DateTime.Now;
                 product.CreatedBy = "Admin1";
 
-                context.Add(product);
-                await context.SaveChangesAsync();
+                await productDAO.AddAsync(product);
 
                 //Success message
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(context.Brands, "BrandId", "Name", product.BrandId);
-            ViewData["CategoryId"] = new SelectList(context.Categories, "CategoryId", "Name", product.CategoryId);
-            ViewData["SupplierId"] = new SelectList(context.Suppliers, "SupplierId", "Name", product.SupplierId);
+            await LoadCategoriesAsync();
+            ViewData["BrandId"] = new SelectList(brands, "BrandId", "Name", product.BrandId);
+            ViewData["CategoryId"] = new SelectList(categories, "CategoryId", "Name", product.CategoryId);
+            ViewData["SupplierId"] = new SelectList(suppliers, "SupplierId", "Name", product.SupplierId);
             
             return View(product);
         }
@@ -127,17 +143,15 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var product = await context.Products
-                .Include(p => p.Specifications)
-                .Include(p => p.ProductImages)
-                .FirstOrDefaultAsync(p => p.ProductId == id);
+            var product = await productDAO.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
-            ViewData["BrandId"] = new SelectList(context.Brands, "BrandId", "Name", product.BrandId);
-            ViewData["CategoryId"] = new SelectList(context.Categories, "CategoryId", "Name", product.CategoryId);
-            ViewData["SupplierId"] = new SelectList(context.Suppliers, "SupplierId", "SupplierId", product.SupplierId);
+            await LoadCategoriesAsync();
+            ViewData["BrandId"] = new SelectList(brands, "BrandId", "Name", product.BrandId);
+            ViewData["CategoryId"] = new SelectList(categories, "CategoryId", "Name", product.CategoryId);
+            ViewData["SupplierId"] = new SelectList(suppliers, "SupplierId", "Name", product.SupplierId);
             ViewBag.ProductId = id;
             return View(product);
         }
@@ -163,11 +177,10 @@ namespace DTech.Areas.Admin.Controllers
                     // Generate slug from the updated name
                     string newSlug = product.Name?.ToLower().Replace(" ", "-") ?? string.Empty;
 
-                    // Check if the slug is already used by another advertisement
-                    var existingAdvertisement = await context.Products
-                        .FirstOrDefaultAsync(a => a.Slug == newSlug && a.ProductId != product.ProductId);
+                    // Check if the slug is already used by another product
+                    var existingProduct = await productDAO.CheckSlugAsync(product.Slug, product.ProductId);
 
-                    if (existingAdvertisement != null)
+                    if (existingProduct != null)
                     {
                         TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Product already exists!"));
                         return View(product);
@@ -185,12 +198,11 @@ namespace DTech.Areas.Admin.Controllers
                     product.UpdateDate = DateTime.Now;
                     product.UpdatedBy = "Admin1";
 
-                    context.Update(product);
-                    await context.SaveChangesAsync();
+                    await productDAO.UpdateAsync(product);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.ProductId))
+                    if (!await productDAO.CheckIdAsync(product.ProductId))
                     {
                         return NotFound();
                     }
@@ -202,10 +214,11 @@ namespace DTech.Areas.Admin.Controllers
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(context.Brands, "BrandId", "Name", product.BrandId);
-            ViewData["CategoryId"] = new SelectList(context.Categories, "CategoryId", "Name", product.CategoryId);
-            ViewData["SupplierId"] = new SelectList(context.Suppliers, "SupplierId", "SupplierId", product.SupplierId);
-            
+            await LoadCategoriesAsync();
+            ViewData["BrandId"] = new SelectList(brands, "BrandId", "Name", product.BrandId);
+            ViewData["CategoryId"] = new SelectList(categories, "CategoryId", "Name", product.CategoryId);
+            ViewData["SupplierId"] = new SelectList(suppliers, "SupplierId", "Name", product.SupplierId);
+
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Edit fail, please check again!"));
 
             return View(product);
@@ -219,12 +232,7 @@ namespace DTech.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            var product = await context.Products
-                .Include(p => p.Brand)
-                .Include(p => p.Category)
-                .Include(p => p.Supplier)
-                .Include(p => p.Specifications)
-                .FirstOrDefaultAsync(m => m.ProductId == id);
+            var product = await productDAO.GetByIdAsync(id);
             if (product == null)
             {
                 return NotFound();
@@ -238,22 +246,16 @@ namespace DTech.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await context.Products
-                .Include(p => p.Specifications)
-                .FirstOrDefaultAsync(p => p.ProductId == id);
-            if (product != null)
+            var deleteresult =  await productDAO.DeleteAsync(id);
+            if (deleteresult)
             {
-                context.Specifications.RemoveRange(product.Specifications);
-                context.Products.Remove(product);
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Deleted successfully"));
             }
-
-            await context.SaveChangesAsync();
+            else
+            {
+                TempData["message"] = JsonConvert.SerializeObject(new XMessage("danger", "Deleted failed"));
+            }
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProductExists(int id)
-        {
-            return context.Products.Any(e => e.ProductId == id);
         }
 
         public async Task<IActionResult> StatusChange(int? id)
@@ -263,8 +265,7 @@ namespace DTech.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var product = await context.Products
-                .FirstOrDefaultAsync(m => m.ProductId == id);
+            var product = await productDAO.GetByIdAsync(id);
 
             if (product == null)
             {
@@ -275,14 +276,14 @@ namespace DTech.Areas.Admin.Controllers
             product.UpdateDate = DateTime.Now;
             product.UpdatedBy = "Admin1";
 
-            context.Update(product);
-            await context.SaveChangesAsync();
+            await productDAO.UpdateAsync(product);
 
             TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveSpecifications(int productId, List<Specification> specifications)
         {
             if (!ModelState.IsValid)
@@ -291,8 +292,7 @@ namespace DTech.Areas.Admin.Controllers
                 return View(specifications);  // Return to the same view if invalid
             }
 
-            var product = await context.Products.Include(p => p.Specifications)
-                                                 .FirstOrDefaultAsync(p => p.ProductId == productId);
+            var product = await productDAO.GetByIdAsync(productId);
             if (product != null)
             {
                 // Loop through the submitted specifications
@@ -328,8 +328,15 @@ namespace DTech.Areas.Admin.Controllers
                     }
                 }
 
-                await context.SaveChangesAsync();  // Save changes asynchronously
-                TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
+                var addResult = await productDAO.SaveChangesAsync();
+                if (!addResult)
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("Danger", "Edited failed"));
+                }
+                else
+                {
+                    TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
+                }
                 return RedirectToAction("Edit", new { id = productId });
             }
 
@@ -340,13 +347,13 @@ namespace DTech.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("RemoveSpecification")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveSpecification(int SpecId)
         {
-            var specification = await context.Specifications.FindAsync(SpecId);
+            var specification = await specificationDAO.GetSpecificationsByIdAsync(SpecId);
             if (specification != null)
             {
-                context.Specifications.Remove(specification);
-                await context.SaveChangesAsync();
+                await specificationDAO.RemoveSpecificationsByIdAsync(SpecId);
                 return Json(new { success = true, message = "Specification deleted successfully." });
             }
             else
@@ -357,14 +364,14 @@ namespace DTech.Areas.Admin.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SaveImages(int productId, List<ProductImage> images)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var product = await context.Products.Include(p => p.ProductImages)
-                                                 .FirstOrDefaultAsync(p => p.ProductId == productId);
+                    var product = await productDAO.GetByIdAsync(productId);
                     if (product != null)
                     {
                         bool hasChanges = false; // Flag to check if changes were made
@@ -405,7 +412,7 @@ namespace DTech.Areas.Admin.Controllers
 
                         if (hasChanges)
                         {
-                            await context.SaveChangesAsync();
+                            await productDAO.SaveChangesAsync();
                             TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Edited successfully"));
                         }
                         else
@@ -437,14 +444,14 @@ namespace DTech.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("RemoveImage")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RemoveImage(int ImageId)
         {
-            var image = context.ProductImages.Find(ImageId);
+            var image = await productImageDAO.GetProductImageByIdAsync(ImageId);
             if (image != null && !string.IsNullOrEmpty(image.Image))
             {
                 await cloudinaryService.DeleteImageAsync(image.Image);
-                context.ProductImages.Remove(image);
-                context.SaveChanges();
+                await productImageDAO.RemoveProductImageByIdAsync(ImageId);
                 return Json(new { success = true, message = "Image deleted successfully." });
             }
             else

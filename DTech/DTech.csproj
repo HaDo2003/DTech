@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="Library\Helper\ProductImageDAO.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.27.5" />
     <PackageReference Include="dotenv.net" Version="3.2.1" />
     <PackageReference Include="EFCore.BulkExtensions.SqlServer" Version="8.1.3" />

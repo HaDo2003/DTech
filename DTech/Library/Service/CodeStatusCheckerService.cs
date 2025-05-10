@@ -2,29 +2,21 @@
 
 namespace DTech.Library.Service
 {
-    public class CodeStatusCheckerService : BackgroundService
+    public class CodeStatusCheckerService(IServiceProvider serviceProvider, ILogger<CodeStatusCheckerService> logger) : BackgroundService
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly ILogger<CodeStatusCheckerService> _logger;
-
-        public CodeStatusCheckerService(IServiceProvider serviceProvider, ILogger<CodeStatusCheckerService> logger)
-        {
-            _serviceProvider = serviceProvider;
-            _logger = logger;
-        }
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
                 await CheckAndUpdateCodeStatus();
+                await CheckEndDateDiscount();
                 await Task.Delay(TimeSpan.FromHours(24), stoppingToken); // Runs every 24 hours
             }
         }
 
         private async Task CheckAndUpdateCodeStatus()
         {
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = serviceProvider.CreateScope())
             {
                 var dbContext = scope.ServiceProvider.GetRequiredService<EcommerceWebContext>();
 
@@ -40,7 +32,27 @@ namespace DTech.Library.Service
                 if (outdatedCodes.Count > 0)
                 {
                     await dbContext.SaveChangesAsync();
-                    _logger.LogInformation($"{outdatedCodes.Count} codes have been marked as outdated.");
+                    logger.LogInformation($"{outdatedCodes.Count} codes have been marked as outdated.");
+                }
+            }
+        }
+
+        private async Task CheckEndDateDiscount()
+        {
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<EcommerceWebContext>();
+                var products = dbContext.Products
+                    .Where(p => p.EndDateDiscount < DateOnly.FromDateTime(DateTime.Now) && p.Discount != 0)
+                    .ToList();
+                foreach (var product in products)
+                {
+                    product.Discount = 0;
+                }
+                if (products.Count > 0)
+                {
+                    await dbContext.SaveChangesAsync();
+                    logger.LogInformation($"{products.Count} products have been marked as outdated.");
                 }
             }
         }
