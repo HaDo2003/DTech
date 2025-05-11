@@ -113,3 +113,14 @@ function closeEditForm() {
     container.classList.add("d-none");
     overlay.classList.add("d-none");
 }
+
+//Horizontal card slider navigation
+function slideLeft(id) {
+    const container = document.getElementById(id);
+    container.scrollBy({ left: -220, behavior: 'smooth' });
+}
+
+function slideRight(id) {
+    const container = document.getElementById(id);
+    container.scrollBy({ left: 220, behavior: 'smooth' });
+}

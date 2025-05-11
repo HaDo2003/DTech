@@ -1,0 +1,41 @@
+﻿@model DTech.Models.EF.Product
+@{
+    var finalPrice = Model.Price * (1 - Model.Discount / 100m);
+    var formattedFinalPrice = string.Format("{0:N0}", finalPrice);
+    var formattedOriginalPrice = string.Format("{0:N0}", Model.Price);
+    var discountPercent = Model.Discount?.ToString("0.#");
+}
+<div class="card h-100 product-card position-relative border-0">
+    @if (Model.Discount > 0)
+    {
+        <div class="position-absolute end-0 top-0 m-2">
+            <span class="badge bg-danger rounded-pill">-@discountPercent%</span>
+        </div>
+    }
+    <a href="#" class="text-decoration-none">
+        <img src="@Model.Photo" class="card-img-top p-1 w-100 mx-auto d-block" alt="@Model.Name">
+        <div class="card-body p-2">
+            <p class="text-start small fw-semibold mb-1 text-dark">
+                @(Model.Name!.Length > 40 ? Model.Name.Substring(0, 40) + "..." : Model.Name)
+            </p>
+            <div class="d-flex flex-column text-start">
+                @if (Model.Discount > 0)
+                {
+                    <p class="mb-0"><del class="text-muted small">$@formattedOriginalPrice</del></p>
+                    <p class="text-danger fw-bold mb-1">$@formattedFinalPrice</p>
+                }
+                else
+                {
+                    <br />
+                    <p class="text-dark fw-bold mb-1">$@formattedOriginalPrice</p>
+                }
+            </div>
+            <p>
+                @if (Model.PromotionalGift != null)
+                {
+                    @(Model.PromotionalGift.Length > 40 ? Model.Name.Substring(0, 40) + "..." : Model.PromotionalGift)
+                }
+            </p>
+        </div>
+    </a>
+</div>

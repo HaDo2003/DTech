@@ -21,6 +21,9 @@ namespace DTech.Controllers
             var smartPhoneCategoryId = await categoryDAO.GetCategoryIdByNameAsync("Smart Phone");
             var smartPhoneProducts = await productDAO.GetProductsByCategoryIdAsync(smartPhoneCategoryId);
 
+            var hotProducts = await productDAO.GetDiscountedProductsAsync();
+
+            ViewBag.HotProducts = hotProducts;
             ViewBag.LaptopProducts = laptopProducts;
             ViewBag.SmartphoneProducts = smartPhoneProducts;
 

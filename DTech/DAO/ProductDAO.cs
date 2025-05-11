@@ -162,6 +162,21 @@ namespace DTech.DAO
                 .Include(a => a.Category)
                 .Include(a => a.Supplier)
                 .Where(a => a.CategoryId == id)
+                .OrderByDescending(a => a.ProductId)
+                .ToListAsync();
+            return products;
+        }
+
+        //Get all products that are discounted
+        public async Task<List<Product>> GetDiscountedProductsAsync()
+        {
+            var products = await context.Products
+                .AsNoTracking()
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .Where(a => a.Discount != null && a.Discount > 0)
+                .OrderByDescending(a => a.ProductId)
                 .ToListAsync();
             return products;
         }

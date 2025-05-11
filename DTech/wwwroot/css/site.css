@@ -243,9 +243,9 @@ Home
 .product-card {
     transition: all 0.2s ease-in-out;
     overflow: hidden;
-    border: 1px solid #eaeaea !important;
+    border: 1.5px solid #eaeaea !important;
     background-color: #fff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
     border-radius: 8px;
 }
 
@@ -280,9 +280,9 @@ Home
         color: #6c757d;
     }
 
-    .product-card .text-danger {
+    .product-card .text-danger,
+    .product-card .text-dark {
         font-size: 1rem;
-        color: #dc3545 !important;
     }
 
 /* Discount badge styling */
@@ -323,7 +323,7 @@ Home
 }
 
 /* Grid spacing */
-.row.g-3 > * {
+.row.g-2 > * {
     padding-right: calc(var(--bs-gutter-x) * .5);
     padding-left: calc(var(--bs-gutter-x) * .5);
     margin-top: var(--bs-gutter-y);
@@ -339,6 +339,71 @@ Home
         transform: translateY(-3px);
     }
 }
+
+/* Responsive horizontal card slider */
+.product-slider {
+    gap: 1rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 0;
+}
+
+.slider-item {
+    scroll-snap-align: start;
+    width: 200px;
+}
+
+.hide-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+}
+
+    .hide-scrollbar::-webkit-scrollbar {
+        display: none; /* Chrome/Safari */
+    }
+
+.slider-btn {
+    position: absolute;
+    top: 35%;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    padding: 6px 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+}
+
+.slider-btn-left {
+    left: -10px;
+}
+
+.slider-btn-right {
+    right: -10px;
+}
+
+/*Hot sale background*/
+.bg-hot-sales {
+    background: linear-gradient(180deg, #f5263f 0%, #a40013 100%);
+    border: 1px solid #f99;
+    border-radius: 8px;
+    padding: 10px;
+}
+.hot-sales-bg .product-card {
+    background-color: white; /* keep product cards clean */
+}
+
+.hot-sales-bg .slider-btn {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #a40013;
+}
+
+.hot-sales-title-custom {
+    color: #feea32;
+    font-size: 32px;
+    line-height: 48px;
+}
+
 /*=========================================================
 Profile
 ===========================================================*/

@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="Library\Helper\ProductImageDAO.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.27.5" />
     <PackageReference Include="dotenv.net" Version="3.2.1" />
     <PackageReference Include="EFCore.BulkExtensions.SqlServer" Version="8.1.3" />
@@ -25,6 +21,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
     <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="29.1.39" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Library\Helper\" />
   </ItemGroup>
 
 </Project>
