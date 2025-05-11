@@ -1,6 +1,7 @@
 ﻿using DTech.Models.EF;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace DTech.DAO
 {
@@ -150,7 +151,7 @@ namespace DTech.DAO
         }
 
         //Get all products by category id
-        public async Task<List<Product>> GetProductsByCategoryIdAsync(int? id)
+        public async Task<List<Product>> GetProductsByCategoryIdAsync(List<int> id)
         {
             if (id == null)
             {
@@ -161,10 +162,46 @@ namespace DTech.DAO
                 .Include(a => a.Brand)
                 .Include(a => a.Category)
                 .Include(a => a.Supplier)
-                .Where(a => a.CategoryId == id)
+                .Where(p => p.CategoryId != null && id.Contains(p.CategoryId.Value))
                 .OrderByDescending(a => a.ProductId)
                 .ToListAsync();
             return products;
+        }
+
+        //Get all products by category id and brand id
+        public async Task<List<Product>> GetByCategoryAndBrandAsync(int? categoryId, int? brandId)
+        {
+            if (categoryId == null || brandId == null)
+            {
+                return [];
+            }
+            var products = await context.Products
+                .AsNoTracking()
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .Where(a => a.CategoryId == categoryId && a.BrandId == brandId)
+                .OrderByDescending(a => a.ProductId)
+                .ToListAsync();
+            return products;
+        }
+
+        //Get a product by slug, category id and brand id
+        public async Task<Product?> GetBySlugAsync(string? slug, int? categoryId, int? brandId)
+        {
+            if (slug == null || categoryId == null || brandId == null)
+            {
+                return null;
+            }
+            var product = await context.Products
+                .AsNoTracking()
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .Include(a => a.ProductImages)
+                .Include(a => a.Specifications)
+                .FirstOrDefaultAsync(a => a.Slug == slug && a.CategoryId == categoryId && a.BrandId == brandId);
+            return product;
         }
 
         //Get all accessories

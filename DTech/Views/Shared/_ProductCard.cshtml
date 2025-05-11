@@ -13,7 +13,9 @@
         </div>
     }
     <a href="#" class="text-decoration-none">
-        <img src="@Model.Photo" class="card-img-top p-1 w-100 mx-auto d-block" alt="@Model.Name">
+        <div class="custom-container-img">
+            <img src="@Model.Photo" class="card-img-top p-1 w-100 mx-auto d-block" alt="@Model.Name">
+        </div>
         <div class="card-body p-2">
             <p class="text-start small fw-semibold mb-1 text-dark">
                 @(Model.Name!.Length > 40 ? Model.Name.Substring(0, 40) + "..." : Model.Name)

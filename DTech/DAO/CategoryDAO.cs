@@ -124,5 +124,20 @@ namespace DTech.DAO
                 .FirstOrDefaultAsync();
             return categoryId;
         }
+
+        //Get Category by Slug
+        public async Task<Category?> GetCategoryBySlugAsync(string? slug)
+        {
+            if (string.IsNullOrEmpty(slug))
+            {
+                return null;
+            }
+            var category = await context.Categories
+                .AsNoTracking()
+                .Include(c => c.InverseParent)
+                .Include(c => c.Parent)
+                .FirstOrDefaultAsync(c => c.Slug == slug);
+            return category;
+        }
     }
 }

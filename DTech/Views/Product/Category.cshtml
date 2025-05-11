@@ -1,0 +1,22 @@
+﻿@model IEnumerable<DTech.Models.EF.Product>
+
+@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var title = ViewBag.Title as string;
+}
+
+<div class="d-flex align-items-center justify-content-center">
+    <h2 >@title</h2>
+</div>
+
+<div class="position-relative">
+    <div class="row row-cols-3 row-cols-md-3 row-cols-lg-5 row-cols-xl-5 row-cols-xxl-5 g-md-1 g-lg-0 g-xxl-2">
+        @foreach (var product in Model)
+        {
+            <div class="col">
+                <partial name="_ProductCard" model="product" />
+            </div>
+        }
+    </div>
+</div>

@@ -32,10 +32,19 @@ namespace DTech.Controllers
         private async Task<List<Product>> GetProductsByCategory(string categoryName)
         {
             var categoryId = await categoryDAO.GetCategoryIdByNameAsync(categoryName);
-            var products = await productDAO.GetProductsByCategoryIdAsync(categoryId);
+
+            // Ensure categoryId is not null before using it
+            if (categoryId == null)
+            {
+                return [];
+            }
+
+            // Convert nullable int to int before adding to the list
+            var products = await productDAO.GetProductsByCategoryIdAsync([categoryId.Value]);
             return products;
         }
 
+        [Route("NotFound")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error(int statuscode)
         {
