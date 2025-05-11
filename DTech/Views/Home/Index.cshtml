@@ -5,11 +5,29 @@
 <partial name="_Slider" />
 
 @{
-    ViewBag.Title = "Hot Sales";
+    ViewBag.SectionTitle = "Hot Sales";
 }
 @await Html.PartialAsync("_ProductGrid", (IEnumerable<DTech.Models.EF.Product>)ViewBag.HotProducts)
 
+<partial name="_Category" />
+
+
 @{
-    ViewBag.Title = "Laptop";
+    ViewBag.SectionTitle = "Laptop";
 }
 @await Html.PartialAsync("_ProductGrid", (IEnumerable<DTech.Models.EF.Product>)ViewBag.LaptopProducts)
+
+@{
+    ViewBag.SectionTitle = "Smart Phone";
+}
+@await Html.PartialAsync("_ProductGrid", (IEnumerable<DTech.Models.EF.Product>)ViewBag.SmartphoneProducts)
+
+@{
+    ViewBag.SectionTitle = "Tablet";
+}
+@await Html.PartialAsync("_ProductGrid", (IEnumerable<DTech.Models.EF.Product>)ViewBag.TabletProducts)
+
+@{
+    ViewBag.SectionTitle = "Accessory";
+}
+@await Html.PartialAsync("_ProductGrid", (IEnumerable<DTech.Models.EF.Product>)ViewBag.AccessoriesProducts)

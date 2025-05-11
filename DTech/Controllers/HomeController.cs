@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using DTech.DAO;
 using DTech.Models;
+using DTech.Models.EF;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DTech.Controllers
@@ -15,19 +16,24 @@ namespace DTech.Controllers
         {
             ViewBag.Advertisements = await advertisementDAO.GetOrderedListAsync();
 
-            var laptopCategoryId = await categoryDAO.GetCategoryIdByNameAsync("Laptop");
-            var laptopProducts = await productDAO.GetProductsByCategoryIdAsync(laptopCategoryId);
-
-            var smartPhoneCategoryId = await categoryDAO.GetCategoryIdByNameAsync("Smart Phone");
-            var smartPhoneProducts = await productDAO.GetProductsByCategoryIdAsync(smartPhoneCategoryId);
-
             var hotProducts = await productDAO.GetDiscountedProductsAsync();
 
+            var accessoriesproduct = await productDAO.GetAccessoriesAsync();
+
             ViewBag.HotProducts = hotProducts;
-            ViewBag.LaptopProducts = laptopProducts;
-            ViewBag.SmartphoneProducts = smartPhoneProducts;
+            ViewBag.LaptopProducts = await GetProductsByCategory("Laptop");
+            ViewBag.SmartphoneProducts = await GetProductsByCategory("Smart Phone");
+            ViewBag.TabletProducts = await GetProductsByCategory("Tablet");
+            ViewBag.AccessoriesProducts = accessoriesproduct;
 
             return View();
+        }
+
+        private async Task<List<Product>> GetProductsByCategory(string categoryName)
+        {
+            var categoryId = await categoryDAO.GetCategoryIdByNameAsync(categoryName);
+            var products = await productDAO.GetProductsByCategoryIdAsync(categoryId);
+            return products;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

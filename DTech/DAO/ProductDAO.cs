@@ -167,6 +167,22 @@ namespace DTech.DAO
             return products;
         }
 
+        //Get all accessories
+        public async Task<List<Product>> GetAccessoriesAsync()
+        {
+            var products = await context.Products
+                .AsNoTracking()
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .Where(a => a.Category!.Name != "Laptop" && a.Category!.Name != "Smart Phone" && a.Category!.Name != "Tablet")
+                .ToListAsync();
+
+            // Shuffle the list randomly
+            var random = new Random();
+            return [.. products.OrderBy(p => random.Next())];
+        }
+
         //Get all products that are discounted
         public async Task<List<Product>> GetDiscountedProductsAsync()
         {
@@ -176,7 +192,7 @@ namespace DTech.DAO
                 .Include(a => a.Category)
                 .Include(a => a.Supplier)
                 .Where(a => a.Discount != null && a.Discount > 0)
-                .OrderByDescending(a => a.ProductId)
+                .OrderByDescending(a => a.Discount)
                 .ToListAsync();
             return products;
         }

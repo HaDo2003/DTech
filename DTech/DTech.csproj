@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Library\Helper\" />
+    <Folder Include="Views\Product\" />
   </ItemGroup>
 
 </Project>

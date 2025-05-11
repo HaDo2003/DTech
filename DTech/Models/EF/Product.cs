@@ -12,10 +12,14 @@ public partial class Product
     [Display(Name = "ID")]
     public int ProductId { get; set; }
 
+    [Display(Name = "Brand")]
+    [Required(ErrorMessage = "Please select brand of product")]
     public int? BrandId { get; set; }
 
     public int? SupplierId { get; set; }
 
+    [Display(Name = "Category")]
+    [Required(ErrorMessage = "Please select category of product")]
     public int? CategoryId { get; set; }
 
     [Required(ErrorMessage = "Please enter name of product")]

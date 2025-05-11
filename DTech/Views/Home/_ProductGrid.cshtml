@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<DTech.Models.EF.Product>
 @{
-    var title = ViewBag.Title as string;
+    var title = ViewBag.SectionTitle as string;
     var sliderId = "slider_" + Guid.NewGuid().ToString("N");
     var sectionClass = title == "Hot Sales" ? "category-section my-4 bg-hot-sales" : "category-section my-4";
     var hotSalesTitle = title == "Hot Sales" ? "text-uppercase fw-bold mb-1 hot-sales-title-custom" : "text-uppercase fw-bold mb-1";
@@ -31,7 +31,7 @@
 
         <!-- Scrollable Slider -->
         <div id="@sliderId" class="product-slider d-flex overflow-auto hide-scrollbar">
-            @foreach (var product in Model)
+            @foreach (var product in Model.Take(10))
             {
                 <div class="slider-item flex-shrink-0">
                     <partial name="_ProductCard" model="product" />
