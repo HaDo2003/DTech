@@ -1,4 +1,5 @@
 ﻿using DTech.DAO;
+using DTech.Models.EF;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DTech.Controllers
@@ -11,28 +12,45 @@ namespace DTech.Controllers
     ) : Controller
     {
         // Route: /laptop
-        [HttpGet("{categorySlug}")]
+        [HttpGet]
+        [Route("{categorySlug}")]
         public async Task<IActionResult> Category(string categorySlug)
         {
-            var category = await categoryDAO.GetCategoryBySlugAsync(categorySlug);
-            if (category == null) return NotFound();
-
-            // Get category IDs: main + all its children
-            var categoryIds = new List<int> { category.CategoryId };
-
-            // Include subcategory IDs
-            if (category.InverseParent != null && category.InverseParent.Count != 0)
+            var products = new List<Product>();
+            switch(categorySlug)
             {
-                categoryIds.AddRange(category.InverseParent.Select(c => c.CategoryId));
-            }
+                case "hot-sales":
+                    products = await productDAO.GetDiscountedProductsAsync();
+                    ViewBag.Title = "Hot Sales";
+                    break;
+                case "accessory":
+                    products = await productDAO.GetAccessoriesAsync();
+                    ViewBag.Title = "Accessories";
+                    break;
+                default:
+                    var category = await categoryDAO.GetCategoryBySlugAsync(categorySlug);
+                    if (category == null) return NotFound();
 
-            var products = await productDAO.GetProductsByCategoryIdAsync(categoryIds);
-            ViewBag.Title = category.Name;
+                    // Get category IDs: main + all its children
+                    var categoryIds = new List<int> { category.CategoryId };
+
+                    // Include subcategory IDs
+                    if (category.InverseParent != null && category.InverseParent.Count != 0)
+                    {
+                        categoryIds.AddRange(category.InverseParent.Select(c => c.CategoryId));
+                    }
+
+                    products = await productDAO.GetProductsByCategoryIdAsync(categoryIds);
+                    ViewBag.Title = category.Name;
+                    break;
+            }
+            
             return View("Category", products);
         }
 
         // Route: /laptop/acer
-        [HttpGet("{categorySlug}/{brandSlug}")]
+        [HttpGet]
+        [Route("{categorySlug}/{brandSlug}")]
         public async Task<IActionResult> CategoryBrand(string categorySlug, string brandSlug)
         {
             var category = await categoryDAO.GetCategoryBySlugAsync(categorySlug);
@@ -45,7 +63,8 @@ namespace DTech.Controllers
         }
 
         // Route: /laptop/acer/acer-aspire
-        [HttpGet("{categorySlug}/{brandSlug}/{productSlug}")]
+        [HttpGet]
+        [Route("{categorySlug}/{brandSlug}/{productSlug}")]
         public async Task<IActionResult> Detail(string categorySlug, string brandSlug, string productSlug)
         {
             var category = await categoryDAO.GetCategoryBySlugAsync(categorySlug);

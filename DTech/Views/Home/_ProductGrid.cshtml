@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<DTech.Models.EF.Product>
 @{
     var title = ViewBag.SectionTitle as string;
+    var slug = ViewBag.SectionTitle.ToLower().Replace(" ", "-") as string;
     var sliderId = "slider_" + Guid.NewGuid().ToString("N");
     var sectionClass = title == "Hot Sales" ? "category-section my-4 bg-hot-sales" : "category-section my-4";
     var hotSalesTitle = title == "Hot Sales" ? "text-uppercase fw-bold mb-1 hot-sales-title-custom" : "text-uppercase fw-bold mb-1";
@@ -11,7 +12,7 @@
             <h3 class="@hotSalesTitle">@title</h3>
         </div>
         <div class="col-6 d-flex align-items-center justify-content-end p-1 pe-3">
-            <a href="#" class="a-custom mb-0">
+            <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="@slug" class="a-custom mb-0">
                 View All
                 <i class="fa-solid fa-caret-right"></i>
             </a>

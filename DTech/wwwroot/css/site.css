@@ -262,7 +262,7 @@ Product Card
     }
 
 .custom-container-img {
-    height: 235px;
+    height: 245px;
     align-content: center;
 }
 /* Discount badge styling */
@@ -432,6 +432,11 @@ Featured Category
     font-weight: 700;
     margin-top: 20px;
 }
+/*=========================================================
+Category
+===========================================================*/
+
+
 
 /*=========================================================
 Profile

@@ -140,7 +140,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 var app = builder.Build();
 
 //Not Found
-app.UseStatusCodePagesWithReExecute("/Home/Error?statuscode={0}");
+app.UseStatusCodePagesWithRedirects("/Home/Error?statuscode={0}");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -165,5 +165,7 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();

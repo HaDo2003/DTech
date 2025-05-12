@@ -1,12 +1,12 @@
 ﻿@{
-    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
-    var currentAction = ViewData["ActionName"]?.ToString() ?? ViewContext.RouteData.Values["action"]?.ToString();
+    var currentPath = Context.Request.Path.ToString();
+    var isHome = currentPath == "/" || currentPath.Equals("/Home/Index", StringComparison.OrdinalIgnoreCase);
 }
 
 <div class="container my-1">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb pt-1 custom-breadcrumb">
-            @if (!(currentController == "Home" && currentAction == "Index"))
+            @if (!isHome)
             {
                 <li class="breadcrumb-item ps-2">
                     <a class="breadcrumb-link" href="@Url.Action("Index", "Home")">
@@ -14,7 +14,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item" aria-current="page">
-                    @currentAction
+                    @currentPath.TrimStart('/')
                 </li>
             }
         </ol>

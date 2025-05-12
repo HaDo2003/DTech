@@ -21,7 +21,7 @@
     }
 
     .product-card {
-        width: 220px;
+        width: 90%;
     }
 
         .product-card p.fw-semibold {
@@ -67,7 +67,7 @@
 ===========================================================*/
 @media(max-width: 991.5px) {
     .product-card {
-        width: 170px;
+        width: 100%;
     }
 
     .custom-container-img {
@@ -108,7 +108,7 @@
     }
     
     .product-card {
-        width: 170px;
+        width: 110%;
     }
 
     .custom-container-img {
@@ -127,11 +127,11 @@
 ===========================================================*/
 @media(max-width: 575.5px) {
     .product-card {
-        width: 155px;
+        width: 110%;
     }
 
     .custom-container-img {
-        height: 160px;
+        height: 170px;
     }
 
     .col {
@@ -156,7 +156,7 @@
 ===========================================================*/
 @media(max-width: 500px) {
     .product-card {
-        width: 150px;
+        width: 110%;
     }
 
     .custom-container-img {
