@@ -25,6 +25,7 @@ namespace DTech.Controllers
     {
         readonly string folderName = "Pre-thesis/Customer";
 
+        [HttpGet]
         public async Task<IActionResult> Index(string activeTab = "info")
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -41,7 +42,7 @@ namespace DTech.Controllers
         }
 
         // GET: Profile
-        [Route("")]
+        [Route("profile")]
         [HttpGet]
         public async Task<IActionResult> Profile()
         {
@@ -61,7 +62,7 @@ namespace DTech.Controllers
         }
 
         // POST: Profile/Edit
-        [Route("")]
+        [Route("profile")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
@@ -78,7 +79,7 @@ namespace DTech.Controllers
                     if (existingEmail)
                     {
                         ModelState.AddModelError("Email", "Email already exists.");
-                        return View("Profile", user);
+                        return View("Index", user);
                     }
 
                     // Check phone existed
@@ -86,7 +87,7 @@ namespace DTech.Controllers
                     if (existingPhone)
                     {
                         ModelState.AddModelError("PhoneNumber", "Phone Number already exists.");
-                        return View("Profile", user);
+                        return View("Index", user);
                     }
 
                     // Handle image change
@@ -106,7 +107,7 @@ namespace DTech.Controllers
                     bool result = await customerDAO.UpdateAsync(user);
                     if (result)
                     {
-                        return View("Profile", user);
+                        return View("Index", new { activeTab = "info" });
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -223,7 +224,7 @@ namespace DTech.Controllers
                 bool result = await customerAddressDAO.CreateAsync(newAddress);
                 if (result)
                 {
-                    return RedirectToAction("Profile", new { activeTab = "address" });
+                    return RedirectToAction("Index", new { activeTab = "address" });
                 }
             }
             ModelState.AddModelError("FullName", "Create Address Fail, please try again");
@@ -263,7 +264,7 @@ namespace DTech.Controllers
                     bool result = await customerAddressDAO.UpdateAsync(editAddress);
                     if (result)
                     {
-                        return RedirectToAction("Profile");
+                        return RedirectToAction("Index", new { activeTab = "address" });
                     }
                 }
                 catch (DbUpdateConcurrencyException)
@@ -311,24 +312,24 @@ namespace DTech.Controllers
         }
 
         // Post: Profile/Address/SwicthDefault
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SwitchDefault(int? id)
-        {
-            ViewData["ActionName"] = "Switch Default Address";
-            if (id == null) return NotFound();
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
-            var address = await customerAddressDAO.GetByIdAsync(id);
-            if (address == null) return NotFound();
-            address.IsDefault = !address.IsDefault;
-            bool result = await customerAddressDAO.UpdateAsync(address);
-            if (result)
-            {
-                return RedirectToAction("Profile");
-            }
-            ModelState.AddModelError("FullName", "Switch Default Address Fail, please try again");
-            return PartialView(address);
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> SwitchDefault(int? id)
+        //{
+        //    ViewData["ActionName"] = "Switch Default Address";
+        //    if (id == null) return NotFound();
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
+        //    var address = await customerAddressDAO.GetByIdAsync(id);
+        //    if (address == null) return NotFound();
+        //    address.IsDefault = !address.IsDefault;
+        //    bool result = await customerAddressDAO.UpdateAsync(address);
+        //    if (result)
+        //    {
+        //        return RedirectToAction("Profile");
+        //    }
+        //    ModelState.AddModelError("FullName", "Switch Default Address Fail, please try again");
+        //    return PartialView(address);
+        //}
     }
 }

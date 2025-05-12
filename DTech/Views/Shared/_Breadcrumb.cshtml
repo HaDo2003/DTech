@@ -1,5 +1,6 @@
 ﻿@{
     var currentPath = Context.Request.Path.ToString();
+    var lastSegment = currentPath.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
     var isHome = currentPath == "/" || currentPath.Equals("/Home/Index", StringComparison.OrdinalIgnoreCase);
 }
 
@@ -14,7 +15,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item" aria-current="page">
-                    @currentPath.TrimStart('/')
+                    @lastSegment!.TrimStart('/')
                 </li>
             }
         </ol>

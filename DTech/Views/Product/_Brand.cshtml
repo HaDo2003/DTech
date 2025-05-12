@@ -1,0 +1,19 @@
+﻿@model DTech.Models.EF.Brand
+@{
+    var categorySlug = ViewData["CategorySlug"] as string ?? "";
+    var brandSlug = ViewBag.BrandSlug as string;
+    var brandName = ViewBag.BrandName as string;
+}
+
+<div class="col">
+    <a asp-controller="Product"
+       asp-action="CategoryBrand"
+       asp-route-categorySlug="@categorySlug"
+       asp-route-brandSlug="@Model.Slug"
+       class="category-item">
+        <div class="icon-container">
+            <img src="@Model.Logo" class="card-img-top p-1 w-100 mx-auto d-block" alt="@Model.Name">
+        </div>
+        <div class="category-name">@Model.Name</div>
+    </a>
+</div>

@@ -163,6 +163,24 @@ app.MapControllerRoute(
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
+    name: "product-detail",
+    pattern: "{categorySlug}/{brandSlug}/{productSlug}",
+    defaults: new { controller = "Product", action = "ProductDetail" }
+);
+
+app.MapControllerRoute(
+    name: "brand",
+    pattern: "{categorySlug}/{brandSlug}",
+    defaults: new { controller = "Product", action = "Brand" }
+);
+
+app.MapControllerRoute(
+    name: "category",
+    pattern: "{categorySlug}",
+    defaults: new { controller = "Product", action = "Category" }
+);
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 

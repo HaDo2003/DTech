@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DTech.Controllers
 {
-    [Route("")]
     public class ProductController(
         BrandDAO brandDAO,
         CategoryDAO categoryDAO,
@@ -13,7 +12,6 @@ namespace DTech.Controllers
     {
         // Route: /laptop
         [HttpGet]
-        [Route("{categorySlug}")]
         public async Task<IActionResult> Category(string categorySlug)
         {
             var products = new List<Product>();
@@ -50,7 +48,6 @@ namespace DTech.Controllers
 
         // Route: /laptop/acer
         [HttpGet]
-        [Route("{categorySlug}/{brandSlug}")]
         public async Task<IActionResult> CategoryBrand(string categorySlug, string brandSlug)
         {
             var category = await categoryDAO.GetCategoryBySlugAsync(categorySlug);
@@ -64,7 +61,6 @@ namespace DTech.Controllers
 
         // Route: /laptop/acer/acer-aspire
         [HttpGet]
-        [Route("{categorySlug}/{brandSlug}/{productSlug}")]
         public async Task<IActionResult> Detail(string categorySlug, string brandSlug, string productSlug)
         {
             var category = await categoryDAO.GetCategoryBySlugAsync(categorySlug);
