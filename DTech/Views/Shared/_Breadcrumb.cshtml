@@ -1,24 +1,46 @@
 ﻿@{
-    var currentPath = Context.Request.Path.ToString();
-    var lastSegment = currentPath.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-    var isHome = currentPath == "/" || currentPath.Equals("/Home/Index", StringComparison.OrdinalIgnoreCase);
+    var segments = Context.Request.Path.ToString()
+        .Split('/', StringSplitOptions.RemoveEmptyEntries);
+
+    var isHome = segments.Length == 0;
+    var accumulatedPath = "";
 }
 
 <div class="container my-1">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb pt-1 custom-breadcrumb">
-            @if (!isHome)
+            @if(!isHome)
             {
                 <li class="breadcrumb-item ps-2">
-                    <a class="breadcrumb-link" href="@Url.Action("Index", "Home")">
-                        Home
-                    </a>
+                    <a asp-controller="Home" asp-action="Index" class="breadcrumb-link">Home</a>
                 </li>
-                <li class="breadcrumb-item" aria-current="page">
-                    @lastSegment!.TrimStart('/')
-                </li>
+            }
+        
+            @for (int i = 0; i < segments.Length; i++)
+            {
+                var segment = segments[i];
+
+                if (segment.Equals("Authentication", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                accumulatedPath += $"/{segment}";
+                var isLast = i == segments.Length - 1 || segments.Skip(i + 1).All(s => s.Equals("Authentication", StringComparison.OrdinalIgnoreCase));
+
+                if (isLast)
+                {
+                    <li class="breadcrumb-item breadcrumb-active" aria-current="page">
+                        @segment
+                    </li>
+                }
+                else
+                {
+                    <li class="breadcrumb-item">
+                        <a class="breadcrumb-link" href="@accumulatedPath">@segment</a>
+                    </li>
+                }
             }
         </ol>
     </nav>
 </div>
-

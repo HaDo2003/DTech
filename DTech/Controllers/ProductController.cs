@@ -12,10 +12,10 @@ namespace DTech.Controllers
     {
         // Route: /laptop
         [HttpGet]
-        public async Task<IActionResult> Category(string categorySlug)
+        public async Task<IActionResult> Category(string? categorySlug, string? sortOrder)
         {
             var products = new List<Product>();
-            switch(categorySlug)
+            switch (categorySlug)
             {
                 case "hot-sales":
                     products = await productDAO.GetDiscountedProductsAsync();
@@ -40,9 +40,19 @@ namespace DTech.Controllers
 
                     products = await productDAO.GetProductsByCategoryIdAsync(categoryIds);
                     ViewBag.Title = category.Name;
+
                     break;
             }
+            var brands = products
+                .Where(p => p.Brand != null)
+                .Select(p => p.Brand)
+                .DistinctBy(b => b!.BrandId)
+                .ToList();
+            products = await productDAO.SortProducts(products, sortOrder);
             
+            ViewData["CategorySlug"] = categorySlug;
+            ViewBag.Brands = brands;
+            ViewBag.SortOrder = sortOrder;
             return View("Category", products);
         }
 
@@ -71,7 +81,7 @@ namespace DTech.Controllers
             if (product == null) return NotFound();
 
             ViewBag.Breadcrumb = new[] { category.Name, brand.Name, product.Name };
-            return View("Detail", product);
+            return View("ProductDetail", product);
         }
     }
 }

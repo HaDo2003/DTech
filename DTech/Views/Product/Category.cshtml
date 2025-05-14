@@ -4,23 +4,72 @@
     ViewData["Title"] = ViewBag.Title;
     Layout = "~/Views/Shared/_Layout.cshtml";
     var title = ViewBag.Title as string;
+    var brands = ViewBag.Brands as List<DTech.Models.EF.Brand>;
+    var sortOrder = ViewBag.SortOrder as string ?? "newest";
+    var categorySlug = ViewData["CategorySlug"] as string ?? "";
 }
 
 <div class="d-flex align-items-center justify-content-center">
     <h2 >@title</h2>
 </div>
 
-<div class="container">
-    <div class="category-nav">
-        <div class="row text-center">
-
+@if (brands != null && brands.Any())
+{
+    <div class="container">
+        <div class="category-nav">
+            <div class="row text-center">
+                @foreach (var brand in brands)
+                {
+                    <div class="col">
+                        <a asp-controller="Product"
+                           asp-action="CategoryBrand"
+                           asp-route-categorySlug="@categorySlug"
+                           asp-route-brandSlug="@brand.Slug"
+                           class="category-item">
+                            <div class="icon-container">
+                                <img src="@brand.Logo" class="card-img-top p-1 w-100 mx-auto d-block" alt="@brand.Name">
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
         </div>
     </div>
-</div>
+}
 
+<!-- Sort Options as Horizontal Buttons -->
+<form method="get" asp-controller="Product" asp-action="Category" class="mb-4">
+    <input type="hidden" name="categorySlug" value="@categorySlug" />
+    
+    <div class="d-flex flex-wrap gap-2 px-3">
+        <h4>Sort By: </h4>
+        @{
+            var sortOptions = new List<(string Label, string Value)>
+            {
+                ("Newsest", "newest"),
+                ("Discount", "discount"),
+                ("Name ↑", "name_asc"),
+                ("Name ↓", "name_desc"),
+                ("Price ↑", "price_asc"),
+                ("Price ↓", "price_desc")
+            };
+        }
+
+        @foreach (var (label, value) in sortOptions)
+        {
+            var isActive = sortOrder == value;
+            <button type="submit"
+                    name="sortOrder"
+                    value="@value"
+                    class="btn btn-custom @(isActive ? "btn-active" : "btn-outline-secondary")">
+                @label
+            </button>
+        }
+    </div>
+</form>
 
 <div class="position-relative">
-    <div class="row row-cols-3 row-cols-md-3 row-cols-lg-5 row-cols-xl-5 row-cols-xxl-5 g-md-1 g-lg-0 g-xxl-2">
+    <div class="ps-lg-3 row row-cols-3 row-cols-md-3 row-cols-lg-5 row-cols-xl-5 row-cols-xxl-5 g-md-1 g-lg-0 g-xxl-2">
         @foreach (var product in Model)
         {
             <div class="col">

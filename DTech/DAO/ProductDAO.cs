@@ -233,5 +233,20 @@ namespace DTech.DAO
                 .ToListAsync();
             return products;
         }
+
+        //Sort products
+        public Task<List<Product>> SortProducts(List<Product> products, string? sortOrder)
+        {
+            return Task.FromResult(sortOrder switch
+            {
+                "newest" => products.OrderBy(p => p.ProductId).ToList(),
+                "discount" => products.OrderByDescending(p => p.Discount).ToList(),
+                "name_asc" => products.OrderBy(p => p.Name).ToList(),
+                "name_desc" => products.OrderByDescending(p => p.Name).ToList(),
+                "price_asc" => products.OrderBy(p => p.Price).ToList(),
+                "price_desc" => products.OrderByDescending(p => p.Price).ToList(),
+                _ => products
+            });
+        }
     }
 }
