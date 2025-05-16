@@ -37,9 +37,6 @@ Nav Bar
     display: none;
 }
 
-
-
-
 .fontsize {
     font-size: 13px;
 }
@@ -451,7 +448,14 @@ Category
     background: #0d6efd;
     color: white;
 }
-
+/*=========================================================
+Product Detail
+===========================================================*/
+.box-product-content .box-left,
+.box-product-content .box-right {
+    width: calc(100% / 2 - 6px);
+    height: 80%;
+}
 /*=========================================================
 Profile
 ===========================================================*/

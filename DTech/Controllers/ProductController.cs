@@ -60,28 +60,66 @@ namespace DTech.Controllers
         [HttpGet]
         public async Task<IActionResult> CategoryBrand(string categorySlug, string brandSlug)
         {
-            var category = await categoryDAO.GetCategoryBySlugAsync(categorySlug);
-            var brand = await brandDAO.GetBrandBySlugAsync(brandSlug);
-            if (category == null || brand == null) return NotFound();
+            var products = new List<Product>();
+            Category? category = new();
+            Brand? brand = await brandDAO.GetBrandBySlugAsync(brandSlug);
+            if (brand == null) return NotFound();
 
-            var products = await productDAO.GetByCategoryAndBrandAsync(category.CategoryId, brand.BrandId);
-            ViewBag.Title = $"{brand.Name} {category.Name}";
+            switch (categorySlug)
+            {
+                case "hot-sales":
+                    products = await productDAO.GetDiscountedProductsAsync(brand.BrandId);
+                    var viewBagSlug = "Hot Sales";
+                    ViewBag.Title = $"{brand.Name} {viewBagSlug}";
+                    break;
+                case "accessory":
+                    products = await productDAO.GetAccessoriesAsync(brand.BrandId);
+                    ViewBag.Title = "Accessories";
+                    break;
+                default:
+                    category = await categoryDAO.GetCategoryBySlugAsync(categorySlug);
+                    if (category == null) return NotFound();
+
+                    // Get category IDs: main + all its children
+                    var categoryIds = new List<int> { category.CategoryId };
+
+                    // Include subcategory IDs
+                    if (category.InverseParent != null && category.InverseParent.Count != 0)
+                    {
+                        categoryIds.AddRange(category.InverseParent.Select(c => c.CategoryId));
+                    }
+
+                    products = await productDAO.GetByCategoryAndBrandAsync(category.CategoryId, brand.BrandId);
+                    ViewBag.Title = $"{brand.Name} {category.Name}";
+
+                    break;
+            }
+            
             return View("Category", products);
         }
 
         // Route: /laptop/acer/acer-aspire
         [HttpGet]
-        public async Task<IActionResult> Detail(string categorySlug, string brandSlug, string productSlug)
+        public async Task<IActionResult> ProductDetail(string categorySlug, string brandSlug, string productSlug)
         {
-            var category = await categoryDAO.GetCategoryBySlugAsync(categorySlug);
-            var brand = await brandDAO.GetBrandBySlugAsync(brandSlug);
-            if (category == null || brand == null) return NotFound();
+            try
+            {
+                var category = await categoryDAO.GetCategoryBySlugAsync(categorySlug);
+                var brand = await brandDAO.GetBrandBySlugAsync(brandSlug);
+                if (category == null || brand == null) return NotFound();
 
-            var product = await productDAO.GetBySlugAsync(productSlug, category.CategoryId, brand.BrandId);
-            if (product == null) return NotFound();
+                var product = await productDAO.GetBySlugAsync(productSlug, category.CategoryId, brand.BrandId);
+                if (product == null) return NotFound();
+                await productDAO.IncreaseViewsAsync(product.ProductId);
 
-            ViewBag.Breadcrumb = new[] { category.Name, brand.Name, product.Name };
-            return View("ProductDetail", product);
+                ViewBag.Breadcrumb = new[] { category.Name, brand.Name, product.Name };
+                return View(product);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return NotFound();
+            }
         }
     }
 }

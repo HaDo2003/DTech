@@ -75,7 +75,7 @@ namespace DTech.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 //Check if adv already exist
-                product.Slug = product.Name?.ToLower().Replace(" ", "-");
+                product.Slug = product.Name?.ToLower().Replace(" ", "-").Replace("/", "-");
 
                 var slug = await productDAO.CheckSlugAsync(product.Slug);
 
@@ -175,7 +175,7 @@ namespace DTech.Areas.Admin.Controllers
                 try
                 {
                     // Generate slug from the updated name
-                    string newSlug = product.Name?.ToLower().Replace(" ", "-") ?? string.Empty;
+                    string newSlug = product.Name?.ToLower().Replace(" ", "-").Replace("/", "-") ?? string.Empty;
 
                     // Check if the slug is already used by another product
                     var existingProduct = await productDAO.CheckSlugAsync(product.Slug, product.ProductId);

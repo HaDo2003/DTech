@@ -65,7 +65,7 @@
                                         <td>@Html.DisplayFor(model => model.Warranty)</td>
                                     </tr>
                                     <tr>
-                                        <th>@Html.DisplayNameFor(model => model.StatusProduct)</th>
+                                        <th>@Html.DisplayNameFor(model => model.Status)</th>
                                         <td>
                                             @if (Model.Status != null)
                                             {
@@ -73,6 +73,27 @@
                                                 if (ViewBag.StatusDictionary.ContainsKey(statusValue))
                                                 {
                                                     @ViewBag.StatusDictionary[statusValue]
+                                                }
+                                                else
+                                                {
+                                                    <span>Unknown Status</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span>Status not set</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(model => model.StatusProduct)</th>
+                                        <td>
+                                            @if (Model.StatusProduct != null)
+                                            {
+                                                var statusValue = Model.StatusProduct.Value;
+                                                if (ViewBag.StatusProductDictionary.ContainsKey(statusValue))
+                                                {
+                                                    @ViewBag.StatusProductDictionary[statusValue]
                                                 }
                                                 else
                                                 {

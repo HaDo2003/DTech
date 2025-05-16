@@ -39,6 +39,12 @@ namespace DTech.Library
                     new() { Value = "False", Text = "Out of stock" },
                 };
 
+                controller.ViewBag.StatusProductDictionary = new Dictionary<bool, string>
+                {
+                    { true, "In stock" },
+                    { false, "Out of stock" },
+                };
+
                 controller.ViewBag.StatusPayment = new List<SelectListItem>
                 {
                     new() { Value = "1", Text = "Paid" },

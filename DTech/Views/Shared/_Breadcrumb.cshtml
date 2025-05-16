@@ -19,6 +19,9 @@
             @for (int i = 0; i < segments.Length; i++)
             {
                 var segment = segments[i];
+                var displaySegment = string.Join(' ', segments[i]
+                    .Split('-')
+                    .Select(word => char.ToUpper(word[0]) + word.Substring(1)));
 
                 if (segment.Equals("Authentication", StringComparison.OrdinalIgnoreCase))
                 {
@@ -31,13 +34,13 @@
                 if (isLast)
                 {
                     <li class="breadcrumb-item breadcrumb-active" aria-current="page">
-                        @segment
+                        @displaySegment
                     </li>
                 }
                 else
                 {
                     <li class="breadcrumb-item">
-                        <a class="breadcrumb-link" href="@accumulatedPath">@segment</a>
+                        <a class="breadcrumb-link" href="@accumulatedPath">@displaySegment</a>
                     </li>
                 }
             }

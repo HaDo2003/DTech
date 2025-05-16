@@ -76,6 +76,7 @@ public partial class Product
 
     public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
 
+    [Display(Name = "Comment")]
     public virtual ICollection<ProductComment> ProductComments { get; set; } = new List<ProductComment>();
 
     public virtual ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();

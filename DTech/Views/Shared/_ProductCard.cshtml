@@ -4,6 +4,8 @@
     var formattedFinalPrice = string.Format("{0:N0}", finalPrice);
     var formattedOriginalPrice = string.Format("{0:N0}", Model.Price);
     var discountPercent = Model.Discount?.ToString("0.#");
+    var categorySlug = Model.Category!.Slug;
+    var brandSlug = Model.Brand!.Slug;
 }
 <div class="card h-100 product-card position-relative border-0">
     @if (Model.Discount > 0)
@@ -12,7 +14,12 @@
             <span class="badge bg-danger rounded-pill">-@discountPercent%</span>
         </div>
     }
-    <a asp-controller="Product" asp-action="Detail" class="text-decoration-none">
+    <a asp-controller="Product" 
+        asp-action="ProductDetail"
+        asp-route-categorySlug="@categorySlug"
+        asp-route-brandSlug="@brandSlug"
+        asp-route-productSlug="@Model.Slug"
+        class="text-decoration-none">
         <div class="custom-container-img">
             <img src="@Model.Photo" class="card-img-top p-1 w-100 mx-auto d-block" alt="@Model.Name">
         </div>

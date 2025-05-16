@@ -1,7 +1,6 @@
 ﻿using DTech.Models.EF;
 using EFCore.BulkExtensions;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace DTech.DAO
 {
@@ -162,7 +161,7 @@ namespace DTech.DAO
                 .Include(a => a.Brand)
                 .Include(a => a.Category)
                 .Include(a => a.Supplier)
-                .Where(p => p.CategoryId != null && id.Contains(p.CategoryId.Value))
+                .Where(p => p.CategoryId != null && id.Contains(p.CategoryId.Value) && p.Status == 1)
                 .OrderByDescending(a => a.ProductId)
                 .ToListAsync();
             return products;
@@ -180,7 +179,7 @@ namespace DTech.DAO
                 .Include(a => a.Brand)
                 .Include(a => a.Category)
                 .Include(a => a.Supplier)
-                .Where(a => a.CategoryId == categoryId && a.BrandId == brandId)
+                .Where(a => a.CategoryId == categoryId && a.BrandId == brandId && a.Status == 1)
                 .OrderByDescending(a => a.ProductId)
                 .ToListAsync();
             return products;
@@ -200,7 +199,8 @@ namespace DTech.DAO
                 .Include(a => a.Supplier)
                 .Include(a => a.ProductImages)
                 .Include(a => a.Specifications)
-                .FirstOrDefaultAsync(a => a.Slug == slug && a.CategoryId == categoryId && a.BrandId == brandId);
+                //.FirstOrDefaultAsync(a => a.Slug == slug && a.CategoryId == categoryId && a.BrandId == brandId && a.Status == 1);
+                .FirstOrDefaultAsync(a => a.Slug == slug && a.Status == 1);
             return product;
         }
 
@@ -212,7 +212,26 @@ namespace DTech.DAO
                 .Include(a => a.Brand)
                 .Include(a => a.Category)
                 .Include(a => a.Supplier)
-                .Where(a => a.Category!.Name != "Laptop" && a.Category!.Name != "Smart Phone" && a.Category!.Name != "Tablet")
+                .Where(a => a.Category!.Name != "Laptop" && a.Category!.Name != "Smart Phone" && a.Category!.Name != "Tablet" && a.Status == 1)
+                .ToListAsync();
+
+            // Shuffle the list randomly
+            var random = new Random();
+            return [.. products.OrderBy(p => random.Next())];
+        }
+
+        public async Task<List<Product>> GetAccessoriesAsync(int brandId)
+        {
+            var products = await context.Products
+                .AsNoTracking()
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .Where(a => a.Category!.Name != "Laptop" 
+                    && a.Category!.Name != "Smart Phone" 
+                    && a.Category!.Name != "Tablet"
+                    && a.BrandId == brandId
+                    && a.Status == 1)
                 .ToListAsync();
 
             // Shuffle the list randomly
@@ -228,7 +247,20 @@ namespace DTech.DAO
                 .Include(a => a.Brand)
                 .Include(a => a.Category)
                 .Include(a => a.Supplier)
-                .Where(a => a.Discount != null && a.Discount > 0)
+                .Where(a => a.Discount != null && a.Discount > 0 && a.Status == 1)
+                .OrderByDescending(a => a.Discount)
+                .ToListAsync();
+            return products;
+        }
+
+        public async Task<List<Product>> GetDiscountedProductsAsync(int brandId)
+        {
+            var products = await context.Products
+                .AsNoTracking()
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .Where(a => a.Discount != null && a.Discount > 0 && a.BrandId == brandId && a.Status == 1)
                 .OrderByDescending(a => a.Discount)
                 .ToListAsync();
             return products;
@@ -239,14 +271,37 @@ namespace DTech.DAO
         {
             return Task.FromResult(sortOrder switch
             {
-                "newest" => products.OrderBy(p => p.ProductId).ToList(),
-                "discount" => products.OrderByDescending(p => p.Discount).ToList(),
-                "name_asc" => products.OrderBy(p => p.Name).ToList(),
-                "name_desc" => products.OrderByDescending(p => p.Name).ToList(),
-                "price_asc" => products.OrderBy(p => p.Price).ToList(),
-                "price_desc" => products.OrderByDescending(p => p.Price).ToList(),
+                "newest" => [.. products.Where(a => a.Status == 1).OrderBy(p => p.ProductId)],
+                "discount" => [.. products.Where(a => a.Status == 1).OrderByDescending(p => p.Discount)],
+                "name_asc" => [.. products.Where(a => a.Status == 1).OrderBy(p => p.Name)],
+                "name_desc" => [.. products.Where(a => a.Status == 1).OrderByDescending(p => p.Name)],
+                "price_asc" => [.. products.Where(a => a.Status == 1).OrderBy(p => p.Price)],
+                "price_desc" => [.. products.Where(a => a.Status == 1).OrderByDescending(p => p.Price)],
                 _ => products
             });
         }
+
+        //Update product views
+        public async Task<bool> IncreaseViewsAsync(int? id)
+        {
+            try
+            {
+                var product = await context.Products.FindAsync(id);
+                if (product != null)
+                {
+                    product.Views = (product.Views ?? 0) + 1;
+                    context.Products.Update(product);
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
     }
 }

@@ -1,6 +1,53 @@
-﻿@model IEnumerable<DTech.Models.EF.Product>
+﻿@model DTech.Models.EF.Product  
 
-@{
-    ViewData["Title"] = ViewBag.Title;
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+@{  
+    ViewData["Title"] = ViewBag.Title;  
+    Layout = "~/Views/Shared/_Layout.cshtml";  
+}  
+
+<div class="container">  
+    <div class="box-product-content gap-12 d-flex justify-content-between">  
+        <div class="box-left d-flex justify-content-center">  
+            <img src="@Model.Photo" class="img-fluid" alt="@Model.Name" />  
+        </div>  
+        <div class="box-right py-2 text-start">  
+            <h4>@Model.Name</h4>  
+            <div class="row">  
+                <div class="col-2">  
+                    @Html.DisplayNameFor(model => model.ProductId): @Html.DisplayFor(model => model.ProductId)
+                </div>  |
+                <div class="col-3">
+                    @Html.DisplayNameFor(model => model.ProductComments): 
+                    @(@Model.ProductComments?.Count() ?? 0)
+                </div>  |
+                <div class="col-2">
+                    @Html.DisplayNameFor(model => model.Views): @Html.DisplayFor(model => model.Views)
+                </div>
+            </div>  
+            <div class="row">
+                <div class="col-4">
+                    @Html.DisplayNameFor(model => model.Warranty): @Html.DisplayFor(model => model.Warranty) months
+                </div>  |
+                <div class="col-4">
+                    @Html.DisplayNameFor(model => model.StatusProduct): 
+                    @if (Model.StatusProduct != null)
+                    {
+                        var statusValue = Model.StatusProduct.Value;
+                        if (ViewBag.StatusProductDictionary.ContainsKey(statusValue))
+                        {
+                            @ViewBag.StatusProductDictionary[statusValue]
+                        }
+                        else
+                        {
+                            <span>Unknown Status</span>
+                        }
+                    }
+                    else
+                    {
+                        <span>Status not set</span>
+                    }
+                </div>
+            </div>
+        </div>  
+    </div>  
+</div>
