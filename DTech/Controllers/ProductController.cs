@@ -1,13 +1,16 @@
 ﻿using DTech.DAO;
 using DTech.Models.EF;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DTech.Controllers
 {
     public class ProductController(
         BrandDAO brandDAO,
         CategoryDAO categoryDAO,
-        ProductDAO productDAO
+        ProductDAO productDAO,
+        SpecificationDAO specificationDAO,
+        ProductCommentDAO productCommentDAO
     ) : Controller
     {
         // Route: /laptop
@@ -111,8 +114,12 @@ namespace DTech.Controllers
                 var product = await productDAO.GetBySlugAsync(productSlug, category.CategoryId, brand.BrandId);
                 if (product == null) return NotFound();
                 await productDAO.IncreaseViewsAsync(product.ProductId);
+                var specifications = await specificationDAO.GetSpecificationsByProductIdAsync(product.ProductId);
+                var comments = await productCommentDAO.GetCommentsByProductIdAsync(product.ProductId);
 
                 ViewBag.Breadcrumb = new[] { category.Name, brand.Name, product.Name };
+                ViewBag.Specifications = specifications;
+                ViewBag.Comments = comments;
                 return View(product);
             }
             catch (Exception ex)
@@ -120,6 +127,40 @@ namespace DTech.Controllers
                 Console.WriteLine(ex.Message);
                 return NotFound();
             }
+        }
+
+        //Recently viewed products
+        [HttpGet]
+        public async Task<IActionResult> RecentlyViewed(int? productId)
+        {
+            if (productId == null)
+                return BadRequest();
+
+            var cookie = Request.Cookies["recentlyViewed"];
+            List<int> recentlyViewedIds = new();
+            if (!string.IsNullOrEmpty(cookie))
+            {
+                try
+                {
+                    recentlyViewedIds = System.Text.Json.JsonSerializer.Deserialize<List<int>>(cookie);
+                }
+                catch
+                {
+                    // Ignore parse error
+                }
+            }
+
+            // Remove current productId from the list
+            recentlyViewedIds.Remove(productId.Value);
+
+            var recentlyViewedProducts = await productDAO.GetByIdsAsync(recentlyViewedIds);
+
+            // Preserve the order
+            recentlyViewedProducts = recentlyViewedProducts
+                .OrderBy(p => recentlyViewedIds.IndexOf(p.ProductId))
+                .ToList();
+
+            return PartialView("_RecentlyViewed", recentlyViewedProducts);
         }
     }
 }

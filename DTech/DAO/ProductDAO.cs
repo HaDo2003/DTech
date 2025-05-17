@@ -18,6 +18,15 @@ namespace DTech.DAO
                 .Include(a => a.Supplier)
                 .ToListAsync();
         }
+
+        //Return all content of table with ids
+        public async Task<List<Product>> GetByIdsAsync(List<int> ids)
+        {
+            return await context.Products
+                .Where(p => ids.Contains(p.ProductId))
+                .ToListAsync();
+        }
+
         //Return one row of table
         public async Task<Product?> GetByIdAsync(int? id)
         {

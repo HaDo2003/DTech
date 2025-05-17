@@ -1,53 +1,251 @@
-﻿@model DTech.Models.EF.Product  
+﻿@model DTech.Models.EF.Product
 
-@{  
-    ViewData["Title"] = ViewBag.Title;  
-    Layout = "~/Views/Shared/_Layout.cshtml";  
-}  
+@{
+    ViewData["Title"] = ViewBag.Title;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var finalPrice = Model.Price * (1 - Model.Discount / 100m);
+    var savePrice = Model.Price - finalPrice;
+    var discountPercent = Model.Discount?.ToString("0.#");
+    var formattedFinalPrice = string.Format("{0:N0}", finalPrice);
+    var formattedOriginalPrice = string.Format("{0:N0}", Model.Price);
+    var formattedSavePrice = string.Format("{0:N0}", savePrice);
+    var specifications = ViewBag.Specifications as List<DTech.Models.EF.Specification>;
+    var comments = ViewBag.Comments as List<DTech.Models.EF.ProductComment>;
+    var preview = Model.Description?.Length > 150
+                            ? Model.Description.Substring(0, 1000) + "..."
+                            : Model.Description;
+}
 
-<div class="container">  
-    <div class="box-product-content gap-12 d-flex justify-content-between">  
-        <div class="box-left d-flex justify-content-center">  
-            <img src="@Model.Photo" class="img-fluid" alt="@Model.Name" />  
-        </div>  
-        <div class="box-right py-2 text-start">  
-            <h4>@Model.Name</h4>  
-            <div class="row">  
-                <div class="col-2">  
-                    @Html.DisplayNameFor(model => model.ProductId): @Html.DisplayFor(model => model.ProductId)
-                </div>  |
-                <div class="col-3">
-                    @Html.DisplayNameFor(model => model.ProductComments): 
-                    @(@Model.ProductComments?.Count() ?? 0)
-                </div>  |
-                <div class="col-2">
-                    @Html.DisplayNameFor(model => model.Views): @Html.DisplayFor(model => model.Views)
+<div class="container">
+    <div class="box-product-content gap-12 d-flex justify-content-between">
+        <div class="box-left d-flex justify-content-center position-relative">
+            @if (Model.Discount > 0)
+            {
+                <div class="position-absolute end-0 top-0 m-2">
+                    <span class="badge bg-danger rounded-pill fs-4 px-3 py-2">-@discountPercent%</span>
                 </div>
-            </div>  
-            <div class="row">
-                <div class="col-4">
-                    @Html.DisplayNameFor(model => model.Warranty): @Html.DisplayFor(model => model.Warranty) months
-                </div>  |
-                <div class="col-4">
-                    @Html.DisplayNameFor(model => model.StatusProduct): 
-                    @if (Model.StatusProduct != null)
-                    {
-                        var statusValue = Model.StatusProduct.Value;
-                        if (ViewBag.StatusProductDictionary.ContainsKey(statusValue))
+            }
+            <img src="@Model.Photo" class="img-fluid" alt="@Model.Name" />
+        </div>
+
+        <div class="box-right py-2 text-start">
+            <h3>@Model.Name</h3>
+
+            <div class="row height-custom flex-wrap">
+                <div class="col-6 col-xl-2 d-flex align-items-center">
+                    <p class="product-information mb-0">
+                        @Html.DisplayNameFor(model => model.ProductComments):
+                        @(@Model.ProductComments?.Count() ?? 0)
+                    </p>
+                </div>|
+                <div class="col-6 col-xl-2 d-flex align-items-center">
+                    <p class="product-information mb-0">
+                        @Html.DisplayNameFor(model => model.Views): @Html.DisplayFor(model => model.Views)
+                    </p>
+                </div>|
+                <div class="col-6 col-xl-3 d-flex align-items-center">
+                    <p class="product-information mb-0">
+                        @Html.DisplayNameFor(model => model.Warranty): @Html.DisplayFor(model => model.Warranty) months
+                    </p>
+                </div>|
+                <div class="col-6 col-xl d-flex align-items-center">
+                    <p class="product-information mb-0">
+                        @Html.DisplayNameFor(model => model.StatusProduct):
+                        @if (Model.StatusProduct != null)
                         {
-                            @ViewBag.StatusProductDictionary[statusValue]
+                            var statusValue = Model.StatusProduct.Value;
+                            if (ViewBag.StatusProductDictionary.ContainsKey(statusValue))
+                            {
+                                @ViewBag.StatusProductDictionary[statusValue]
+                            }
+                            else
+                            {
+                                <span>Unknown Status</span>
+                            }
                         }
                         else
                         {
-                            <span>Unknown Status</span>
+                            <span>Status not set</span>
                         }
-                    }
-                    else
-                    {
-                        <span>Status not set</span>
-                    }
+                    </p>
                 </div>
             </div>
-        </div>  
-    </div>  
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="bg-light border rounded px-4 py-3 d-flex align-items-center gap-5 mt-3">
+                        @if (Model.Discount > 0)
+                        {
+                            <p class="text-danger fw-bold mb-0 product-price1">
+                                $@formattedFinalPrice
+                            </p>
+                            <p class="text-muted text-decoration-line-through mb-0 product-price2">
+                                $@formattedOriginalPrice
+                            </p>
+                            <p class="text-danger mb-0 product-price2">
+                                Save $@formattedSavePrice
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="text-dark fw-bold fs-2 mb-0 product-price1">
+                                $@formattedOriginalPrice
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.PromotionalGift != null)
+            {
+                <div class="w-100 mt-4">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card promotion-card">
+                                <div class="card-header bg-danger text-white">
+                                    <h2 class="mb-0">
+                                        <i class="fas fa-gift me-2"></i>
+                                        Promotion
+                                    </h2>
+                                </div>
+                                <div class="card-body bg-light">
+                                    @Html.Raw(Model.PromotionalGift)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="product-purchase-area">
+                <div class="quantity-section">
+                    <label for="quantity" class="quantity-label">Quantity:</label>
+                    <div class="quantity-control">
+                        <button type="button" class="btn-quantity-adjust btn-decrease" id="decreaseQuantity">−</button>
+                        <input type="text" class="quantity-input" id="quantity" name="quantity" value="1" readonly>
+                        <button type="button" class="btn-quantity-adjust btn-increase" id="increaseQuantity">+</button>
+                    </div>
+
+                    <button type="button" class="btn-add-to-cart" id="addToCart">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                </div>
+
+                <div class="buy-now-section">
+                    <button type="button" class="btn-buy-now" id="buyNow">
+                        BUY NOW
+                        <br />
+                        <span class="delivery-note">
+                            Fast Delivery
+                        </span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="container mt-3">
+    <div class="box-product-information">
+        <div class="row">
+            <div class="col-7">
+                <div class="card rounded-3">
+                    <div class="card-header">
+                        <h4 class="mb-0">Introducing @Model.Name</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="descriptionPreview" class="collapse show">
+                            @Html.Raw(preview)
+                        </div>
+                        <div id="descriptionFull" class="collapse">
+                            @Html.Raw(Model.Description)
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.Description) && Model.Description.Length > 150)
+                        {
+                            <div class="mt-3 d-flex justify-content-center">
+                                <button id="toggleDescriptionBtn"
+                                        class="btn btn-outline-primary rounded-3 d-flex align-items-center justify-content-center"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#descriptionPreview, #descriptionFull"
+                                        aria-expanded="false"
+                                        aria-controls="descriptionPreview descriptionFull">
+                                    <span id="toggleText">See More</span>
+                                    <span id="toggleIcon" class="ms-1">
+                                        <!-- Initial icon: down -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                             class="bi bi-chevron-down" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd"
+                                                  d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </span>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="card mt-4 rounded-3">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            Product Comment
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-5">
+                <div class="card rounded-3">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            Specification
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                            <table class="table table-striped mb-0">
+                                @if (specifications != null && specifications.Any())
+                                {
+                                    foreach (var spec in specifications.Take(5))
+                                    {
+                                        <tr class="specification-item d-flex text-start row">
+                                            <th class="col-3">@spec.SpecName</th>
+                                            <td class="col-9">@spec.Detail</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="2">No specifications available.</td></tr>
+                                }
+                            </table>
+
+                            @if (specifications != null && specifications.Count > 5)
+                            {
+                                <div class="mt-3 d-flex justify-content-center">
+                                    <button class="btn btn-outline-primary rounded-3 d-flex align-items-center justify-content-center" onclick="openWindow()">
+                                        View full specifications
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down ms-1" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="_SpecificationWindow" model="specifications" />
+
+<partial name="_RecentlyViewed" />
+
+<script>
+    addToRecentlyViewed(@Model.ProductId);
+</script>

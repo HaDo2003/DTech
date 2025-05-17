@@ -1,0 +1,25 @@
+﻿@model IEnumerable<DTech.Models.EF.Specification>
+
+<div id="overlay" class="overlay d-none">
+    <div class="mx-auto d-none" id="SpecWindow">
+        <div class="row">
+            <div class="col-10">
+                <h3 class="text-start py-2">Specifications</h3>
+            </div>
+            <div class="col-2 text-end d-flex justify-content-end align-items-center">
+                <button id="close" onclick="closeWindow()" class="btn btn-outline-danger btn-sm rounded-circle fw-bold button-custom">
+                    ×
+                </button>
+            </div>
+        </div>
+        <table class="table table-striped mb-0">
+            @foreach (var spec in Model)
+            {
+                <tr class="specification-item d-flex text-start row">
+                    <th class="col-3">@spec.SpecName</th>
+                    <td class="col-9">@spec.Detail</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

@@ -14,12 +14,12 @@
             <span class="badge bg-danger rounded-pill">-@discountPercent%</span>
         </div>
     }
-    <a asp-controller="Product" 
-        asp-action="ProductDetail"
-        asp-route-categorySlug="@categorySlug"
-        asp-route-brandSlug="@brandSlug"
-        asp-route-productSlug="@Model.Slug"
-        class="text-decoration-none">
+    <a asp-controller="Product"
+       asp-action="ProductDetail"
+       asp-route-categorySlug="@categorySlug"
+       asp-route-brandSlug="@brandSlug"
+       asp-route-productSlug="@Model.Slug"
+       class="text-decoration-none">
         <div class="custom-container-img">
             <img src="@Model.Photo" class="card-img-top p-1 w-100 mx-auto d-block" alt="@Model.Name">
         </div>
@@ -39,12 +39,15 @@
                     <p class="text-dark fw-bold mb-1">$@formattedOriginalPrice</p>
                 }
             </div>
-            <p>
-                @if (Model.PromotionalGift != null)
-                {
-                    @(Model.PromotionalGift.Length > 40 ? Model.Name.Substring(0, 40) + "..." : Model.PromotionalGift)
-                }
-            </p>
+
+            @if (Model.PromotionalGift != null)
+            {
+            <div class="custom-text">
+                @Html.Raw(Model.PromotionalGift.Length > 50
+                                ? Model.PromotionalGift.Substring(0, 50) + "..."
+                                : Model.PromotionalGift)
+            </div>
+                        }
         </div>
     </a>
 </div>

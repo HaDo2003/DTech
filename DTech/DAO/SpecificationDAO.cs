@@ -38,5 +38,14 @@ namespace DTech.DAO
                 return false;
             }
         }
+
+        //Get all specifications by product id
+        public async Task<List<Specification>> GetSpecificationsByProductIdAsync(int productId)
+        {
+            var specifications = await context.Specifications
+                .Where(s => s.ProductId == productId)
+                .ToListAsync();
+            return specifications;
+        }
     }
 }

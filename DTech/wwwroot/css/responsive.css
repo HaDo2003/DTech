@@ -149,6 +149,20 @@
     .category-name {
         font-size: 12px;
     }
+
+    .quantity-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .quantity-control {
+        margin: 10px 0;
+    }
+
+    .btn-add-to-cart {
+        margin-left: 0;
+        width: 100%;
+    }
 }
 
 /*=========================================================
