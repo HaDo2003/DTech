@@ -69,7 +69,7 @@
 </form>
 
 <div class="position-relative">
-    <div class="ps-lg-3 row row-cols-3 row-cols-md-3 row-cols-lg-5 row-cols-xl-5 row-cols-xxl-5 g-md-1 g-lg-0 g-xxl-2">
+    <div id="product-list" class="ps-lg-3 row row-cols-3 row-cols-md-3 row-cols-lg-5 row-cols-xl-5 row-cols-xxl-5 g-md-1 g-lg-0 g-xxl-2">
         @foreach (var product in Model)
         {
             <div class="col">
@@ -78,3 +78,7 @@
         }
     </div>
 </div>
+
+<script>
+    initializeProductSignalR('@categorySlug');
+</script>

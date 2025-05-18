@@ -8,6 +8,8 @@ using DTech.Library.Service;
 using Microsoft.AspNetCore.Authorization;
 using DTech.DAO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using DTech.Library.Hubs;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -21,7 +23,8 @@ namespace DTech.Areas.Admin.Controllers
         SupplierDAO supplierDAO,
         SpecificationDAO specificationDAO,
         ProductImageDAO productImageDAO,
-        CloudinaryService cloudinaryService
+        CloudinaryService cloudinaryService,
+        IHubContext<NotificationsHub> notificationHub
     ) : Controller
     {
         readonly string folderName = "Pre-thesis/Product";
@@ -124,6 +127,8 @@ namespace DTech.Areas.Admin.Controllers
 
                 //Success message
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
+
+                await notificationHub.Clients.All.SendAsync("ReceiveNewProduct", product.ProductId);
 
                 return RedirectToAction(nameof(Index));
             }

@@ -129,38 +129,18 @@ namespace DTech.Controllers
             }
         }
 
-        //Recently viewed products
         [HttpGet]
-        public async Task<IActionResult> RecentlyViewed(int? productId)
+        public async Task<IActionResult> RenderProductCard(int ProductId)
         {
-            if (productId == null)
-                return BadRequest();
+            var product = await productDAO.GetByIdAsync(ProductId);
 
-            var cookie = Request.Cookies["recentlyViewed"];
-            List<int> recentlyViewedIds = new();
-            if (!string.IsNullOrEmpty(cookie))
+            if (product == null)
             {
-                try
-                {
-                    recentlyViewedIds = System.Text.Json.JsonSerializer.Deserialize<List<int>>(cookie);
-                }
-                catch
-                {
-                    // Ignore parse error
-                }
+                return NotFound();
             }
 
-            // Remove current productId from the list
-            recentlyViewedIds.Remove(productId.Value);
-
-            var recentlyViewedProducts = await productDAO.GetByIdsAsync(recentlyViewedIds);
-
-            // Preserve the order
-            recentlyViewedProducts = recentlyViewedProducts
-                .OrderBy(p => recentlyViewedIds.IndexOf(p.ProductId))
-                .ToList();
-
-            return PartialView("_RecentlyViewed", recentlyViewedProducts);
+            // Render the partial view _ProductCard.cshtml with the product model and return HTML as content
+            return PartialView("_ProductCard", product);
         }
     }
 }

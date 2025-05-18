@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using dotenv.net;
 using Microsoft.AspNetCore.Authentication.Facebook;
+using DTech.Library.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddSignalR();
 // Load environment variables from .env file
 var envFilePath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
 DotEnv.Load(options: new DotEnvOptions(envFilePaths: new[] { envFilePath }));
@@ -154,6 +155,8 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.MapHub<NotificationsHub>("/notificationsHub");
 
 app.UseAuthentication();
 app.UseAuthorization();

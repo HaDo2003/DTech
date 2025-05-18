@@ -4,6 +4,7 @@
 // Write your JavaScript code.
 
 //Hide or show the password
+
 function togglePassword(inputId, iconId) {
     var input = document.getElementById(inputId);
     var icon = document.getElementById(iconId);
@@ -305,34 +306,23 @@ function closeWindow() {
     overlay.classList.add('d-none');
 }
 
-//Recently Viewed Product
-function addToRecentlyViewed(productId) {
-    const cookieName = "recentlyViewed";
-    const maxItems = 5;
+//Real-time product updates using SignalR
+function initializeProductSignalR(currentCategorySlug) {
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/notificationsHub")
+        .build();
 
-    let viewed = [];
-    const cookie = document.cookie
-        .split('; ')
-        .find(row => row.startsWith(cookieName + '='));
-    if (cookie) {
-        try {
-            viewed = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
-        } catch (e) {
-            viewed = [];
-        }
-    }
+    connection.start()
+        .then(() => {
+            console.log("Connected to NotificationsHub");
+        })
+        .catch(err => console.error(err.toString()));
 
-    // Remove if already exists
-    viewed = viewed.filter(id => id !== productId);
-
-    // Add new one to beginning
-    viewed.unshift(productId);
-
-    // Limit to maxItems
-    if (viewed.length > maxItems) {
-        viewed = viewed.slice(0, maxItems);
-    }
-
-    // Set cookie
-    document.cookie = `${cookieName}=${encodeURIComponent(JSON.stringify(viewed))};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
+    connection.on("ReceiveNewProduct", function (productId) {
+        fetch(`/Product/RenderProductCard?id=${productId}`)
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("product-list").insertAdjacentHTML("afterbegin", html);
+            });
+    });
 }

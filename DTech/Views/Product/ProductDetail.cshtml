@@ -194,7 +194,6 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                        
                     </div>
                 </div>
             </div>
@@ -207,34 +206,34 @@
                         </h4>
                     </div>
                     <div class="card-body">
-                            <table class="table table-striped mb-0">
-                                @if (specifications != null && specifications.Any())
-                                {
-                                    foreach (var spec in specifications.Take(5))
-                                    {
-                                        <tr class="specification-item d-flex text-start row">
-                                            <th class="col-3">@spec.SpecName</th>
-                                            <td class="col-9">@spec.Detail</td>
-                                        </tr>
-                                    }
-                                }
-                                else
-                                {
-                                    <tr><td colspan="2">No specifications available.</td></tr>
-                                }
-                            </table>
-
-                            @if (specifications != null && specifications.Count > 5)
+                        <table class="table table-striped mb-0">
+                            @if (specifications != null && specifications.Any())
                             {
-                                <div class="mt-3 d-flex justify-content-center">
-                                    <button class="btn btn-outline-primary rounded-3 d-flex align-items-center justify-content-center" onclick="openWindow()">
-                                        View full specifications
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down ms-1" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                                        </svg>
-                                    </button>
-                                </div>
+                                foreach (var spec in specifications.Take(5))
+                                {
+                                    <tr class="specification-item d-flex text-start row">
+                                        <th class="col-3">@spec.SpecName</th>
+                                        <td class="col-9">@spec.Detail</td>
+                                    </tr>
+                                }
                             }
+                            else
+                            {
+                                <tr><td colspan="2">No specifications available.</td></tr>
+                            }
+                        </table>
+
+                        @if (specifications != null && specifications.Count > 5)
+                        {
+                            <div class="mt-3 d-flex justify-content-center">
+                                <button class="btn btn-outline-primary rounded-3 d-flex align-items-center justify-content-center" onclick="openWindow()">
+                                    View full specifications
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down ms-1" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -243,9 +242,3 @@
 </div>
 
 <partial name="_SpecificationWindow" model="specifications" />
-
-<partial name="_RecentlyViewed" />
-
-<script>
-    addToRecentlyViewed(@Model.ProductId);
-</script>
