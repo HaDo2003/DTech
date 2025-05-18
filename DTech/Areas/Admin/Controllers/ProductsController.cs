@@ -128,7 +128,20 @@ namespace DTech.Areas.Admin.Controllers
                 //Success message
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("success", "Created successfully"));
 
-                await notificationHub.Clients.All.SendAsync("ReceiveNewProduct", product.ProductId);
+                var p = await productDAO.GetByIdAsync(product.ProductId);
+                var newproduct = new
+                {
+                    p.ProductId,
+                    p.Name,
+                    p.Price,
+                    Discount = p.Discount ?? 0,
+                    p.Photo,
+                    p.Slug,
+                    CategorySlug = p.Category?.Slug,
+                    BrandSlug = p.Brand?.Slug,
+                    PromotionalGift = p.PromotionalGift ?? ""
+                };
+                await notificationHub.Clients.All.SendAsync("ReceiveNewProduct", newproduct);
 
                 return RedirectToAction(nameof(Index));
             }

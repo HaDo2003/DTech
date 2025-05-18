@@ -4,7 +4,6 @@
 // Write your JavaScript code.
 
 //Hide or show the password
-
 function togglePassword(inputId, iconId) {
     var input = document.getElementById(inputId);
     var icon = document.getElementById(iconId);
@@ -306,23 +305,3 @@ function closeWindow() {
     overlay.classList.add('d-none');
 }
 
-//Real-time product updates using SignalR
-function initializeProductSignalR(currentCategorySlug) {
-    const connection = new signalR.HubConnectionBuilder()
-        .withUrl("/notificationsHub")
-        .build();
-
-    connection.start()
-        .then(() => {
-            console.log("Connected to NotificationsHub");
-        })
-        .catch(err => console.error(err.toString()));
-
-    connection.on("ReceiveNewProduct", function (productId) {
-        fetch(`/Product/RenderProductCard?id=${productId}`)
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById("product-list").insertAdjacentHTML("afterbegin", html);
-            });
-    });
-}
