@@ -15,7 +15,7 @@
                             ? Model.Description.Substring(0, 1000) + "..."
                             : Model.Description;
 }
-
+<input type="hidden" id="productId" value="@Model.ProductId" />
 <div class="container">
     <div class="box-product-content gap-12 d-flex justify-content-between">
         <div class="box-left d-flex justify-content-center position-relative">
@@ -121,9 +121,9 @@
                 <div class="quantity-section">
                     <label for="quantity" class="quantity-label">Quantity:</label>
                     <div class="quantity-control">
-                        <button type="button" class="btn-quantity-adjust btn-decrease" id="decreaseQuantity">−</button>
+                        <button type="button" class="btn-quantity-adjust" id="decreaseQuantity">−</button>
                         <input type="text" class="quantity-input" id="quantity" name="quantity" value="1" readonly>
-                        <button type="button" class="btn-quantity-adjust btn-increase" id="increaseQuantity">+</button>
+                        <button type="button" class="btn-quantity-adjust" id="increaseQuantity">+</button>
                     </div>
 
                     <button type="button" class="btn-add-to-cart" id="addToCart">
@@ -242,3 +242,130 @@
 </div>
 
 <partial name="_SpecificationWindow" model="specifications" />
+
+@section Scripts {
+    <script>
+        // product-purchase
+        document.addEventListener('DOMContentLoaded', function () {
+            // DOM Elements
+            const quantityInput = document.getElementById('quantity');
+            const decreaseBtn = document.getElementById('decreaseQuantity');
+            const increaseBtn = document.getElementById('increaseQuantity');
+            const addToCartBtn = document.getElementById('addToCart');
+            const buyNowBtn = document.getElementById('buyNow');
+            const productIdElement = document.getElementById('productId');
+
+            // Quantity adjustment
+            decreaseBtn.addEventListener('click', function () {
+                let quantity = parseInt(quantityInput.value);
+                if (quantity > 1) {
+                    quantityInput.value = quantity - 1;
+                }
+            });
+
+            increaseBtn.addEventListener('click', function () {
+                let quantity = parseInt(quantityInput.value);
+                quantityInput.value = quantity + 1;
+            });
+
+
+            addToCartBtn.addEventListener('click', function () {
+                let quantity = parseInt(quantityInput.value) || 1;
+                let productId = productIdElement ? productIdElement.value : null;
+                if (!productId) {
+                    showNotification("Product not found.", "error");
+                    return;
+                }
+
+                let isLoggedIn = document.getElementById('userAuthenticatedIndicator') !== null ||
+                                 sessionStorage.getItem('userAuthenticated') === 'true';
+
+                if (!isLoggedIn) {
+                    showNotification("Please log in to add products to your cart.", "info");
+                    setTimeout(function() {
+                        window.location.href = '/Authentication/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                    }, 1000);
+                    return;
+                }
+
+                addProductToCart(productId, quantity)
+            });
+
+            // Buy now button
+            buyNowBtn.addEventListener('click', function () {
+                let quantity = parseInt(quantityInput.value);
+                let productId = productIdElement ? productIdElement.value : null;
+
+                // Create form data
+                const formData = new FormData();
+                formData.append('productId', productId);
+                formData.append('quantity', quantity);
+
+                // Send AJAX request
+                fetch('/Order/BuyNow', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(formData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.href = '/Order/Checkout';
+                        } else {
+                            showNotification(data.message, "error");
+                        }
+                    })
+                    .catch(error => {
+                        showNotification("Có lỗi xảy ra. Vui lòng thử lại sau", "error");
+                    });
+            });
+
+            function addProductToCart(productId, quantity) {
+                const params = new URLSearchParams();
+                params.append('productId', productId);
+                params.append('quantity', quantity);
+                fetch('/Cart/AddToCart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: params.toString()
+                })
+                .then(response => {
+                    if (response.status === 401) {
+                        showNotification("Please log in to add products to your cart.", "info");
+                        setTimeout(function() {
+                            window.location.href = '/Authentication/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                        }, 1000);
+                        return Promise.reject('Unauthorized');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const cartCountElement = document.getElementById('cartCount');
+                        if (cartCountElement) {
+                            cartCountElement.textContent = data.cartCount;
+                        }
+                        showNotification("Added to Cart", "success");
+                    } else {
+                        showNotification(data.message, "error");
+                    }
+                })
+                .catch(error => {
+                    if (error !== 'Unauthorized') {
+                        showNotification("Error, please try again!", "error");
+                        console.log("Error:", error);
+                    }
+                });
+            }
+        });
+    </script>
+}

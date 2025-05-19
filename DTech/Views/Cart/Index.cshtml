@@ -1,0 +1,32 @@
+﻿@model DTech.Models.EF.Cart
+
+@{
+    ViewData["Title"] = "Customer Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 class="ps-2">Your Cart</h3>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header px-2">
+                    <div class="row g-0 text-center">
+                        <div class="col-4">Product Information</div>
+                        <div class="col-2">Unit Price</div>
+                        <div class="col-3">Quantity</div>
+                        <div class="col-3">Total amount</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @foreach (var item in Model.CartProducts)
+                    {
+                        <div>
+                            <partial name="_ProductCardCart" model="item" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

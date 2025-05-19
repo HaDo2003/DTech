@@ -129,6 +129,19 @@ namespace DTech.Controllers
                 var loginResult = await signInManager.PasswordSignInAsync(user.Account, user.Password, false, false);
                 if (loginResult.Succeeded)
                 {
+                    Response.Cookies.Append("UserAuthenticated", "true", new CookieOptions
+                    {
+                        HttpOnly = false, // Allow JavaScript to read it
+                        SameSite = SameSiteMode.Lax,
+                        Expires = DateTimeOffset.Now.AddDays(1)
+                    });
+
+                    // Check if there's a return URL in the query string
+                    var returnUrl = Request.Query["returnUrl"].ToString();
+                    if (!string.IsNullOrEmpty(returnUrl))
+                    {
+                        return Redirect(returnUrl);
+                    }
                     return RedirectToAction("Index", "Home");
                 }
                 else

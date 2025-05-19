@@ -37,6 +37,24 @@
     <script src="~/js/datatables.min.js"></script>
     <script src="~/js/signalR.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (User?.Identity?.IsAuthenticated == true)
+    {
+        <script>
+
+            // Set JavaScript authentication indicator
+            sessionStorage.setItem('userAuthenticated', 'true');
+
+            // Add a hidden field that can be used to check authentication
+            document.addEventListener('DOMContentLoaded', function() {
+                const body = document.querySelector('body');
+                const authIndicator = document.createElement('div');
+                authIndicator.id = 'userAuthenticatedIndicator';
+                authIndicator.style.display = 'none';
+                body.appendChild(authIndicator);
+            });
+        </script>
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

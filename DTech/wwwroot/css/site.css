@@ -83,6 +83,21 @@ Nav Bar
 }
 
 /*=========================================================
+Header
+===========================================================*/
+#mouselist {
+    transform: translate(98.5%, -40%);
+}
+
+#keyboardlist {
+    transform: translate(96.5%, -40%);
+}
+
+#headphonelist {
+    transform: translate(88%, -40%);
+}
+
+/*=========================================================
 Breadcrum
 ===========================================================*/
 .custom-breadcrumb {
@@ -650,6 +665,62 @@ Product Detail
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     overflow-y: auto;
 }
+
+/*=========================================================
+Cart
+===========================================================*/
+.cart-img-custom {
+    width: 100px;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cart-product-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.cart-quantity-control {
+    display: flex;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    overflow: hidden;
+    height: 30px;
+    width: 90px;
+}
+
+.cart-btn-quantity-adjust {
+    width: 30px;
+    height: 30px;
+    background-color: #f8f9fa;
+    border: none;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+    .cart-btn-quantity-adjust:hover {
+        background-color: #e9ecef;
+    }
+
+.cart-quantity-input {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    border: none;
+    font-size: 14px;
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
+    padding: 0;
+    font-weight: 500;
+}
+
+    .cart-quantity-input:focus {
+        outline: none;
+    }
+
 /*=========================================================
 Profile
 ===========================================================*/

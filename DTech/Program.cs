@@ -74,6 +74,22 @@ builder.Services.AddAuthentication(options =>
         options.CallbackPath = "/signin-facebook";
     });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Events.OnRedirectToLogin = context =>
+    {
+        if (context.Request.Path.StartsWithSegments("/Cart") 
+        && context.Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        {
+            context.Response.StatusCode = 401;
+            return Task.CompletedTask;
+        }
+
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
+});
+
 builder.Services.AddRazorPages();
 
 
@@ -173,7 +189,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "brand",
-    pattern: "{categorySlug:regex(^((?!Authentication|Admin|Account).)*$)}/{brandSlug}",
+    pattern: "{categorySlug:regex(^((?!Authentication|Admin|Account|Cart).)*$)}/{brandSlug}",
     defaults: new { controller = "Product", action = "CategoryBrand" }
 );
 

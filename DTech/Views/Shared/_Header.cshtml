@@ -49,7 +49,7 @@
                     </li>
 
                     <li class="nav-item me-2 mt-2">
-                        <a class="nav-link active d-flex align-items-center text-light text-decoration-none" href="#">
+                        <a asp-controller="Cart" asp-action="Index" class="nav-link active d-flex align-items-center text-light text-decoration-none">
                             <div class="me-1">
                                 <i class="fa-solid fa-cart-shopping fa-xl"></i>
                             </div>
@@ -132,9 +132,27 @@
                             Accessory
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="mouse" class="dropdown-item">Mouse</a></li>
-                            <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="keyboard" class="dropdown-item">Keyboard</a></li>
-                            <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="headphone" class="dropdown-item">Headphone</a></li>
+                            <li>
+                                <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="mouse" id="mouse" onmouseover="showHover(mouse, mouselist)" class="dropdown-item mouse-custom">Mouse</a>
+                                <ul id="mouselist" class="dropdown-menu d-none">
+                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-mouse" class="dropdown-item">Wired Mouse</a></li>
+                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-mouse" class="dropdown-item">Wireless Mouse</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="keyboard" id="keyboard" class="dropdown-item">Keyboard</a>
+                                <ul id="keyboardlist" class="dropdown-menu d-none">
+                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-keyboard" class="dropdown-item">Wired Keyboard</a></li>
+                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-keyboard" class="dropdown-item">Wireless Keyboard</a></li>
+                                </ul>
+                             </li>
+                            <li>
+                                <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="headphone" id="headphone" class="dropdown-item">Headphone</a>
+                                <ul id="headphonelist" class="dropdown-menu d-none">
+                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-headphone" class="dropdown-item">Wired Headphone</a></li>
+                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-headphone" class="dropdown-item">Wireless Headphone</a></li>
+                                </ul>
+                                </li>
                         </ul>
                     </li>
 

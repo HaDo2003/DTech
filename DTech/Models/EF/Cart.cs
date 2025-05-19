@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace DTech.Models.EF;
 
@@ -12,4 +10,6 @@ public partial class Cart
     public string? CustomerId { get; set; }
 
     public virtual ApplicationUser? Customer { get; set; }
+    public virtual ICollection<CartProduct> CartProducts { get; set; } = new List<CartProduct>();
+
 }
