@@ -1,6 +1,7 @@
 ﻿using DTech.Models.EF;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Syncfusion.EJ2.Charts;
 
 namespace DTech.DAO
 {
@@ -91,12 +92,12 @@ namespace DTech.DAO
                 .SumAsync(cp => cp.Quantity);
         }
 
-        public decimal? UpdateQuantity(int cartProductId, int newQuantity, string userId)
+        public async Task<decimal?> UpdateQuantity(int cartProductId, int newQuantity, string userId)
         {
-            var cartProduct = context.CartProducts
+            var cartProduct = await context.CartProducts
                 .Include(cp => cp.Cart)
                 .Include(cp => cp.Product)
-                .FirstOrDefault(cp =>
+                .FirstOrDefaultAsync(cp =>
                     cp.Id == cartProductId &&
                     cp.Cart != null &&
                     cp.Cart.CustomerId == userId);
@@ -104,17 +105,35 @@ namespace DTech.DAO
             if (cartProduct == null) return -1;
 
             cartProduct.Quantity = newQuantity;
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
-            var unitPrice = cartProduct.Product!.Price * (1 - cartProduct.Product.Discount / 100m);
+            var discount = cartProduct.Product!.Discount ?? 0;
+            var unitPrice = cartProduct.Product.Price * (1 - discount / 100m);
             return unitPrice * newQuantity;
         }
 
-        public decimal? GetCartTotal(string userId)
+        public async Task<decimal?> GetCartTotal(string userId)
         {
-            return context.CartProducts
+            return await context.CartProducts
                 .Where(cp => cp.Cart != null && cp.Cart.CustomerId == userId)
-                .Sum(cp => cp.Quantity * cp.Product.Price * (1 - cp.Product.Discount / 100m));
+                .SumAsync(cp => cp.Quantity * cp.Product!.Price * (cp.Product.Discount.HasValue ? (1 - cp.Product.Discount.Value / 100m) : 1));
+        }
+
+        public async Task<bool> RemoveFromCart(int cartProductId, int Cartid)
+        {
+            var cartProduct = await context.CartProducts
+                .Include(cp => cp.Cart)
+                .FirstOrDefaultAsync(cp =>
+                    cp.ProductId == cartProductId &&
+                    cp.Cart != null &&
+                    cp.Cart.CartId == Cartid);
+            if (cartProduct != null)
+            {
+                context.CartProducts.Remove(cartProduct);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
     }
 }

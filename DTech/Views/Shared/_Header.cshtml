@@ -50,10 +50,7 @@
 
                     <li class="nav-item me-2 mt-2">
                         <a asp-controller="Cart" asp-action="Index" class="nav-link active d-flex align-items-center text-light text-decoration-none">
-                            <div class="me-1">
-                                <i class="fa-solid fa-cart-shopping fa-xl"></i>
-                            </div>
-
+                            @await Component.InvokeAsync("CartCount")
                             <div class="text-light">
                                 <p class="mb-0 fontsize">Shopping Cart</p>
                             </div>
@@ -145,14 +142,14 @@
                                     <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-keyboard" class="dropdown-item">Wired Keyboard</a></li>
                                     <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-keyboard" class="dropdown-item">Wireless Keyboard</a></li>
                                 </ul>
-                             </li>
+                            </li>
                             <li>
                                 <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="headphone" id="headphone" class="dropdown-item">Headphone</a>
                                 <ul id="headphonelist" class="dropdown-menu d-none">
                                     <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-headphone" class="dropdown-item">Wired Headphone</a></li>
                                     <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-headphone" class="dropdown-item">Wireless Headphone</a></li>
                                 </ul>
-                                </li>
+                            </li>
                         </ul>
                     </li>
 

@@ -1,14 +1,16 @@
 ﻿@model DTech.Models.EF.CartProduct
-
 @{
-    var finalPrice = Model.Product!.Price * (1 - Model.Product.Discount / 100m);
+    var finalPrice = Model.Product!.Price;
+    if (Model.Product.Discount!= null && Model.Product.Discount > 0)
+    {
+        finalPrice *= (1 - Model.Product.Discount / 100m);
+    }
     var formattedFinalPrice = string.Format("{0:N0}", finalPrice);
     var priceTotal = finalPrice * Model.Quantity;
     var formattedPriceTotal = string.Format("{0:N0}", priceTotal);
 }
-
 <input type="hidden" class="product-id" value="@Model.Product.ProductId" />
-<div class="row py-2 align-items-center border-bottom cart-item-row" data-cart-id="@Model.Id">
+<div class="row py-2 align-items-center border-bottom cart-item-row" data-cart-product-id="@Model.Id">
     <div class="col-4 d-flex align-items-center">
         <img src="@Model.Product.Photo" alt="@Model.Product.Name" class="cart-img-custom me-2" />
         <div class="cart-product-name">
@@ -25,46 +27,15 @@
             <button type="button" class="cart-btn-quantity-adjust increaseQuantity">+</button>
         </div>
     </div>
-    <div class="col-3 text-center">
-        <span class="fw-semibold small">$@formattedPriceTotal</span>
+    <div class="col-2 text-center">
+        <span class="fw-semibold small cart-total-price">$@formattedPriceTotal</span>
+    </div>
+    <div class="col-1 d-flex align-items-end justify-content-end">
+        <form asp-controller="Cart" asp-action="RemoveFromCart" asp-route-cartProductId="@Model.Product.ProductId" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn p-0 border-0 bg-transparent">
+                <i class="fa-solid fa-trash fa-sm text-muted mb-1 me-1"></i>
+            </button>
+        </form>
     </div>
 </div>
-
-@section Script {
-    <script>
-        $(document).ready(function () {
-            $('.cart-item-row').each(function () {
-                const row = $(this);
-                const cartProductId = row.data('cart-product-id');
-                const qtyInput = row.find('.cart-quantity-input');
-                const btnDec = row.find('.btn-decrease');
-                const btnInc = row.find('.btn-increase');
-                const totalSpan = row.find('.cart-total-price');
-                const grandTotalSpan = $('#grand-total');
-
-                function updateQty(newQty) {
-                    $.post('/Cart/UpdateQuantity', {
-                        cartProductId: cartProductId,
-                        quantity: newQty
-                    }, function (res) {
-                        if (res.success) {
-                            qtyInput.val(newQty);
-                            totalSpan.text(`$${res.itemTotal}`);
-                            grandTotalSpan.text(`$${res.cartTotal}`);
-                        }
-                    });
-                }
-
-                btnDec.click(function () {
-                    let currentQty = parseInt(qtyInput.val());
-                    if (currentQty > 1) updateQty(currentQty - 1);
-                });
-
-                btnInc.click(function () {
-                    let currentQty = parseInt(qtyInput.val());
-                    updateQty(currentQty + 1);
-                });
-            });
-        });
-    </script>
-}

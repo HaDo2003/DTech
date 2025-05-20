@@ -1,32 +1,122 @@
-﻿@model DTech.Models.EF.Cart
+﻿@model DTech.Models.EF.Cart  
+@{  
+    ViewData["Title"] = "Customer Cart";  
+    Layout = "~/Views/Shared/_Layout.cshtml";  
+    var grandTotal = Model.CartProducts.Sum(cp => cp.Product!.Price * (cp.Product.Discount.HasValue ? (1 - cp.Product.Discount.Value / 100m) : 1) * cp.Quantity);
+    var formattedGrandTotal = string.Format("{0:N0}", grandTotal);
+}  
 
-@{
-    ViewData["Title"] = "Customer Cart";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-<h3 class="ps-2">Your Cart</h3>
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header px-2">
-                    <div class="row g-0 text-center">
-                        <div class="col-4">Product Information</div>
-                        <div class="col-2">Unit Price</div>
-                        <div class="col-3">Quantity</div>
-                        <div class="col-3">Total amount</div>
-                    </div>
+@Html.AntiForgeryToken()  
+<h3 class="ps-2">Your Cart</h3>  
+<div class="container">  
+    <div class="row">  
+        <div class="col-12">  
+            <div class="card">  
+                <div class="card-header px-2">  
+                    <div class="row g-0 text-center">  
+                        <div class="col-4">Product Information</div>  
+                        <div class="col-2">Unit Price</div>  
+                        <div class="col-3">Quantity</div>  
+                        <div class="col-2">Total amount</div>  
+                    </div>  
+                </div>  
+                <div class="card-body">  
+                    @foreach (var item in Model.CartProducts)  
+                    {  
+                        <div>  
+                            <partial name="_ProductCardCart" model="item" />  
+                        </div>  
+                    }  
+                </div>   
+            </div>  
+            <div class="row mt-3">
+                <div class="col-8 d-flex align-items-end">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                        Continue Shopping
+                    </a>
                 </div>
-                <div class="card-body">
-                    @foreach (var item in Model.CartProducts)
-                    {
-                        <div>
-                            <partial name="_ProductCardCart" model="item" />
+                <div class="col-4 text-start">
+                    <div class="row">
+                        <div class="col-6 text-start fw-bold fs-3">
+                            Grand Total:
                         </div>
-                    }
+                        <div id="grand-total" class="col-6 text-end fw-bold fs-3">
+                            $@formattedGrandTotal
+                        </div>
+                    </div>
+
+                    <a class="btn btn-danger col-12" href="#">
+                        Order
+                    </a>
                 </div>
             </div>
-        </div>
-    </div>
-</div>
+        </div>  
+    </div>  
+</div>  
+
+@section Scripts {  
+    <script>  
+        $(document).ready(function () {  
+            // Direct click handlers for the buttons  
+            $('.decreaseQuantity').click(function() {  
+                const row = $(this).closest('.cart-item-row');  
+                const cartProductId = row.data('cart-product-id');  
+                const qtyInput = row.find('.quantity');  
+                const currentQty = parseInt(qtyInput.val());  
+
+                if (currentQty > 1) {  
+                    updateCartItem(row, cartProductId, currentQty - 1);  
+                }  
+            });  
+
+            $('.increaseQuantity').click(function() {  
+                console.log("Increase button clicked");  
+                const row = $(this).closest('.cart-item-row');  
+                const cartProductId = row.data('cart-product-id');  
+                const qtyInput = row.find('.quantity');  
+                const currentQty = parseInt(qtyInput.val());  
+
+                updateCartItem(row, cartProductId, currentQty + 1);  
+            });  
+
+            function updateCartItem(row, cartProductId, newQty) {  
+                // Get the anti-forgery token if present  
+                var token = $('input[name="__RequestVerificationToken"]').val();  
+                var headers = token ? { 'RequestVerificationToken': token } : {};  
+
+                $.ajax({  
+                    url: '/cart/update-quantity',  
+                    type: 'POST',  
+                    headers: headers,  
+                    data: {  
+                        cartProductId: cartProductId,  
+                        quantity: newQty  
+                    },  
+                    success: function(res) {  
+                        if (res.success) {  
+                            const qtyInput = row.find('.quantity');  
+                            const totalSpan = row.find('.cart-total-price');  
+                            const grandTotalSpan = $('#grand-total');  
+                            const cartCountSpan = $('#cartCount');  
+
+                            qtyInput.val(newQty);  
+                            totalSpan.text(`$${res.itemTotal}`);  
+                            grandTotalSpan.text(`$${res.cartTotal}`);  
+
+                            if (res.cartCount !== undefined && cartCountSpan.length) {  
+                                cartCountSpan.text(res.cartCount);  
+                            }  
+                        } else {  
+                            console.error("Server returned success=false:", res.message);  
+                        }  
+                    },  
+                    error: function(xhr, status, error) {  
+                        console.error("AJAX Error:", status, error);  
+                        console.log("Response Status:", xhr.status);  
+                        console.log("Response Text:", xhr.responseText);  
+                    }  
+                });  
+            }  
+        });  
+    </script>  
+}

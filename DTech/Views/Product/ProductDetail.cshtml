@@ -15,6 +15,7 @@
                             ? Model.Description.Substring(0, 1000) + "..."
                             : Model.Description;
 }
+@Html.AntiForgeryToken()
 <input type="hidden" id="productId" value="@Model.ProductId" />
 <div class="container">
     <div class="box-product-content gap-12 d-flex justify-content-between">
@@ -326,11 +327,13 @@
                 const params = new URLSearchParams();
                 params.append('productId', productId);
                 params.append('quantity', quantity);
-                fetch('/Cart/AddToCart', {
+                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+                fetch('/Cart/add', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'RequestVerificationToken': token
                     },
                     body: params.toString()
                 })
