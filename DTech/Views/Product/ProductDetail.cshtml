@@ -244,6 +244,10 @@
 
 <partial name="_SpecificationWindow" model="specifications" />
 
+<div id="recently-viewed-container">
+    
+</div>
+
 @section Scripts {
     <script>
         // product-purchase
@@ -370,5 +374,21 @@
                 });
             }
         });
+    </script>
+    <script>
+        const currentProductId = @Model.ProductId;
+        addToRecentlyViewed(currentProductId);
+
+        // Fetch recently viewed products (excluding current)
+        fetch('@Url.Action("RecentlyViewed", "Product")?productId=' + currentProductId)
+            .then(res => {
+                if (!res.ok) throw new Error("HTTP error " + res.status);
+                return res.text();
+            })
+            .then(html => {
+                document.getElementById("recently-viewed-container").innerHTML = html;
+            })
+            .catch(err => 
+                console.error("Failed to load recently viewed:", err));
     </script>
 }

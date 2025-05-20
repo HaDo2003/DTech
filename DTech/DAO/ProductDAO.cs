@@ -23,7 +23,11 @@ namespace DTech.DAO
         public async Task<List<Product>> GetByIdsAsync(List<int> ids)
         {
             return await context.Products
-                .Where(p => ids.Contains(p.ProductId))
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
+                .Where(p => ids.Contains(p.ProductId)
+                            && p.Brand != null
+                            && p.Category != null)
                 .ToListAsync();
         }
 

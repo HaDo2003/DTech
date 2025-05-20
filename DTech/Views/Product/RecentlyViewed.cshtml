@@ -1,0 +1,37 @@
+﻿@model IEnumerable<DTech.Models.EF.Product>
+
+@{
+    var sliderId = "slider_" + Guid.NewGuid().ToString("N");
+}
+@if (Model != null && Model.Any())
+{
+    <div class="category-section my-4">
+        <div class="row">
+            <div class="col-6 d-flex align-items-center">
+                <h3 class="text-uppercase fw-bold mb-1">Recently Viewed Products</h3>
+            </div>
+        </div>
+
+        <div class="position-relative">
+            <!-- Left Arrow -->
+            <button class="slider-btn slider-btn-left" onclick="slideLeft('@sliderId')">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <!-- Right Arrow -->
+            <button class="slider-btn slider-btn-right" onclick="slideRight('@sliderId')">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+            <!-- Scrollable Slider -->
+            <div id="@sliderId" class="product-slider d-flex overflow-auto hide-scrollbar">
+                @foreach (var product in Model.Take(5))
+                {
+                    <div class="slider-item flex-shrink-0">
+                        <partial name="_ProductCard" model="product" />
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

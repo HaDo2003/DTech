@@ -182,6 +182,12 @@ app.MapControllerRoute(
     pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
+    name: "recently-viewed",
+    pattern: "recently-viewed",
+    defaults: new { controller = "Product", action = "RecentlyViewed" }
+);
+
+app.MapControllerRoute(
     name: "product-detail",
     pattern: "{categorySlug}/{brandSlug}/{productSlug}",
     defaults: new { controller = "Product", action = "ProductDetail" }

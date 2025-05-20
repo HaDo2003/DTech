@@ -429,3 +429,35 @@ function showNotification(message, type) {
         }, 3000);
     }
 }
+
+//Recently Viewed Product
+function addToRecentlyViewed(productId) {
+    const cookieName = "recentlyViewed";
+    const maxItems = 5;
+
+    let viewed = [];
+    const cookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith(cookieName + '='));
+    if (cookie) {
+        try {
+            viewed = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
+        } catch (e) {
+            viewed = [];
+        }
+    }
+
+    // Remove if already exists
+    viewed = viewed.filter(id => id !== productId);
+
+    // Add new one to beginning
+    viewed.unshift(productId);
+
+    // Limit to maxItems
+    if (viewed.length > maxItems) {
+        viewed = viewed.slice(0, maxItems);
+    }
+
+    // Set cookie
+    document.cookie = `${cookieName}=${encodeURIComponent(JSON.stringify(viewed))};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
+}
