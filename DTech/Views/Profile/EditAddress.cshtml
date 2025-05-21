@@ -32,6 +32,34 @@
 
     <div class="row m-2">
         <div class="form-group">
+            <select asp-for="Province" id="province1" class="form-control" required value="@Model.Province">
+                <option value="">-- Select Province --</option>
+            </select>
+            <span asp-validation-for="Province" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row m-2">
+        <div class="form-group">
+            <select asp-for="District" id="district1" class="form-control" required value="@Model.District">
+                <option value="">-- Select District --</option>
+            </select>
+            <span asp-validation-for="District" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row m-2">
+        <div class="form-group">
+            <select asp-for="Ward" id="ward1" class="form-control" required value="@Model.Ward">
+                <option value="">-- Select Ward --</option>
+            </select>
+            <span asp-validation-for="Ward" class="text-danger"></span>
+        </div>
+    </div>
+
+
+    <div class="row m-2">
+        <div class="form-group">
             <input asp-for="Address" class="form-control" placeholder="Address" required />
             <span asp-validation-for="Address" class="text-danger"></span>
         </div>

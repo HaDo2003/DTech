@@ -212,7 +212,7 @@ namespace DTech.Controllers
         [Route("address/create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAddress(
-            [Bind("Id,CustomerId,FullName,PhoneNumber,Address,IsDefault")]
+            [Bind("Id,CustomerId,FullName,PhoneNumber,Address,IsDefault,Province,District,Ward")]
             CustomerAddress newAddress)
         {
             ViewData["ActionName"] = "Create Address";
@@ -249,7 +249,7 @@ namespace DTech.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAddress(
             int? id,
-            [Bind("AddressId,CustomerId,FullName,PhoneNumber,Address,IsDefault")]
+            [Bind("AddressId,CustomerId,FullName,PhoneNumber,Address,IsDefault,Province,District,Ward")]
             CustomerAddress editAddress)
         {
             ViewData["ActionName"] = "Edit Address";

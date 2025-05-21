@@ -63,3 +63,20 @@
         </div> <!--end::Row-->
     </div> <!--end::Container-->
 </div> <!--end::App Content-->
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadProvinces();
+
+            document.getElementById("province").addEventListener("change", function () {
+                const provinceName = this.value;
+                loadDistrictsByProvince(provinceName);
+            });
+
+            document.getElementById("district").addEventListener("change", function () {
+                const districtName = this.value;
+                loadWardsByDistrict(districtName);
+            });
+        });
+    </script>
+}

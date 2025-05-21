@@ -29,6 +29,32 @@
                 </div>
             </div>
 
+            <div class="row m-2">
+                <div class="form-group">
+                    <select id="province" asp-for="Province" class="form-control" required>
+                        <option value="">-- Select Province --</option>
+                    </select>
+                    <span asp-validation-for="Province" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row m-2">
+                <div class="form-group">
+                    <select id="district" asp-for="District" class="form-control" required>
+                        <option value="">-- Select District --</option>
+                    </select>
+                    <span asp-validation-for="District" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row m-2">
+                <div class="form-group">
+                    <select id="ward" asp-for="Ward" class="form-control" required>
+                        <option value="">-- Select Ward --</option>
+                    </select>
+                    <span asp-validation-for="Ward" class="text-danger"></span>
+                </div>
+            </div>
 
             <div class="row m-2">
                 <div class="form-group">

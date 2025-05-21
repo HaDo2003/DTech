@@ -125,134 +125,6 @@ function slideRight(id) {
     container.scrollBy({ left: 220, behavior: 'smooth' });
 }
 
-//// product-purchase
-//document.addEventListener('DOMContentLoaded', function () {
-//    // DOM Elements
-//    const quantityInput = document.getElementById('quantity');
-//    const decreaseBtn = document.getElementById('decreaseQuantity');
-//    const increaseBtn = document.getElementById('increaseQuantity');
-//    const addToCartBtn = document.getElementById('addToCart');
-//    const buyNowBtn = document.getElementById('buyNow');
-//    const productIdElement = document.getElementById('productId');
-
-//    // Quantity adjustment
-//    decreaseBtn.addEventListener('click', function () {
-//        let quantity = parseInt(quantityInput.value);
-//        if (quantity > 1) {
-//            quantityInput.value = quantity - 1;
-//        }
-//    });
-
-//    increaseBtn.addEventListener('click', function () {
-//        let quantity = parseInt(quantityInput.value);
-//        quantityInput.value = quantity + 1;
-//    });
-
-//    // Add to cart button
-//    addToCartBtn.addEventListener('click', function () {
-//        let quantity = parseInt(quantityInput.value);
-//        let productId = productIdElement ? productIdElement.value : null;
-
-//        const formData = new FormData();
-//        formData.append('productId', productId);
-//        formData.append('quantity', quantity);
-
-//        fetch('/Cart/AddToCart', {
-//            method: 'POST',
-//            headers: {
-//                'Content-Type': 'application/x-www-form-urlencoded',
-//            },
-//            body: new URLSearchParams(formData)
-//        })
-//            .then(response => response.json())
-//            .then(data => {
-//                if (data.success) {
-//                    const cartCountElement = document.getElementById('cartCount');
-//                    if (cartCountElement) {
-//                        cartCountElement.textContent = data.cartCount;
-//                    }
-//                    showNotification("Added to Cart", "success");
-//                } else {
-//                    if (data.notLoggedIn) {
-//                        alert("Please log in to add products to your cart.");
-//                        window.location.href = '/Authentication/Login';
-//                    } else {
-//                        showNotification(data.message, "error");
-//                    }
-//                }
-//            })
-//            .catch(error => {
-//                showNotification("Error, please try again!", "error");
-//            });
-//    });
-
-//    // Buy now button
-//    buyNowBtn.addEventListener('click', function () {
-//        let quantity = parseInt(quantityInput.value);
-//        let productId = productIdElement ? productIdElement.value : null;
-
-//        // Create form data
-//        const formData = new FormData();
-//        formData.append('productId', productId);
-//        formData.append('quantity', quantity);
-
-//        // Send AJAX request
-//        fetch('/Order/BuyNow', {
-//            method: 'POST',
-//            headers: {
-//                'Content-Type': 'application/x-www-form-urlencoded',
-//            },
-//            body: new URLSearchParams(formData)
-//        })
-//            .then(response => response.json())
-//            .then(data => {
-//                if (data.success) {
-//                    window.location.href = '/Order/Checkout';
-//                } else {
-//                    showNotification(data.message, "error");
-//                }
-//            })
-//            .catch(error => {
-//                showNotification("Có lỗi xảy ra. Vui lòng thử lại sau", "error");
-//            });
-//    });
-
-//    // Notification function
-//    function showNotification(message, type) {
-//        // Check if toastr is available
-//        if (typeof toastr !== 'undefined') {
-//            toastr[type](message);
-//        } else {
-//            // Create a simple notification element
-//            const notification = document.createElement('div');
-//            notification.className = 'alert alert-' + (type === 'success' ? 'success' : 'danger');
-//            notification.textContent = message;
-//            notification.style.position = 'fixed';
-//            notification.style.top = '20px';
-//            notification.style.right = '20px';
-//            notification.style.zIndex = '9999';
-//            notification.style.padding = '10px 20px';
-//            notification.style.borderRadius = '4px';
-//            notification.style.opacity = '0';
-//            notification.style.transition = 'opacity 0.3s ease-in-out';
-
-//            document.body.appendChild(notification);
-
-//            // Fade in
-//            setTimeout(() => {
-//                notification.style.opacity = '1';
-//            }, 10);
-
-//            // Fade out and remove after 3 seconds
-//            setTimeout(() => {
-//                notification.style.opacity = '0';
-//                setTimeout(() => {
-//                    document.body.removeChild(notification);
-//                }, 300);
-//            }, 3000);
-//        }
-//    }
-//});
 
 //Toggle see more
 document.addEventListener('DOMContentLoaded', function () {
@@ -460,4 +332,45 @@ function addToRecentlyViewed(productId) {
 
     // Set cookie
     document.cookie = `${cookieName}=${encodeURIComponent(JSON.stringify(viewed))};path=/;max-age=${60 * 60 * 24 * 7}`; // 7 days
+}
+
+//Load Address api
+async function loadProvinces() {
+    const res = await fetch("https://provinces.open-api.vn/api/p/");
+    const provinces = await res.json();
+    const provinceSelect = document.getElementById("province");
+    provinceSelect.innerHTML = `<option value="">-- Select Province --</option>`;
+    provinces.forEach(p => {
+        provinceSelect.innerHTML += `<option value="${p.name}">${p.name}</option>`;
+    });
+}
+
+async function loadDistrictsByProvince(provinceName) {
+    const provinces = await (await fetch("https://provinces.open-api.vn/api/p/")).json();
+    const province = provinces.find(p => p.name === provinceName);
+    if (!province) return;
+
+    const res = await fetch(`https://provinces.open-api.vn/api/p/${province.code}?depth=2`);
+    const data = await res.json();
+    const districtSelect = document.getElementById("district");
+    districtSelect.innerHTML = `<option value="">-- Select District --</option>`;
+    data.districts.forEach(d => {
+        districtSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+    });
+
+    document.getElementById("ward").innerHTML = `<option value="">-- Select Ward --</option>`;
+}
+
+async function loadWardsByDistrict(districtName) {
+    const districts = await (await fetch("https://provinces.open-api.vn/api/d/")).json();
+    const district = districts.find(d => d.name === districtName);
+    if (!district) return;
+
+    const res = await fetch(`https://provinces.open-api.vn/api/d/${district.code}?depth=2`);
+    const data = await res.json();
+    const wardSelect = document.getElementById("ward");
+    wardSelect.innerHTML = `<option value="">-- Select Ward --</option>`;
+    data.wards.forEach(w => {
+        wardSelect.innerHTML += `<option value="${w.name}">${w.name}</option>`;
+    });
 }
