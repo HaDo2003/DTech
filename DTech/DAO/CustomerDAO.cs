@@ -35,7 +35,7 @@ namespace DTech.DAO
             }
 
             return filteredUsers;
-            
+
         }
 
         //Return one row of table
@@ -51,6 +51,9 @@ namespace DTech.DAO
             {
                 customer.CustomerAddresses = await context.CustomerAddresses
                     .Where(ca => ca.CustomerId == customer.Id)
+                    .Include(a => a.Ward)
+                    .Include(a => a.District)
+                    .Include(a => a.Province)
                     .ToListAsync();
             }
 
@@ -205,6 +208,9 @@ namespace DTech.DAO
             }
             return await context.CustomerAddresses
                 .Where(c => c.CustomerId == customerId)
+                .Include(a => a.Ward)
+                .Include(a => a.District)
+                .Include(a => a.Province)
                 .ToListAsync();
         }
 

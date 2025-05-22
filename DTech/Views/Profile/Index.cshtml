@@ -69,13 +69,22 @@
             loadProvinces();
 
             document.getElementById("province").addEventListener("change", function () {
-                const provinceName = this.value;
-                loadDistrictsByProvince(provinceName);
+                const provinceId = this.value;
+                if (provinceId) {
+                    loadDistrictsByProvince(provinceId);
+                } else {
+                    resetDropdown('district');
+                    resetDropdown('ward');
+                }
             });
 
             document.getElementById("district").addEventListener("change", function () {
-                const districtName = this.value;
-                loadWardsByDistrict(districtName);
+                const districtId = this.value;
+                if (districtId) {
+                    loadWardsByDistrict(districtId);
+                } else {
+                    resetDropdown('ward');
+                }
             });
         });
     </script>

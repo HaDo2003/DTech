@@ -194,6 +194,10 @@ namespace DTech.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
             var addresses = await customerDAO.GetAddressesByCustomerIdAsync(userId);
+            foreach (var a in addresses)
+            {
+                System.Diagnostics.Debug.WriteLine($"AddrId={a.AddressId}, Province={a.Province?.Name}, District={a.District?.Name}, Ward={a.Ward?.Name}");
+            }
             return PartialView("Address", addresses);
         }
 
@@ -212,7 +216,7 @@ namespace DTech.Controllers
         [Route("address/create")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateAddress(
-            [Bind("Id,CustomerId,FullName,PhoneNumber,Address,IsDefault,Province,District,Ward")]
+            [Bind("Id,CustomerId,FullName,PhoneNumber,Address,IsDefault,ProvinceId,DistrictId,WardId")]
             CustomerAddress newAddress)
         {
             ViewData["ActionName"] = "Create Address";
@@ -249,7 +253,7 @@ namespace DTech.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditAddress(
             int? id,
-            [Bind("AddressId,CustomerId,FullName,PhoneNumber,Address,IsDefault,Province,District,Ward")]
+            [Bind("AddressId,CustomerId,FullName,PhoneNumber,Address,IsDefault,ProvinceId,DistrictId,WardId")]
             CustomerAddress editAddress)
         {
             ViewData["ActionName"] = "Edit Address";

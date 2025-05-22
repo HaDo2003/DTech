@@ -1,0 +1,271 @@
+﻿@model DTech.Models.ViewModel.CheckoutViewModel
+@{
+    ViewData["Title"] = "CheckOut";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <form asp-action="Index" method="post">
+                <!-- Billing Information -->
+                <div class="card card-order mb-4">
+                    <div class="card-header card-header-order">
+                        <h5 class="mb-0"><i class="fas fa-user me-2"></i>Thông tin mua hàng</h5>
+                    </div>
+                    <div class="card-body card-body-order">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="CustomerAddress" class="form-label">Sổ địa chỉ</label>
+                                <select asp-for="CustomerAddress" class="form-select">
+                                    <option value="0">Địa chỉ khác...</option>
+                                    <option value="1">Nguyen A, 123, Xã Mỹ Phương, Huyện Ba Bể, Bắc Kạn</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="Email" class="form-label">Email</label>
+                                <input asp-for="Email" type="email" class="form-control" readonly>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="BillingName" class="form-label">Họ và tên *</label>
+                                <input asp-for="BillingName" type="text" class="form-control">
+                                <span asp-validation-for="BillingName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="BillingPhone" class="form-label">Số điện thoại</label>
+                                <input asp-for="BillingPhone" type="tel" class="form-control">
+                                <span asp-validation-for="BillingPhone" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="BillingAddress" class="form-label">Địa chỉ</label>
+                                <input asp-for="BillingAddress" type="text" class="form-control">
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="BillingProvince" class="form-label">Tỉnh thành *</label>
+                                <select asp-for="BillingProvince" class="form-select">
+                                    <option value="6">Bắc Kạn</option>
+                                </select>
+                                <span asp-validation-for="BillingProvince" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="BillingDistrict" class="form-label">Quận huyện</label>
+                                <select asp-for="BillingDistrict" class="form-select">
+                                    <option value="80">Huyện Ba Bể</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="BillingWard" class="form-label">Phường xã</label>
+                                <select asp-for="BillingWard" class="form-select">
+                                    <option value="665">Xã Mỹ Phương</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-check">
+                                    <input asp-for="DifferenceAddress" class="form-check-input" type="checkbox" id="differenceAddress">
+                                    <label class="form-check-label" for="differenceAddress">
+                                        Giao hàng đến địa chỉ khác
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping Information -->
+                <div class="card card-order mb-4" id="shipping-section" style="@(Model.DifferenceAddress ? "" : "display: none;");">
+                    <div class="card-header card-header-order">
+                        <h5 class="mb-0"><i class="fas fa-shipping-fast me-2"></i>Thông tin nhận hàng</h5>
+                    </div>
+                    <div class="card-body card-body-order">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ShippingName" class="form-label">Họ và tên</label>
+                                <input asp-for="ShippingName" type="text" class="form-control">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ShippingPhone" class="form-label">Số điện thoại</label>
+                                <input asp-for="ShippingPhone" type="tel" class="form-control">
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label asp-for="ShippingAddress" class="form-label">Địa chỉ</label>
+                                <input asp-for="ShippingAddress" type="text" class="form-control">
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="ShippingProvince" class="form-label">Tỉnh thành</label>
+                                <select asp-for="ShippingProvince" class="form-select">
+                                    <option value="">Chọn tỉnh thành</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="ShippingDistrict" class="form-label">Quận huyện</label>
+                                <select asp-for="ShippingDistrict" class="form-select">
+                                    <option value="">Chọn quận huyện</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="ShippingWard" class="form-label">Phường xã</label>
+                                <select asp-for="ShippingWard" class="form-select">
+                                    <option value="">Chọn phường xã</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shipping & Payment -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card card-order mb-4">
+                            <div class="card-header card-header-order">
+                                <h5 class="mb-0"><i class="fas fa-truck me-2"></i>Vận chuyển</h5>
+                            </div>
+                            <div class="card-body card-body-order">
+                                <div class="alert alert-info">
+                                    Vui lòng nhập thông tin giao hàng
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card card-order mb-4">
+                            <div class="card-header card-header-order">
+                                <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Thanh toán</h5>
+                            </div>
+                            <div class="card-body card-body-order">
+                                <div class="form-check">
+                                    <input asp-for="PaymentMethod" class="form-check-input" type="radio" value="611080" checked>
+                                    <label class="form-check-label">
+                                        <strong>Thanh toán khi giao hàng (COD)</strong><br>
+                                        <small class="text-muted">Bạn chỉ phải thanh toán khi nhận được hàng</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note -->
+                <div class="card card-order mb-4">
+                    <div class="card-body card-body-order">
+                        <label asp-for="Note" class="form-label">Ghi chú</label>
+                        <textarea asp-for="Note" class="form-control" rows="3" placeholder="Ghi chú về đơn hàng..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Error Messages -->
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        <div asp-validation-summary="All"></div>
+                    </div>
+                }
+            </form>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="col-lg-4">
+            <div class="card card-order sticky-top">
+                <div class="card-header card-header-order">
+                    <h5 class="mb-0">Đơn hàng (@Model.OrderSummary.ItemCount sản phẩm)</h5>
+                </div>
+                <div class="card-body card-body-order">
+                    <!-- Product List -->
+                    @foreach (var item in Model.OrderSummary.Items)
+                    {
+                        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                            <div class="position-relative me-3">
+                                <img src="@item.Image" alt="@item.Name" style="width: 60px; height: 60px; object-fit: cover;" class="rounded">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">@item.Quantity</span>
+                            </div>
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">@item.Name</h6>
+                                <small class="text-muted">@item.Color</small>
+                            </div>
+                            <div class="text-end">
+                                <strong>@item.Price.ToString("N0")₫</strong>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Discount Code -->
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <input asp-for="ReductionCode" type="text" class="form-control" placeholder="Nhập mã giảm giá">
+                            <button type="button" class="btn btn-outline-primary" id="applyDiscount">Áp dụng</button>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="border-top pt-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tạm tính:</span>
+                            <span>@Model.OrderSummary.SubTotal.ToString("N0")₫</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Phí vận chuyển:</span>
+                            <span id="shipping-fee">@(Model.OrderSummary.ShippingFee > 0 ? Model.OrderSummary.ShippingFee.ToString("N0") + "₫" : "-")</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <strong>Tổng cộng:</strong>
+                            <strong class="text-primary" id="total-price">@Model.OrderSummary.Total.ToString("N0")₫</strong>
+                        </div>
+
+                        <button type="submit" form="checkoutForm" class="btn btn-primary w-100 mb-2">
+                            <i class="fas fa-shopping-cart me-2"></i>ĐẶT HÀNG
+                        </button>
+                        <a href="/cart" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-arrow-left me-2"></i>Quay về giỏ hàng
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const differenceAddressCheckbox = document.getElementById('differenceAddress');
+            const shippingSection = document.getElementById('shipping-section');
+
+            if (differenceAddressCheckbox) {
+                differenceAddressCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        shippingSection.style.display = 'block';
+                    } else {
+                        shippingSection.style.display = 'none';
+                    }
+                });
+            }
+
+            // Apply discount code
+            const applyDiscountBtn = document.getElementById('applyDiscount');
+            if (applyDiscountBtn) {
+                applyDiscountBtn.addEventListener('click', function() {
+                    const code = document.querySelector('input[name="ReductionCode"]').value;
+                    if (code) {
+                        // Add your discount logic here
+                        alert('Mã giảm giá: ' + code);
+                    }
+                });
+            }
+        });
+    </script>
+}

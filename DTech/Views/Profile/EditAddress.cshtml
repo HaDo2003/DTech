@@ -32,8 +32,8 @@
 
     <div class="row m-2">
         <div class="form-group">
-            <select asp-for="Province" id="province1" class="form-control" required value="@Model.Province">
-                <option value="">-- Select Province --</option>
+            <select asp-for="Province" id="province1" class="form-control" required value="@Model.Province?.Name">
+                <option value="@Model.Province?.Id">-- Select Province --</option>
             </select>
             <span asp-validation-for="Province" class="text-danger"></span>
         </div>
@@ -41,8 +41,8 @@
 
     <div class="row m-2">
         <div class="form-group">
-            <select asp-for="District" id="district1" class="form-control" required value="@Model.District">
-                <option value="">-- Select District --</option>
+            <select asp-for="District" id="district1" class="form-control" required value="@Model.District?.Name">
+                <option value="@Model.District?.Id">-- Select District --</option>
             </select>
             <span asp-validation-for="District" class="text-danger"></span>
         </div>
@@ -50,8 +50,8 @@
 
     <div class="row m-2">
         <div class="form-group">
-            <select asp-for="Ward" id="ward1" class="form-control" required value="@Model.Ward">
-                <option value="">-- Select Ward --</option>
+            <select asp-for="Ward" id="ward1" class="form-control" required value="@Model.Ward?.Name">
+                <option value="@Model.Ward?.Id">-- Select Ward --</option>
             </select>
             <span asp-validation-for="Ward" class="text-danger"></span>
         </div>
@@ -76,3 +76,30 @@
         </div>
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            loadProvinces();
+
+            document.getElementById("province1").addEventListener("change", function () {
+                const provinceId = this.value;
+                if (provinceId) {
+                    loadDistrictsByProvince(provinceId);
+                } else {
+                    resetDropdown('district1');
+                    resetDropdown('ward1');
+                }
+            });
+
+            document.getElementById("district1").addEventListener("change", function () {
+                const districtId = this.value;
+                if (districtId) {
+                    loadWardsByDistrict(districtId);
+                } else {
+                    resetDropdown('ward1');
+                }
+            });
+        });
+    </script>
+}

@@ -21,13 +21,13 @@ public partial class CustomerAddress
     public string? PhoneNumber { get; set; }
 
     [Display(Name = "Province")]
-    public string? Province { get; set; }
+    public int? ProvinceId { get; set; }
 
     [Display(Name = "District")]
-    public string? District { get; set; }
+    public int? DistrictId { get; set; }
 
     [Display(Name = "Ward")]
-    public string? Ward { get; set; }
+    public int? WardId { get; set; }
 
     [Display(Name = "Address (Street, House No., etc.)")]
     public string? Address { get; set; }
@@ -35,4 +35,7 @@ public partial class CustomerAddress
     public bool IsDefault { get; set; } = false;
 
     public virtual ApplicationUser? Customer { get; set; }
+    public Province? Province { get; set; }
+    public District? District { get; set; }
+    public Ward? Ward { get; set; }
 }

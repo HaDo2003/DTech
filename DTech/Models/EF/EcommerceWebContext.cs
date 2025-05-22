@@ -76,6 +76,10 @@ public partial class EcommerceWebContext : IdentityDbContext<ApplicationUser>
     public DbSet<SearchHistory> SearchHistories { get; set; }
     public DbSet<WishList> WishLists { get; set; }
 
+    public DbSet<Province> Provinces { get; set; }
+    public DbSet<District> Districts { get; set; }
+    public DbSet<Ward> Wards { get; set; }
+
     protected void OnModelCreatingPartial(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<IdentityUserLogin<String>>().HasNoKey();

@@ -15,7 +15,7 @@
     </div>
 </div>
 
-<hr class="my-4"/>
+<hr class="my-4" />
 <partial name="CreateAddress" model="new DTech.Models.EF.CustomerAddress()" />
 
 @if (Model != null && Model.Any())
@@ -50,7 +50,12 @@
             </div>
 
             <div class="address-details mt-2">
-                <p class="mb-1">@item.Address, @item.Ward, @item.District, @item.Province</p>
+                <p class="mb-1">
+                    @(item.Address != null ? item.Address : "")
+                    @(item.Ward?.Name != null ? ", " + item.Ward.Name : "")
+                    @(item.District?.Name != null ? ", " + item.District.Name : "")
+                    @(item.Province?.Name != null ? ", " + item.Province.Name : "")
+                </p>
             </div>
 
             @if (!item.IsDefault)
@@ -79,7 +84,7 @@ else
 
 <!-- Overlay for Edit Address Form -->
 <div id="editOverlay" class="overlay d-none">
-    <div class="mx-auto d-none" id="editAddressForm" >
+    <div class="mx-auto d-none" id="editAddressForm">
         <!-- The EditAddress partial view will be loaded here -->
     </div>
 </div>

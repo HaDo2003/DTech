@@ -23,6 +23,15 @@ public partial class Order
     [Display(Name = "Order Date")]
     public DateOnly? OrderDate { get; set; }
 
+    [Display(Name = "Province")]
+    public int? ProvinceId { get; set; }
+
+    [Display(Name = "District")]
+    public int? DistrictId { get; set; }
+
+    [Display(Name = "Ward")]
+    public int? WardId { get; set; }
+
     public string? Address { get; set; }
 
     [Display(Name = "Consignee Name")]
@@ -54,4 +63,8 @@ public partial class Order
     public virtual Shipping? Shipping { get; set; }
 
     public virtual OrderStatus? Status { get; set; }
+
+    public Province? Province { get; set; }
+    public District? District { get; set; }
+    public Ward? Ward { get; set; }
 }

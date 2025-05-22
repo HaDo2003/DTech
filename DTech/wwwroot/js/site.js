@@ -336,41 +336,45 @@ function addToRecentlyViewed(productId) {
 
 //Load Address api
 async function loadProvinces() {
-    const res = await fetch("https://provinces.open-api.vn/api/p/");
+    const res = await fetch("/api/location/provinces");
     const provinces = await res.json();
     const provinceSelect = document.getElementById("province");
     provinceSelect.innerHTML = `<option value="">-- Select Province --</option>`;
+
     provinces.forEach(p => {
-        provinceSelect.innerHTML += `<option value="${p.name}">${p.name}</option>`;
+        provinceSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
     });
+
+    resetDropdown('district');
+    resetDropdown('ward');
 }
 
-async function loadDistrictsByProvince(provinceName) {
-    const provinces = await (await fetch("https://provinces.open-api.vn/api/p/")).json();
-    const province = provinces.find(p => p.name === provinceName);
-    if (!province) return;
-
-    const res = await fetch(`https://provinces.open-api.vn/api/p/${province.code}?depth=2`);
-    const data = await res.json();
+async function loadDistrictsByProvince(provinceId) {
+    const res = await fetch(`/api/location/districts/${provinceId}`);
+    const districts = await res.json();
     const districtSelect = document.getElementById("district");
     districtSelect.innerHTML = `<option value="">-- Select District --</option>`;
-    data.districts.forEach(d => {
-        districtSelect.innerHTML += `<option value="${d.name}">${d.name}</option>`;
+    districts.forEach(d => {
+        districtSelect.innerHTML += `<option value="${d.id}">${d.name}</option>`;
     });
-
-    document.getElementById("ward").innerHTML = `<option value="">-- Select Ward --</option>`;
+    resetDropdown('ward');
 }
 
-async function loadWardsByDistrict(districtName) {
-    const districts = await (await fetch("https://provinces.open-api.vn/api/d/")).json();
-    const district = districts.find(d => d.name === districtName);
-    if (!district) return;
-
-    const res = await fetch(`https://provinces.open-api.vn/api/d/${district.code}?depth=2`);
-    const data = await res.json();
+async function loadWardsByDistrict(districtId) {
+    const res = await fetch(`/api/location/wards/${districtId}`);
+    const wards = await res.json();
     const wardSelect = document.getElementById("ward");
     wardSelect.innerHTML = `<option value="">-- Select Ward --</option>`;
-    data.wards.forEach(w => {
-        wardSelect.innerHTML += `<option value="${w.name}">${w.name}</option>`;
+    wards.forEach(w => {
+        wardSelect.innerHTML += `<option value="${w.id}">${w.name}</option>`;
     });
+}
+
+function resetDropdown(id) {
+    const select = document.getElementById(id);
+    select.innerHTML = `<option value="">-- Select ${capitalize(id)} --</option>`;
+}
+
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
