@@ -150,5 +150,34 @@ namespace DTech.DAO
             }
             return false;
         }
+
+        // Add products to cart
+        public async Task<bool> AddProductToCartAsync(int cartId, int productId, int quantity)
+        {
+            var cart = await context.Carts
+                .Include(c => c.CartProducts)
+                .FirstOrDefaultAsync(c => c.CartId == cartId);
+            if (cart != null)
+            {
+                var existingProduct = cart.CartProducts
+                    .FirstOrDefault(cp => cp.ProductId == productId);
+                if (existingProduct != null)
+                {
+                    existingProduct.Quantity += quantity;
+                }
+                else
+                {
+                    context.CartProducts.Add(new CartProduct
+                    {
+                        CartId = cartId,
+                        ProductId = productId,
+                        Quantity = quantity
+                    });
+                }
+                await context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

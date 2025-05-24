@@ -21,7 +21,8 @@ namespace DTech.Controllers
         CustomerAddressDAO customerAddressDAO,
         PaymentMethodDAO paymentMethodDAO,
         CustomerDAO customerDAO,
-        CouponDAO couponDAO
+        CouponDAO couponDAO,
+        ProductDAO productDAO
     ) : Controller
     {
         [HttpGet("")]
@@ -298,6 +299,7 @@ namespace DTech.Controllers
 
         // Helper method to apply discount code via AJAX
         [HttpPost("apply-discount")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApplyDiscount(string code)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -393,6 +395,30 @@ namespace DTech.Controllers
 
             orderSummary.ItemCount = orderSummary.Items.Count;
             return orderSummary;
+        }
+
+        [HttpPost("buy-now")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> BuyNow(int productId, int quantity = 1)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Authentication");
+            // Check if the product exists
+            var product = await productDAO.GetByIdAsync(productId);
+            if (product == null)
+            {
+                return Json(new { success = false, message = "Product not found." });
+            }
+
+            // Create a temporary cart for the buy now action
+            var cart = await cartDAO.GetCartByUserId(userId);
+            if (cart == null)
+                return Json(new { success = false, message = "Cart not found" });
+
+            await cartDAO.AddProductToCartAsync(cart.CartId, productId, quantity);
+            return Json(new { success = true, message = "Add to cart successfully" });
+            //return RedirectToAction("CheckOut");
         }
     }
 }

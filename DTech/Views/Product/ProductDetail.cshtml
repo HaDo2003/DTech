@@ -140,12 +140,13 @@
                             Fast Delivery
                         </span>
                     </button>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<partial name="_RelatedProducts" model="ViewBag.RelatedProducts" />
 
 <div class="container mt-3">
     <div class="box-product-information">
@@ -259,6 +260,7 @@
             const addToCartBtn = document.getElementById('addToCart');
             const buyNowBtn = document.getElementById('buyNow');
             const productIdElement = document.getElementById('productId');
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
             // Quantity adjustment
             decreaseBtn.addEventListener('click', function () {
@@ -307,23 +309,25 @@
                 formData.append('quantity', quantity);
 
                 // Send AJAX request
-                fetch('/Order/BuyNow', {
+                fetch('/checkout/buy-now', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'RequestVerificationToken': token
                     },
                     body: new URLSearchParams(formData)
                 })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            window.location.href = '/Order/Checkout';
+                            window.location.href = '/checkout';
                         } else {
                             showNotification(data.message, "error");
                         }
                     })
                     .catch(error => {
-                        showNotification("Có lỗi xảy ra. Vui lòng thử lại sau", "error");
+                        showNotification("Error, please try again", "error");
                     });
             });
 

@@ -316,5 +316,24 @@ namespace DTech.DAO
             }
         }
 
+        //Get related products by brand
+        public async Task<List<Product>> GetRelatedProductsAsync(int? brandId, int? productId)
+        {
+            if (brandId == null || productId == null)
+            {
+                return [];
+            }
+            var products = await context.Products
+                .AsNoTracking()
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .Where(a => a.BrandId == brandId && a.ProductId != productId && a.Status == 1)
+                .OrderByDescending(a => a.ProductId)
+                .Take(5)
+                .ToListAsync();
+            return products;
+        }
+
     }
 }

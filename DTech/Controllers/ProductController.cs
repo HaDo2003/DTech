@@ -114,12 +114,15 @@ namespace DTech.Controllers
                 var product = await productDAO.GetBySlugAsync(productSlug, category.CategoryId, brand.BrandId);
                 if (product == null) return NotFound();
                 await productDAO.IncreaseViewsAsync(product.ProductId);
+
                 var specifications = await specificationDAO.GetSpecificationsByProductIdAsync(product.ProductId);
                 var comments = await productCommentDAO.GetCommentsByProductIdAsync(product.ProductId);
+                var relatedProducts = await productDAO.GetRelatedProductsAsync(brand.BrandId, product.ProductId);
 
                 ViewBag.Breadcrumb = new[] { category.Name, brand.Name, product.Name };
                 ViewBag.Specifications = specifications;
                 ViewBag.Comments = comments;
+                ViewBag.RelatedProducts = relatedProducts;
                 return View(product);
             }
             catch (Exception ex)
@@ -155,7 +158,7 @@ namespace DTech.Controllers
             {
                 try
                 {
-                    recentlyViewedIds = System.Text.Json.JsonSerializer.Deserialize<List<int>>(cookie);
+                    recentlyViewedIds = System.Text.Json.JsonSerializer.Deserialize<List<int>>(cookie) ?? [];
                 }
                 catch
                 {
