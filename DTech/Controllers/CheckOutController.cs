@@ -1,11 +1,14 @@
 ﻿using CloudinaryDotNet.Core;
 using DTech.DAO;
+using DTech.Library.Service.Vnpay;
 using DTech.Models.EF;
 using DTech.Models.ViewModel;
+using DTech.Models.Vnpay;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -22,7 +25,8 @@ namespace DTech.Controllers
         PaymentMethodDAO paymentMethodDAO,
         CustomerDAO customerDAO,
         CouponDAO couponDAO,
-        ProductDAO productDAO
+        ProductDAO productDAO,
+        IVnPayService vnPayService
     ) : Controller
     {
         [HttpGet("")]
@@ -91,188 +95,251 @@ namespace DTech.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CheckOut(CheckoutViewModel model)
         {
+            var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
-                return RedirectToAction("Login", "Authentication");
+                return HandleNotAuthenticated(isAjax);
 
             if (!ModelState.IsValid)
-            {
-                // Reload data for the view
-                model.CustomerAddresses = await customerAddressDAO.GetAllAddressesByCustomerIdAsync(userId);
-                model.PaymentMethods = await paymentMethodDAO.GetListAsync();
-
-                var cart = await cartDAO.GetCartByUserId(userId);
-                if (cart == null || cart.CartProducts.Count == 0)
-                {
-                    TempData["Error"] = "Your cart is empty.";
-                    return RedirectToAction("Index", "Cart");
-                }
-                model.OrderSummary = CreateOrderSummary(cart);
-
-                ViewData["PaymentMethods"] = new SelectList(model.PaymentMethods, "PaymentMethodId", "Name", model.PaymentMethod);
-                ViewData["CustomerAddresses"] = new SelectList(model.CustomerAddresses.Select(ca => new {
-                    Value = ca.AddressId,
-                    Text = $"{ca.FullName}, {ca.Address}, {ca.Ward?.Name}, {ca.District?.Name}, {ca.Province?.Name}"
-                }), "Value", "Text", model.CustomerAddress);
-
-                return View(model);
-            }
+                return await HandleInvalidModelState(model, userId, isAjax);
 
             try
             {
-                // Get cart items
                 var cart = await cartDAO.GetCartByUserId(userId);
                 if (cart == null || cart.CartProducts.Count == 0)
-                {
-                    TempData["Error"] = "Your cart is empty.";
-                    return RedirectToAction("Index", "Cart");
-                }
+                    return HandleEmptyCart(isAjax);
 
-                //Recalculate the Order Summary
-                var orderSummary = CreateOrderSummary(cart);
-                // If a reduction code is present, validate and apply it on the server
+                var orderSummary = await CalculateOrderSummary(model, cart);
+                model.OrderSummary = orderSummary;
+
+                if (model.PaymentMethod == 3)
+                    return HandleVnPay(model, isAjax);
+
+                var shipping = await CreateShipping();
+                var payment = await CreatePayment(model, shipping);
+                var order = await CreateOrder(model, userId, shipping, payment);
+
+                var orderResult = await orderDAO.AddAsync(order);
+                if (!orderResult)
+                    return HandleOrderCreationFailed(model);
+
+                await CreateOrderDetails(cart, order);
+                await cartDAO.ClearCartAsync(userId);
                 if (!string.IsNullOrEmpty(model.ReductionCode))
+                    await couponDAO.UseCodeAsync(model.ReductionCode, userId);
+
+                TempData["OrderId"] = order.OrderId;
+                TempData["Success"] = "Order placed successfully!";
+
+                if (isAjax)
+                    return Json(new { success = true });
+
+                return RedirectToAction("Success", new { orderId = order.OrderId });
+            }
+            catch (Exception ex)
+            {
+                return await HandleCheckoutException(model, userId, isAjax, ex);
+            }
+        }
+
+        // --- Helper Methods ---
+
+        private IActionResult HandleNotAuthenticated(bool isAjax)
+        {
+            if (isAjax)
+                return Json(new { success = false, message = "Not authenticated" });
+            return RedirectToAction("Login", "Authentication");
+        }
+
+        private async Task<IActionResult> HandleInvalidModelState(CheckoutViewModel model, string userId, bool isAjax)
+        {
+            if (isAjax)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return Json(new { success = false, message = "Validation failed", errors });
+            }
+            model.CustomerAddresses = await customerAddressDAO.GetAllAddressesByCustomerIdAsync(userId);
+            model.PaymentMethods = await paymentMethodDAO.GetListAsync();
+            var cart = await cartDAO.GetCartByUserId(userId);
+            if (cart == null || cart.CartProducts.Count == 0)
+            {
+                TempData["Error"] = "Your cart is empty.";
+                return RedirectToAction("Index", "Cart");
+            }
+            model.OrderSummary = CreateOrderSummary(cart);
+            ViewData["PaymentMethods"] = new SelectList(model.PaymentMethods, "PaymentMethodId", "Name", model.PaymentMethod);
+            ViewData["CustomerAddresses"] = new SelectList(model.CustomerAddresses.Select(ca => new {
+                Value = ca.AddressId,
+                Text = $"{ca.FullName}, {ca.Address}, {ca.Ward?.Name}, {ca.District?.Name}, {ca.Province?.Name}"
+            }), "Value", "Text", model.CustomerAddress);
+            return View(model);
+        }
+
+        private IActionResult HandleEmptyCart(bool isAjax)
+        {
+            if (isAjax)
+                return Json(new { success = false, message = "Your cart is empty." });
+            TempData["Error"] = "Your cart is empty.";
+            return RedirectToAction("Index", "Cart");
+        }
+
+        private async Task<OrderSummary> CalculateOrderSummary(CheckoutViewModel model, Cart cart)
+        {
+            var orderSummary = CreateOrderSummary(cart);
+            if (!string.IsNullOrEmpty(model.ReductionCode))
+            {
+                var discount = await couponDAO.GetByCodeAsync(model.ReductionCode);
+                if (discount != null && discount.Status == 1)
                 {
-                    var discount = await couponDAO.GetByCodeAsync(model.ReductionCode);
-                    if (discount != null && discount.Status == 1)
+                    var subtotal = orderSummary.SubTotal ?? 0;
+                    decimal? discountAmount = 0m;
+                    switch (discount.DiscountType)
                     {
-                        var subtotal = orderSummary.SubTotal ?? 0;
-                        decimal? discountAmount = 0m;
-                        switch (discount.DiscountType)
-                        {
-                            case "Percentage":
-                                discountAmount = subtotal * discount.Discount / 100;
-                                if (discount.MaxDiscount.HasValue && discountAmount > discount.MaxDiscount.Value)
-                                    discountAmount = discount.MaxDiscount.Value;
-                                break;
-                            case "Direct":
-                                discountAmount = discount.Discount;
-                                break;
-                        }
-                        orderSummary.DiscountAmount = discountAmount;
-                        orderSummary.Total = subtotal - discountAmount;
+                        case "Percentage":
+                            discountAmount = subtotal * discount.Discount / 100;
+                            if (discount.MaxDiscount.HasValue && discountAmount > discount.MaxDiscount.Value)
+                                discountAmount = discount.MaxDiscount.Value;
+                            break;
+                        case "Direct":
+                            discountAmount = discount.Discount;
+                            break;
                     }
-                    else
-                    {
-                        orderSummary.DiscountAmount = 0;
-                        orderSummary.Total = orderSummary.SubTotal;
-                    }
+                    orderSummary.DiscountAmount = discountAmount;
+                    orderSummary.Total = subtotal - discountAmount;
                 }
                 else
                 {
                     orderSummary.DiscountAmount = 0;
                     orderSummary.Total = orderSummary.SubTotal;
                 }
-
-                // Add shipping fee
-                orderSummary.Total = (orderSummary.Total ?? 0) + (orderSummary.ShippingFee ?? 0);
-
-                // Use this recalculated orderSummary for your order creation
-                model.OrderSummary = orderSummary;
-
-
-                // Create shipping record
-                var shipping = new Shipping
-                {
-                    DelivaryDate = DateOnly.FromDateTime(DateTime.Now.AddDays(3)),
-                };
-                await shippingDAO.AddAsync(shipping);
-
-                // Calculate total amount
-                var totalAmount = model.OrderSummary.Total;
-
-                // Create payment record
-                var payment = new Payment
-                {
-                    Date = DateOnly.FromDateTime(DateTime.Now),
-                    Amount = totalAmount,
-                    PaymentMethodId = model.PaymentMethod,
-                    //Status = model.PaymentMethod == 611080 ? 0 : 1,
-                    Status = 0,
-                    CreateDate = DateTime.Now
-                };
-                await paymentDAO.AddAsync(payment);
-
-                // Create order
-                var order = new Order
-                {
-                    CustomerId = userId,
-                    ShippingId = shipping.ShippingId,
-                    PaymentId = payment.PaymentId,
-                    StatusId = 1,
-                    OrderDate = DateOnly.FromDateTime(DateTime.Now),
-                    Name = model.BillingName,
-                    Phone = model.BillingPhone,
-                    ProvinceId = model.BillingProvince,
-                    DistrictId = model.BillingDistrict,
-                    WardId = model.BillingWard,
-                    Address = model.BillingAddress,
-                    TotalCost = model.OrderSummary.SubTotal,
-                    CostDiscount = model.OrderSummary.DiscountAmount,
-                    ShippingCost = model.OrderSummary.ShippingFee,
-                    FinalCost = model.OrderSummary.Total,
-                    Note = model.Note,
-                };
-
-                if (model.DifferenceAddress)
-                {
-                    order.NameReceive = model.ShippingName;
-                    order.PhoneReceive = model.ShippingPhone;
-                    order.ShippingProvinceId = model.ShippingProvince;
-                    order.ShippingDistrictId = model.ShippingDistrict;
-                    order.ShippingWardId = model.ShippingWard;
-                    order.ShippingAddress = model.ShippingAddress;
-                }
-
-                var orderResult = await orderDAO.AddAsync(order);
-                if (!orderResult)
-                {
-                    TempData["Error"] = "Failed to create order. Please try again.";
-                    return View(model);
-                }
-
-                // Create order details
-                var orderDetails = cart.CartProducts.Select(cartProduct => new OrderProduct
-                {
-                    OrderId = order.OrderId,
-                    ProductId = cartProduct.ProductId,
-                    Quantity = cartProduct.Quantity,
-                    CostAtPurchase = cartProduct.Product!.Price * (cartProduct.Product.Discount.HasValue ? (1 - cartProduct.Product.Discount.Value / 100m) : 1) * cartProduct.Quantity,
-                }).ToList();
-                await orderDAO.AddOrderDetailAsync(orderDetails);
-
-                // Clear cart after successful order
-                await cartDAO.ClearCartAsync(userId);
-                if (!string.IsNullOrEmpty(model.ReductionCode))
-                {
-                    await couponDAO.UseCodeAsync(model.ReductionCode, userId);
-                }
-
-                // Store order ID for success page
-                TempData["OrderId"] = order.OrderId;
-                TempData["Success"] = "Order placed successfully!";
-
-                return RedirectToAction("OrderSuccess", new { orderId = order.OrderId });
             }
-            catch (Exception ex)
+            else
             {
-                // Log the exception
-                TempData["Error"] = "An error occurred while processing your order. Please try again.";
+                orderSummary.DiscountAmount = 0;
+                orderSummary.Total = orderSummary.SubTotal;
+            }
+            orderSummary.Total = (orderSummary.Total ?? 0) + (orderSummary.ShippingFee ?? 0);
+            return orderSummary;
+        }
 
-                // Reload data for the view
-                model.CustomerAddresses = await customerAddressDAO.GetAllAddressesByCustomerIdAsync(userId);
-                model.PaymentMethods = await paymentMethodDAO.GetListAsync();
-
-                var cart = await cartDAO.GetCartByUserId(userId);
-                if (cart == null || cart.CartProducts.Count == 0)
-                {
-                    TempData["Error"] = "Your cart is empty.";
-                    return RedirectToAction("Index", "Cart");
-                }
-                model.OrderSummary = CreateOrderSummary(cart);
-                Console.WriteLine("error: " + ex.Message);
+        private IActionResult HandleVnPay(CheckoutViewModel model, bool isAjax)
+        {
+            if (model.OrderSummary.Total == null || model.OrderSummary.Total <= 0)
+            {
+                if (isAjax)
+                    return Json(new { success = false, message = "Order total is missing or invalid." });
+                ModelState.AddModelError("", "Order total is missing or invalid.");
                 return View(model);
             }
+
+            var paymentInfo = new PaymentInformationModel
+            {
+                OrderType = "other",
+                Amount = model.OrderSummary.Total.Value,
+                OrderDescription = "Payment at DTech",
+                Name = User.Identity.Name ?? ""
+            };
+            var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var paymentUrl = vnPayService.CreatePaymentUrl(paymentInfo, clientIp);
+
+            if (isAjax)
+                return Json(new { success = true, paymentUrl });
+
+            return Redirect(paymentUrl);
+        }
+
+        private async Task<Shipping> CreateShipping()
+        {
+            var shipping = new Shipping
+            {
+                DelivaryDate = DateOnly.FromDateTime(DateTime.Now.AddDays(3)),
+            };
+            await shippingDAO.AddAsync(shipping);
+            return shipping;
+        }
+
+        private async Task<Payment> CreatePayment(CheckoutViewModel model, Shipping shipping)
+        {
+            var payment = new Payment
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now),
+                Amount = model.OrderSummary.Total,
+                PaymentMethodId = model.PaymentMethod,
+                Status = 0,
+                CreateDate = DateTime.Now
+            };
+            await paymentDAO.AddAsync(payment);
+            return payment;
+        }
+
+        private async Task<Order> CreateOrder(CheckoutViewModel model, string userId, Shipping shipping, Payment payment)
+        {
+            var order = new Order
+            {
+                CustomerId = userId,
+                ShippingId = shipping.ShippingId,
+                PaymentId = payment.PaymentId,
+                StatusId = 1,
+                OrderDate = DateOnly.FromDateTime(DateTime.Now),
+                Name = model.BillingName,
+                Phone = model.BillingPhone,
+                ProvinceId = model.BillingProvince,
+                DistrictId = model.BillingDistrict,
+                WardId = model.BillingWard,
+                Address = model.BillingAddress,
+                TotalCost = model.OrderSummary.SubTotal,
+                CostDiscount = model.OrderSummary.DiscountAmount,
+                ShippingCost = model.OrderSummary.ShippingFee,
+                FinalCost = model.OrderSummary.Total,
+                Note = model.Note,
+            };
+
+            if (model.DifferenceAddress)
+            {
+                order.NameReceive = model.ShippingName;
+                order.PhoneReceive = model.ShippingPhone;
+                order.ShippingProvinceId = model.ShippingProvince;
+                order.ShippingDistrictId = model.ShippingDistrict;
+                order.ShippingWardId = model.ShippingWard;
+                order.ShippingAddress = model.ShippingAddress;
+            }
+            return order;
+        }
+
+        private IActionResult HandleOrderCreationFailed(CheckoutViewModel model)
+        {
+            TempData["Error"] = "Failed to create order. Please try again.";
+            return View(model);
+        }
+
+        private async Task CreateOrderDetails(Cart cart, Order order)
+        {
+            var orderDetails = cart.CartProducts.Select(cartProduct => new OrderProduct
+            {
+                OrderId = order.OrderId,
+                ProductId = cartProduct.ProductId,
+                Quantity = cartProduct.Quantity,
+                CostAtPurchase = cartProduct.Product!.Price * (cartProduct.Product.Discount.HasValue ? (1 - cartProduct.Product.Discount.Value / 100m) : 1) * cartProduct.Quantity,
+            }).ToList();
+            await orderDAO.AddOrderDetailAsync(orderDetails);
+        }
+
+        private async Task<IActionResult> HandleCheckoutException(CheckoutViewModel model, string userId, bool isAjax, Exception ex)
+        {
+            if (isAjax)
+                return Json(new { success = false, message = "An error occurred while processing your order. Please try again.", details = ex.ToString() });
+
+            model.CustomerAddresses = await customerAddressDAO.GetAllAddressesByCustomerIdAsync(userId);
+            model.PaymentMethods = await paymentMethodDAO.GetListAsync();
+            var cart = await cartDAO.GetCartByUserId(userId);
+            if (cart == null || cart.CartProducts.Count == 0)
+            {
+                TempData["Error"] = "Your cart is empty.";
+                return RedirectToAction("Index", "Cart");
+            }
+            model.OrderSummary = CreateOrderSummary(cart);
+            Console.WriteLine("error: " + ex.Message);
+            return View(model);
         }
 
         // Helper method to get address details via AJAX
@@ -419,6 +486,14 @@ namespace DTech.Controllers
             await cartDAO.AddProductToCartAsync(cart.CartId, productId, quantity);
             return Json(new { success = true, message = "Add to cart successfully" });
             //return RedirectToAction("CheckOut");
+        }
+
+        [HttpGet("vnpay-call-back")]
+        public IActionResult PaymentCallbackVnpay()
+        {
+            var response = vnPayService.PaymentExecute(Request.Query);
+
+            return Json(response);
         }
     }
 }

@@ -1,14 +1,15 @@
+using dotenv.net;
 using DTech.DAO;
 using DTech.Library;
+using DTech.Library.Hubs;
 using DTech.Library.Service;
+using DTech.Library.Service.Vnpay;
 using DTech.Models.EF;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using dotenv.net;
-using Microsoft.AspNetCore.Authentication.Facebook;
-using DTech.Library.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -153,6 +154,9 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Authentication/Login";
     options.AccessDeniedPath = "/Authentication/AccessDenied";
 });
+
+//Connect VNPay API
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 var app = builder.Build();
 

@@ -143,6 +143,7 @@
             const differenceAddressCheckbox = document.getElementById('differenceAddress');
             const shippingSection = document.getElementById('shipping-section');
             const applyDiscountBtn = document.getElementById('applyDiscount');
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
             if (shippingSection.style.display === 'none') {
                 setShippingFieldsRequired(false);
@@ -209,7 +210,6 @@
                 applyDiscountBtn.addEventListener('click', function() {
                     const code = document.querySelector('input[name="ReductionCode"]').value.trim();
                     const messageDiv = document.getElementById('discount-message');
-                    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
                     if (!code) {
                         showDiscountMessage('Please input coupon', 'danger');
@@ -260,10 +260,42 @@
             // Form validation before submit
             const checkoutForm = document.getElementById('checkoutForm');
             if (checkoutForm) {
-                checkoutForm.addEventListener('submit', function(e) {
-                    if (!validateForm()) {
-                        e.preventDefault();
-                        return false;
+                checkoutForm.addEventListener('submit', async function (e) {
+                    // Prevent default form submission
+                    e.preventDefault();
+
+                    if (!validateForm()) return;
+
+                    // Determine selected payment method
+                    const selectedMethod = document.querySelector('input[name="PaymentMethod"]:checked')?.value;
+
+                    // Create FormData from the form
+                    const formData = new FormData(checkoutForm);
+
+                    try {
+                        const response = await fetch('/checkout', {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'RequestVerificationToken': token
+                            },
+                            body: formData
+                        });
+
+                        const result = await response.json();
+                        console.log(result);
+
+                    if (result.success && result.paymentUrl) {
+                        window.location.href = result.paymentUrl;
+                    } else if (result.success) {
+                        window.location.href = '/checkout/order-success';
+                    } else {
+                        alert(result.message || 'Order failed. Please try again.');
+                    }
+
+                    } catch (err) {
+                        console.error('Checkout error:', err);
+                        alert('Something went wrong. Please try again.');
                     }
                 });
             }
