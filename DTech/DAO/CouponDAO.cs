@@ -1,11 +1,13 @@
 ﻿using DTech.Models.EF;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DTech.DAO
 {
     public class CouponDAO(
         EcommerceWebContext context
-    ){
+    )
+    {
         //Return all content of table
         public async Task<List<Coupon>> GetListAsync()
         {
@@ -101,6 +103,44 @@ namespace DTech.DAO
             var coupon = await context.Coupons
                 .FirstOrDefaultAsync(a => a.Slug == newSlug && a.CouponId != CouponId);
             return coupon;
+        }
+
+        //Get coupon by code
+        public async Task<Coupon?> GetByCodeAsync(string? code)
+        {
+            if (string.IsNullOrEmpty(code))
+            {
+                return null;
+            }
+            var coupon = await context.Coupons.AsNoTracking().FirstOrDefaultAsync(a => a.Code == code);
+            return coupon;
+        }
+
+        //Check if code is already used by customer
+        public async Task<bool> CheckCodeAsync(int? couponId, string? customerId)
+        {
+            if (string.IsNullOrEmpty(customerId) || couponId == null)
+            {
+                return false;
+            }
+            return await context.CustomerCoupons.AnyAsync(a => a.CouponId == couponId && a.CustomerId == customerId);
+        }
+
+        //Save coupon used by user
+        public async Task UseCodeAsync(string? code, string? customerId)
+        {
+            var coupon = await GetByCodeAsync(code);
+            if (coupon == null || string.IsNullOrEmpty(customerId))
+            {
+                return;
+            }
+            var customerCoupon = new CustomerCoupon
+            {
+                CouponId = coupon.CouponId,
+                CustomerId = customerId,
+            };
+            context.CustomerCoupons.Add(customerCoupon);
+            await context.SaveChangesAsync();
         }
     }
 }

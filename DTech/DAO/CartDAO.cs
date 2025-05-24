@@ -135,5 +135,20 @@ namespace DTech.DAO
             }
             return false;
         }
+
+        //Clear Cart after order is placed
+        public async Task<bool> ClearCartAsync(string userId)
+        {
+            var cart = await context.Carts
+                .Include(c => c.CartProducts)
+                .FirstOrDefaultAsync(c => c.CustomerId == userId);
+            if (cart != null)
+            {
+                context.CartProducts.RemoveRange(cart.CartProducts);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
     }
 }

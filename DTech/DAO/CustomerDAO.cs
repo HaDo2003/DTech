@@ -55,6 +55,9 @@ namespace DTech.DAO
                     .Include(a => a.District)
                     .Include(a => a.Province)
                     .ToListAsync();
+                customer.Orders = await context.Orders
+                    .Where(o => o.CustomerId == customer.Id)
+                    .ToListAsync();
             }
 
             return customer;

@@ -34,7 +34,7 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CouponId,Name,Slug,Code,Discount,Condition,Detail,EndDate,Status,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Coupon coupon)
+        public async Task<IActionResult> Create([Bind("CouponId,Name,Slug,Code,Discount,DiscountType,MaxDiscount,Condition,Detail,EndDate,Status,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Coupon coupon)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace DTech.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CouponId,Name,Slug,Code,Discount,Condition,Detail,EndDate,Status,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Coupon coupon)
+        public async Task<IActionResult> Edit(int id, [Bind("CouponId,Name,Slug,Code,Discount,DiscountType,MaxDiscount,Condition,Detail,EndDate,Status,CreatedBy,CreateDate,UpdatedBy,UpdateDate")] Coupon coupon)
         {
             if (id != coupon.CouponId)
             {

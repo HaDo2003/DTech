@@ -5,7 +5,8 @@ namespace DTech.DAO
 {
     public class OrderDAO(
         EcommerceWebContext context
-    ){
+    )
+    {
         //Return all content of table
         public async Task<List<Order>> GetListAsync()
         {
@@ -89,6 +90,36 @@ namespace DTech.DAO
         public async Task<bool> CheckIdAsync(int? id)
         {
             return await context.Orders.AnyAsync(e => e.OrderId == id);
+        }
+
+        //Add Order Detail to Order
+        public async Task<bool> AddOrderDetailAsync(List<OrderProduct> orderProduct)
+        {
+            try
+            {
+                context.OrderProducts.AddRange(orderProduct);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        //Get Order Detail by OrderId
+        public async Task<List<OrderProduct>> GetOrderWithDetailsAsync(int? orderId, string? userId)
+        {
+            if (orderId == null)
+            {
+                return [];
+            }
+            return await context.OrderProducts
+                .AsNoTracking()
+                .Include(op => op.Product)
+                .Where(op => op.OrderId == orderId)
+                .ToListAsync();
         }
     }
 }

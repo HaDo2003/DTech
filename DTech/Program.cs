@@ -195,7 +195,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "brand",
-    pattern: "{categorySlug:regex(^((?!Authentication|Admin|Account|Cart).)*$)}/{brandSlug}",
+    pattern: "{categorySlug:regex(^((?!Authentication|Admin|Account|Cart|CheckOut).)*$)}/{brandSlug}",
     defaults: new { controller = "Product", action = "CategoryBrand" }
 );
 

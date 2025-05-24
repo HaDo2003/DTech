@@ -20,6 +20,13 @@ public partial class Coupon
     [Required(ErrorMessage = "Please enter discount")]
     public decimal? Discount { get; set; }
 
+    [Required(ErrorMessage = "Please enter discount type")]
+    [Display(Name = "Discount Type")]
+    public string? DiscountType { get; set; }
+
+    [Display(Name = "Max Discount")]
+    public int? MaxDiscount { get; set; }
+
     [Required(ErrorMessage = "Please enter condition")]
     public int? Condition { get; set; }
 

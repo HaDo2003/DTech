@@ -127,11 +127,13 @@ namespace DTech.Controllers
         public async Task<IActionResult> Orders()
         {
             ViewData["ActionName"] = "Orders";
+            ViewData["ActiveTab"] = "orders";
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
 
             var orders = await customerDAO.GetOrdersByCustomerIdAsync(userId);
             return PartialView("Orders", orders);
+            //return View("Index", new { activeTab = "order" });
         }
 
         // GET: Profile/Coupons
@@ -194,10 +196,6 @@ namespace DTech.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Authentication");
             var addresses = await customerDAO.GetAddressesByCustomerIdAsync(userId);
-            foreach (var a in addresses)
-            {
-                System.Diagnostics.Debug.WriteLine($"AddrId={a.AddressId}, Province={a.Province?.Name}, District={a.District?.Name}, Ward={a.Ward?.Name}");
-            }
             return PartialView("Address", addresses);
         }
 

@@ -4,6 +4,7 @@ using DTech.Models.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DTech.Migrations
 {
     [DbContext(typeof(EcommerceWebContext))]
-    partial class EcommerceWebContextModelSnapshot : ModelSnapshot
+    [Migration("20250524062225_UpdateCoupon")]
+    partial class UpdateCoupon
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -399,6 +402,12 @@ namespace DTech.Migrations
                     b.Property<string>("CustomerId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateOnly?>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CouponId");
@@ -502,9 +511,6 @@ namespace DTech.Migrations
                     b.Property<decimal?>("FinalCost")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("NameReceive")
                         .HasColumnType("nvarchar(max)");
 
@@ -517,31 +523,16 @@ namespace DTech.Migrations
                     b.Property<int?>("PaymentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PhoneReceive")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ProvinceId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ShippingAddress")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal?>("ShippingCost")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ShippingDistrictId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("ShippingId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ShippingProvinceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ShippingWardId")
                         .HasColumnType("int");
 
                     b.Property<int?>("StatusId")
@@ -603,8 +594,8 @@ namespace DTech.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("CostAtPurchase")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int?>("CostAtPurchase")
+                        .HasColumnType("int");
 
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");

@@ -1,0 +1,65 @@
+﻿@model DTech.Models.ViewModel.CheckoutViewModel
+
+<div class="card card-order mb-4" id="shipping-section" style="display: none;">
+    <div class="card-header card-header-order">
+        <h5 class="mb-0"><i class="fas fa-truck me-2"></i>Delivery Address</h5>
+    </div>
+    <div class="card-body card-body-order">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="ShippingName" type="text" class="form-control" placeholder="Consignee Name" required>
+                    <label asp-for="ShippingName" class="form-label fs-6">Consignee Name</label>
+                </div>
+                <span asp-validation-for="ShippingName" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <div class="form-floating">
+                    <input asp-for="ShippingPhone" type="tel" class="form-control" placeholder="Phone Number" required>
+                    <label asp-for="ShippingPhone" class="form-label fs-6">Phone Number</label>
+                </div>
+                <span asp-validation-for="ShippingPhone" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-12 mb-3">
+                <div class="form-floating">
+                    <input asp-for="ShippingAddress" type="text" class="form-control" placeholder="Address" required>
+                    <label asp-for="ShippingAddress" class="form-label fs-6">Address</label>
+                </div>
+                <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="form-floating">
+                    <select asp-for="ShippingProvince" class="form-select" id="shippingProvince" placeholder="Select Province" required>
+                        <option value="">Select Province</option>
+                        <!-- Provinces will be loaded here -->
+                    </select>
+                    <label asp-for="ShippingProvince" class="form-label fs-6">Province</label>
+                </div>
+                <span asp-validation-for="ShippingProvince" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="form-floating">
+                    <select asp-for="ShippingDistrict" class="form-select" id="shippingDistrict" placeholder="Select District" required>
+                        <option value="">Select District</option>
+                    </select>
+                    <label asp-for="ShippingDistrict" class="form-label fs-6">District</label>
+                </div>
+                <span asp-validation-for="ShippingDistrict" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <div class="form-floating">
+                    <select asp-for="ShippingWard" class="form-select" id="shippingWard" placeholder="Select Ward" required>
+                        <option value="">Select Ward</option>
+                    </select>
+                    <label asp-for="ShippingWard" class="form-label fs-6">Ward</label>
+                </div>
+                <span asp-validation-for="ShippingWard" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+</div>

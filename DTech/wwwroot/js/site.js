@@ -378,3 +378,88 @@ function resetDropdown(id) {
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+//Check out
+function validateForm() {
+    let isValid = true;
+    const requiredFields = document.querySelectorAll('[required]');
+
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+
+    // Check if payment method is selected
+    const paymentMethod = document.querySelector('input[name="PaymentMethod"]:checked');
+    if (!paymentMethod) {
+        alert('Please choose payment method');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function setShippingFieldsRequired(required) {
+    const shippingFields = ['ShippingName', 'ShippingPhone', 'ShippingAddress', 'ShippingProvince', 'ShippingDistrict', 'ShippingWard'];
+    shippingFields.forEach(field => {
+        const element = document.querySelector(`[name="${field}"]`);
+        if (element) {
+            if (required) {
+                element.setAttribute('required', 'required');
+            } else {
+                element.removeAttribute('required');
+            }
+        }
+    });
+}
+
+function clearShippingFields() {
+    const shippingFields = ['ShippingName', 'ShippingPhone', 'ShippingAddress', 'ShippingProvince', 'ShippingDistrict', 'ShippingWard'];
+    shippingFields.forEach(field => {
+        const element = document.querySelector(`[name="${field}"]`);
+        if (element) {
+            element.value = '';
+        }
+    });
+}
+
+function showDiscountMessage(message, type) {
+    const messageDiv = document.getElementById('discount-message');
+    messageDiv.innerHTML = `<div class="alert alert-${type} alert-sm">${message}</div>`;
+    setTimeout(() => {
+        messageDiv.innerHTML = '';
+    }, 5000);
+}
+
+function setupLocationCascade(prefix) {
+    const provinceSelect = document.getElementById(`${prefix}Province`);
+    const districtSelect = document.getElementById(`${prefix}District`);
+    const wardSelect = document.getElementById(`${prefix}Ward`);
+
+    if (provinceSelect) {
+        provinceSelect.addEventListener('change', function () {
+            const provinceId = this.value;
+            districtSelect.innerHTML = '<option value="">Select district</option>';
+            wardSelect.innerHTML = '<option value="">Select ward</option>';
+
+            if (provinceId) {
+                loadDistricts(provinceId, districtSelect);
+            }
+        });
+    }
+
+    if (districtSelect) {
+        districtSelect.addEventListener('change', function () {
+            const districtId = this.value;
+            wardSelect.innerHTML = '<option value="">Select ward</option>';
+
+            if (districtId) {
+                loadWards(districtId, wardSelect);
+            }
+        });
+    }
+}

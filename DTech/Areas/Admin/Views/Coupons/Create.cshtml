@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="Create" method="post">
+        <form asp-action="Create" method="post" id="couponForm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <!--begin::App Content Header-->
@@ -80,11 +80,38 @@
 
                                         <div class="col">
                                             <div class="form-group">
+                                                <label asp-for="DiscountType" class="control-label">
+                                                    @Html.DisplayNameFor(Model => Model.DiscountType)
+                                                </label>
+                                                <select asp-for="DiscountType" class="form-control" id="discountTypeSelect">
+                                                    <option value="">-- Select Type --</option>
+                                                    <option value="Percentage">Percentage</option>
+                                                    <option value="Direct">Direct Discount</option>
+                                                </select>
+                                                <span asp-validation-for="DiscountType" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="form-group">
                                                 <label asp-for="Discount" class="control-label">
                                                     @Html.DisplayNameFor(Model => Model.Discount)
+                                                    <span class="text-danger">(*)</span>
                                                 </label>
-                                                <input asp-for="Discount" class="form-control" />
+                                                <input asp-for="Discount" class="form-control" id="discountInput" />
                                                 <span asp-validation-for="Discount" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="MaxDiscount" class="control-label">
+                                                    @Html.DisplayNameFor(Model => Model.MaxDiscount)
+                                                </label>
+                                                <input asp-for="MaxDiscount" class="form-control" id="Maxdiscount" />
+                                                <span asp-validation-for="MaxDiscount" class="text-danger"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -155,4 +182,8 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        // Initialize on page load
+        handleDiscountTypeChange();
+    </script>
 }

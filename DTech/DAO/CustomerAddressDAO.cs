@@ -126,5 +126,35 @@ namespace DTech.DAO
         {
             return await context.CustomerAddresses.AnyAsync(e => e.AddressId == id);
         }
+
+        // Method to retrieve all addresses of a customer
+        public async Task<List<CustomerAddress>> GetAllAddressesByCustomerIdAsync(string customerId)
+        {
+            return await context.CustomerAddresses
+                .Where(c => c.CustomerId == customerId)
+                .Include(c => c.Province)
+                .Include(c => c.District)
+                .Include(c => c.Ward)
+                .OrderByDescending(c => c.IsDefault)
+                .ToListAsync();
+        }
+
+        //Get the default address
+        public async Task<CustomerAddress?> GetDefaultAddressByCustomerIdAsync(string customerId)
+        {
+            return await context.CustomerAddresses
+                .Where(c => c.CustomerId == customerId && c.IsDefault == true)
+                .Include(c => c.Province)
+                .Include(c => c.District)
+                .Include(c => c.Ward)
+                .FirstOrDefaultAsync();
+        }
+
+        //Get List Province
+        public async Task<List<Province>> GetProvinceListAsync()
+        {
+            return await context.Provinces.AsNoTracking().ToListAsync();
+        }
+
     }
 }

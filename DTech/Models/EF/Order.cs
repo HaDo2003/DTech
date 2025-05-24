@@ -23,6 +23,13 @@ public partial class Order
     [Display(Name = "Order Date")]
     public DateOnly? OrderDate { get; set; }
 
+    //Billing 
+    [Display(Name = "Billing Name")]
+    public string? Name { get; set; }
+
+    [Display(Name = "Billing Phone Number")]
+    public string? Phone { get; set; }
+
     [Display(Name = "Province")]
     public int? ProvinceId { get; set; }
 
@@ -34,12 +41,26 @@ public partial class Order
 
     public string? Address { get; set; }
 
+    //Shipping
     [Display(Name = "Consignee Name")]
     public string? NameReceive { get; set; }
 
     [Display(Name = "Consignee's Phone Number")]
     public string? PhoneReceive { get; set; }
 
+    [Display(Name = "Shipping Province")]
+    public int? ShippingProvinceId { get; set; }
+
+    [Display(Name = "Shipping District")]
+    public int? ShippingDistrictId { get; set; }
+
+    [Display(Name = "Shipping Ward")]
+    public int? ShippingWardId { get; set; }
+
+    [Display(Name = "Shipping Address")]
+    public string? ShippingAddress { get; set; }
+
+    //Cost
     [Display(Name = "Total Cost")]
     public decimal? TotalCost { get; set; }
 

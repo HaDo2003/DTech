@@ -1,109 +1,116 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DTech.Models.EF;
+using System.ComponentModel.DataAnnotations;
 
 namespace DTech.Models.ViewModel
 {
     public class CheckoutViewModel
     {
-        [Required(ErrorMessage = "Email là bắt buộc")]
-        [EmailAddress(ErrorMessage = "Email không hợp lệ")]
-        public string Email { get; set; } = "phongsimia1362003@gmail.com";
+        // Customer Information
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Invalid email format")]
+        public string? Email { get; set; }
 
-        [Required(ErrorMessage = "Họ và tên là bắt buộc")]
-        [Display(Name = "Họ và tên")]
-        public string BillingName { get; set; } = string.Empty;
+        // Address Selection
+        public int? CustomerAddress { get; set; }
 
-        [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
-        [Display(Name = "Số điện thoại")]
+        // Billing Information
+        [Required(ErrorMessage = "Full name is required")]
+        [StringLength(100, ErrorMessage = "Name cannot exceed 100 characters")]
+        public string? BillingName { get; set; }
+
+        [Required(ErrorMessage = "Phone number is required")]
+        [Phone(ErrorMessage = "Invalid phone number format")]
         public string? BillingPhone { get; set; }
 
-        [Display(Name = "Địa chỉ")]
+        [Required(ErrorMessage = "Address is required")]
+        [StringLength(200, ErrorMessage = "Address cannot exceed 200 characters")]
         public string? BillingAddress { get; set; }
 
-        [Required(ErrorMessage = "Tỉnh thành là bắt buộc")]
-        [Display(Name = "Tỉnh thành")]
-        public int BillingProvince { get; set; } = 6;
+        [Required(ErrorMessage = "Province is required")]
+        public int? BillingProvince { get; set; }
 
-        [Display(Name = "Quận huyện")]
-        public int? BillingDistrict { get; set; } = 80;
+        [Required(ErrorMessage = "District is required")]
+        public int? BillingDistrict { get; set; }
 
-        [Display(Name = "Phường xã")]
-        public int? BillingWard { get; set; } = 665;
+        [Required(ErrorMessage = "Ward is required")]
+        public int? BillingWard { get; set; }
 
-        [Display(Name = "Giao hàng đến địa chỉ khác")]
-        public bool DifferenceAddress { get; set; } = true;
+        // Shipping Information (when different from billing)
+        public bool DifferenceAddress { get; set; }
 
-        // Shipping Information
-        [Display(Name = "Họ và tên người nhận")]
         public string? ShippingName { get; set; }
-
-        [Phone(ErrorMessage = "Số điện thoại không hợp lệ")]
-        [Display(Name = "Số điện thoại người nhận")]
         public string? ShippingPhone { get; set; }
-
-        [Display(Name = "Địa chỉ giao hàng")]
         public string? ShippingAddress { get; set; }
-
-        [Display(Name = "Tỉnh thành giao hàng")]
         public int? ShippingProvince { get; set; }
-
-        [Display(Name = "Quận huyện giao hàng")]
         public int? ShippingDistrict { get; set; }
-
-        [Display(Name = "Phường xã giao hàng")]
         public int? ShippingWard { get; set; }
 
-        [Display(Name = "Ghi chú")]
+        // Payment Information
+        [Required(ErrorMessage = "Payment method is required")]
+        public int PaymentMethod { get; set; }
+
+        // Order Information
         public string? Note { get; set; }
-
-        [Display(Name = "Phương thức thanh toán")]
-        public int PaymentMethod { get; set; } = 611080;
-
-        [Display(Name = "Mã giảm giá")]
         public string? ReductionCode { get; set; }
-
-        // Customer Address Selection
-        public int CustomerAddress { get; set; } = 0;
 
         // Order Summary
         public OrderSummary OrderSummary { get; set; } = new OrderSummary();
+
+        // Collections for dropdowns
+        public List<CustomerAddress> CustomerAddresses { get; set; } = new List<CustomerAddress>();
+        public List<PaymentMethod> PaymentMethods { get; set; } = new List<PaymentMethod>();
+        public List<Province> Provinces { get; set; } = new List<Province>();
+        public List<District> Districts { get; set; } = new List<District>();
+        public List<Ward> Wards { get; set; } = new List<Ward>();
     }
 
     public class OrderSummary
     {
         public List<OrderItem> Items { get; set; } = new List<OrderItem>();
-        public decimal SubTotal { get; set; } = 26890000;
-        public decimal ShippingFee { get; set; } = 0;
-        public decimal Discount { get; set; } = 0;
-        public decimal Total => SubTotal + ShippingFee - Discount;
-        public int ItemCount => Items.Sum(x => x.Quantity);
+        public int ItemCount { get; set; }
+        public decimal? SubTotal { get; set; }
+        public decimal? ShippingFee { get; set; }
+        public decimal? DiscountAmount { get; set; }
+        public decimal? Total { get; set; }
     }
 
     public class OrderItem
     {
-        public string Name { get; set; } = string.Empty;
-        public string Image { get; set; } = string.Empty;
-        public string Color { get; set; } = string.Empty;
+        public string? Name { get; set; }
+        public string? Image { get; set; }
+        //public string? Color { get; set; }
         public int Quantity { get; set; }
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
     }
 
-    public class Province
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-    }
+    public class DiscountRequest
+{
+    public string? Code { get; set; }
+}
 
-    public class District
+    // Validation for shipping address when different address is selected
+    public class ShippingAddressValidation : ValidationAttribute
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public int ProvinceId { get; set; }
-    }
+        public override bool IsValid(object value)
+        {
+            if (value is CheckoutViewModel model)
+            {
+                if (model.DifferenceAddress)
+                {
+                    return !string.IsNullOrEmpty(model.ShippingName) &&
+                           !string.IsNullOrEmpty(model.ShippingPhone) &&
+                           !string.IsNullOrEmpty(model.ShippingAddress) &&
+                           model.ShippingProvince.HasValue &&
+                           model.ShippingDistrict.HasValue &&
+                           model.ShippingWard.HasValue;
+                }
+            }
+            return true;
+        }
 
-    public class Ward
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public int DistrictId { get; set; }
+        public override string FormatErrorMessage(string name)
+        {
+            return "All shipping fields are required when using a different address.";
+        }
     }
 }

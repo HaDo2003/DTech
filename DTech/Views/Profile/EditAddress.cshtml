@@ -76,30 +76,3 @@
         </div>
     </div>
 </form>
-
-@section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            loadProvinces();
-
-            document.getElementById("province1").addEventListener("change", function () {
-                const provinceId = this.value;
-                if (provinceId) {
-                    loadDistrictsByProvince(provinceId);
-                } else {
-                    resetDropdown('district1');
-                    resetDropdown('ward1');
-                }
-            });
-
-            document.getElementById("district1").addEventListener("change", function () {
-                const districtId = this.value;
-                if (districtId) {
-                    loadWardsByDistrict(districtId);
-                } else {
-                    resetDropdown('ward1');
-                }
-            });
-        });
-    </script>
-}
