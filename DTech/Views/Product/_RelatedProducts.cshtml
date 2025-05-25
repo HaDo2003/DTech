@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<DTech.Models.EF.Product>
 
 @{
-    var sliderId = "slider_" + Guid.NewGuid().ToString("N");
+    var sliderId1 = "slider_" + Guid.NewGuid().ToString("N");
 }
 @if (Model != null && Model.Any())
 {
@@ -13,8 +13,18 @@
         </div>
 
         <div class="position-relative">
+            <!-- Left Arrow -->
+            <button class="slider-btn slider-btn-left" onclick="slideLeft('@sliderId1')">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <!-- Right Arrow -->
+            <button class="slider-btn slider-btn-right" onclick="slideRight('@sliderId1')">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
             <!-- Scrollable Slider -->
-            <div id="@sliderId" class="product-slider d-flex overflow-auto hide-scrollbar">
+            <div id="@sliderId1" class="product-slider d-flex overflow-auto hide-scrollbar">
                 @foreach (var product in Model)
                 {
                     <div class="slider-item flex-shrink-0">

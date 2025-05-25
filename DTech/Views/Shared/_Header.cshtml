@@ -10,16 +10,39 @@
             @* <div class="col-md-2 col-lg-2 col-2"> *@
             @*     <img src="~/img/dtechlogosmall.png" class="img-logo-small" alt="DTech logo"/> *@
             @* </div> *@
+
+
             <div class="col-md-4 col-lg-4 col-4 mx-auto my-auto search-box">
-                <div class="input-group form-container">
-                    <input type="text" name="search" class="form-control search-input" placeholder="Search" autocomplete="off" />
-                    <span class="input-group-btn">
-                        <button class="btn btn-search">
-                            <i class="fa-solid fa-magnifying-glass fa-xl"></i>
-                        </button>
-                    </span>
+                <form asp-controller="Search" asp-action="Search" method="get">
+                    <div class="input-group form-container">
+                        <input type="text" 
+                            name="query"
+                            id="searchInput"
+                            class="form-control search-input" 
+                            placeholder="Search" 
+                            autocomplete="of" 
+                            value="@ViewBag.Query" />
+                        <span class="input-group-btn">
+                            <button class="btn btn-search" type="submit">
+                                <i class="fa-solid fa-magnifying-glass fa-xl"></i>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+
+            <div id="searchHistory" class="search-history d-none">
+                <div class="search-history-header">
+                    <span class="text-muted small">Recent Searches</span>
+                    <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="clearSearchHistory()">
+                        <i class="fa-solid fa-trash fa-xs"></i> Clear
+                    </button>
+                </div>
+                <div id="historyList" class="search-history-list">
+                    <!-- History items will be populated by JavaScript -->
                 </div>
             </div>
+
 
             <div class="col-md-6 col-lg-6 col-6">
                 <ul class="nav justify-content-start">
@@ -165,3 +188,132 @@
         </nav>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchHistory = document.getElementById('searchHistory');
+            const historyList = document.getElementById('historyList');
+
+            // Load and display search history on input focus
+            searchInput.addEventListener('focus', function() {
+                loadSearchHistory();
+                if (hasSearchHistory()) {
+                    searchHistory.classList.remove('d-none');
+                }
+            });
+
+            // Hide search history when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchHistory.contains(e.target)) {
+                    searchHistory.classList.add('d-none');
+                }
+            });
+
+            // Filter history as user types
+            searchInput.addEventListener('input', function() {
+                filterSearchHistory(this.value);
+            });
+        });
+
+        function loadSearchHistory() {
+            // For session-based storage (you'll need to pass this from controller)
+            // Or use localStorage for client-side storage
+            const history = getSearchHistoryFromStorage();
+            displaySearchHistory(history);
+        }
+
+        function getSearchHistoryFromStorage() {
+            // Option 2: Use localStorage as fallback
+            const stored = localStorage.getItem('searchHistory');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function displaySearchHistory(history) {
+            if (!history || history.length === 0) {
+                historyList.innerHTML = '<div class="text-center text-muted p-3">No recent searches</div>';
+                return;
+            }
+
+            historyList.innerHTML = history.map((item, index) => `
+                <div class="search-history-item" onclick="selectSearchTerm('${escapeHtml(item.query)}')">
+                    <span class="search-history-text">${escapeHtml(item.query)}</span>
+                    <span class="search-history-date">${formatDate(item.searchDate)}</span>
+                    <button type="button" class="search-history-remove" onclick="removeSearchTerm(${index}, event)">
+                        <i class="fa-solid fa-times fa-xs"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function filterSearchHistory(query) {
+            const history = getSearchHistoryFromStorage();
+            if (!query) {
+                displaySearchHistory(history);
+                return;
+            }
+
+            const filtered = history.filter(item =>
+                item.query.toLowerCase().includes(query.toLowerCase())
+            );
+            displaySearchHistory(filtered);
+        }
+
+        function selectSearchTerm(query) {
+            document.getElementById('searchInput').value = query;
+            document.getElementById('searchHistory').classList.add('d-none');
+            // Optionally submit the form automatically
+            document.querySelector('form').submit();
+        }
+
+        function removeSearchTerm(index, event) {
+            event.stopPropagation();
+            let history = getSearchHistoryFromStorage();
+            history.splice(index, 1);
+
+            // Update storage (you might need to call server to update session)
+            localStorage.setItem('searchHistory', JSON.stringify(history));
+
+            // Refresh display
+            displaySearchHistory(history);
+
+            if (history.length === 0) {
+                document.getElementById('searchHistory').classList.add('d-none');
+            }
+        }
+
+        function clearSearchHistory() {
+            localStorage.removeItem('searchHistory');
+            // Also call server to clear session data
+            fetch('/Product/ClearSearchHistory', { method: 'POST' });
+
+            document.getElementById('searchHistory').classList.add('d-none');
+        }
+
+        function hasSearchHistory() {
+            const history = getSearchHistoryFromStorage();
+            return history && history.length > 0;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffInHours = (now - date) / (1000 * 60 * 60);
+
+            if (diffInHours < 1) {
+                return 'Just now';
+            } else if (diffInHours < 24) {
+                return Math.floor(diffInHours) + 'h ago';
+            } else {
+                return Math.floor(diffInHours / 24) + 'd ago';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+}

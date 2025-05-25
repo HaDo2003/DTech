@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Ganss.Xss;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -159,6 +160,17 @@ builder.Services.ConfigureApplicationCookie(options =>
 //Connect VNPay API
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 
+//Regiter Sanitizer
+builder.Services.AddScoped<HtmlSanitizer>(_ =>
+{
+    var sanitizer = new HtmlSanitizer();
+    sanitizer.AllowedAttributes.Add("style");
+    sanitizer.AllowedCssProperties.Add("text-align");
+    sanitizer.AllowedCssProperties.Add("margin-left");
+    sanitizer.AllowedCssProperties.Add("color");
+    return sanitizer;
+});
+
 var app = builder.Build();
 
 //Not Found
@@ -193,6 +205,12 @@ app.MapControllerRoute(
 );
 
 app.MapControllerRoute(
+    name: "search",
+    pattern: "search/{query?}",
+    defaults: new { controller = "Search", action = "Search" }
+);
+
+app.MapControllerRoute(
     name: "product-detail",
     pattern: "{categorySlug}/{brandSlug}/{productSlug}",
     defaults: new { controller = "Product", action = "ProductDetail" }
@@ -200,7 +218,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "brand",
-    pattern: "{categorySlug:regex(^((?!Authentication|Admin|Account|Cart|CheckOut).)*$)}/{brandSlug}",
+    pattern: "{categorySlug:regex(^((?!Authentication|Admin|Account|Cart|CheckOut|Home|Search).)*$)}/{brandSlug}",
     defaults: new { controller = "Product", action = "CategoryBrand" }
 );
 

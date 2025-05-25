@@ -98,6 +98,75 @@ Header
     transform: translate(88%, -40%);
 }
 
+.search-history {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+    margin-top: 5px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.search-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    background-color: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+}
+
+.search-history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+    .search-history-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .search-history-item:last-child {
+        border-bottom: none;
+    }
+
+.search-history-text {
+    flex-grow: 1;
+    color: #333;
+    font-size: 14px;
+}
+
+.search-history-date {
+    color: #888;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.search-history-remove {
+    color: #dc3545;
+    border: none;
+    background: none;
+    padding: 2px 5px;
+    margin-left: 10px;
+    opacity: 0.6;
+    transition: opacity 0.2s ease;
+}
+
+    .search-history-remove:hover {
+        opacity: 1;
+    }
+
 /*=========================================================
 Breadcrum
 ===========================================================*/

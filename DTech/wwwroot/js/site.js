@@ -463,3 +463,5 @@ function setupLocationCascade(prefix) {
         });
     }
 }
+
+//Search functionality

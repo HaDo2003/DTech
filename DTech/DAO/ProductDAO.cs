@@ -240,8 +240,8 @@ namespace DTech.DAO
                 .Include(a => a.Brand)
                 .Include(a => a.Category)
                 .Include(a => a.Supplier)
-                .Where(a => a.Category!.Name != "Laptop" 
-                    && a.Category!.Name != "Smart Phone" 
+                .Where(a => a.Category!.Name != "Laptop"
+                    && a.Category!.Name != "Smart Phone"
                     && a.Category!.Name != "Tablet"
                     && a.BrandId == brandId
                     && a.Status == 1)
@@ -335,5 +335,108 @@ namespace DTech.DAO
             return products;
         }
 
+        //Search products by name
+        public async Task<List<Product>> SearchProductsAsync(string? searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return [];
+            }
+            var products = await context.Products
+                .AsNoTracking()
+                .Include(a => a.Brand)
+                .Include(a => a.Category)
+                .Include(a => a.Supplier)
+                .Where(p => p.Name != null && EF.Functions.Like(p.Name, $"%{searchTerm}%") && p.Status == 1)
+                .OrderByDescending(a => a.ProductId)
+                .ToListAsync();
+            return products;
+        }
+
+        //Save the search term to the database
+        public async Task<bool> SaveSearchTermAsync(string searchTerm, string userId)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return false;
+            }
+            try
+            {
+                SearchHistory search = new()
+                {
+                    UserId = userId,
+                    SearchTerm = searchTerm,
+                    SearchDate = DateTime.UtcNow
+                };
+                context.SearchHistories.Add(search);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        //Get user search history
+        public async Task<List<SearchHistory>> GetUserSearchHistoryAsync(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return [];
+            }
+            return await context.SearchHistories
+                .Where(sh => sh.UserId == userId)
+                .OrderByDescending(sh => sh.SearchDate)
+                .ToListAsync();
+        }
+
+        //Clear user search history
+        public async Task<bool> ClearUserSearchHistoryAsync(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return false;
+            }
+            try
+            {
+                var searchHistories = await context.SearchHistories
+                    .Where(sh => sh.UserId == userId)
+                    .ToListAsync();
+                if (searchHistories.Count > 0)
+                {
+                    context.SearchHistories.RemoveRange(searchHistories);
+                    await context.SaveChangesAsync();
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        //Remove search term
+        public async Task<bool> RemoveSearchTermAsync(string query, string id)
+        {
+            try
+            {
+                var searchHistory = await context.SearchHistories.FindAsync(id);
+                if (searchHistory != null)
+                {
+                    context.SearchHistories.Remove(searchHistory);
+                    await context.SaveChangesAsync();
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
     }
 }

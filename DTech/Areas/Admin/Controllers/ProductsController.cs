@@ -10,6 +10,7 @@ using DTech.DAO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using DTech.Library.Hubs;
+using Ganss.Xss;
 
 namespace DTech.Areas.Admin.Controllers
 {
@@ -24,7 +25,8 @@ namespace DTech.Areas.Admin.Controllers
         SpecificationDAO specificationDAO,
         ProductImageDAO productImageDAO,
         CloudinaryService cloudinaryService,
-        IHubContext<NotificationsHub> notificationHub
+        IHubContext<NotificationsHub> notificationHub,
+        HtmlSanitizer sanitizer
     ) : Controller
     {
         readonly string folderName = "Pre-thesis/Product";
@@ -123,6 +125,10 @@ namespace DTech.Areas.Admin.Controllers
                 product.CreateDate = DateTime.Now;
                 product.CreatedBy = "Admin1";
 
+                //sanitizer before save
+                product.Description = sanitizer.Sanitize(product.Description ?? string.Empty);
+                product.PromotionalGift = sanitizer.Sanitize(product.PromotionalGift ?? string.Empty);
+
                 await productDAO.AddAsync(product);
 
                 //Success message
@@ -212,6 +218,10 @@ namespace DTech.Areas.Admin.Controllers
                         string imageName = await cloudinaryService.ChangeImageAsync(product.Photo ?? string.Empty, product.PhotoUpload, folderName);
                         product.Photo = imageName;
                     }
+
+                    //Santitize before save
+                    product.Description = sanitizer.Sanitize(product.Description ?? string.Empty);
+                    product.PromotionalGift = sanitizer.Sanitize(product.PromotionalGift ?? string.Empty);
 
                     product.UpdateDate = DateTime.Now;
                     product.UpdatedBy = "Admin1";

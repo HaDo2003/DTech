@@ -6,40 +6,16 @@
     var title = ViewBag.Title as string;
     var brands = ViewBag.Brands as List<DTech.Models.EF.Brand>;
     var sortOrder = ViewBag.SortOrder as string ?? "newest";
-    var categorySlug = ViewData["CategorySlug"] as string ?? "";
+    var query = ViewBag.Query as string ?? "";
 }
 
 <div class="d-flex align-items-center justify-content-center">
     <h2 >@title</h2>
 </div>
 
-@if (brands != null && brands.Any())
-{
-    <div class="container my-4">
-        <div class="category-nav">
-            <div class="row text-center">
-                @foreach (var brand in brands)
-                {
-                    <div class="col">
-                        <a asp-controller="Product"
-                           asp-action="CategoryBrand"
-                           asp-route-categorySlug="@categorySlug"
-                           asp-route-brandSlug="@brand.Slug"
-                           class="category-item">
-                            <div class="icon-container">
-                                <img src="@brand.Logo" class="card-img-top p-1 w-100 mx-auto d-block" alt="@brand.Name">
-                            </div>
-                        </a>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-}
-
 <!-- Sort Options as Horizontal Buttons -->
-<form method="get" asp-controller="Product" asp-action="Category" class="mb-4">
-    <input type="hidden" name="categorySlug" value="@categorySlug" />
+<form method="get" asp-controller="Product" asp-action="Search" class="my-4">
+    <input type="hidden" name="query" value="@query" />
     
     <div class="d-flex flex-wrap gap-2 px-3">
         <h4>Sort By: </h4>
@@ -78,9 +54,3 @@
         }
     </div>
 </div>
-
-@section Scripts {
-    <script>
-        initializeProductSignalR('@categorySlug');
-    </script>
-}

@@ -1,7 +1,10 @@
 ﻿using DTech.DAO;
 using DTech.Models.EF;
+using DTech.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using System.Text.Json;
 
 namespace DTech.Controllers
 {
@@ -52,7 +55,7 @@ namespace DTech.Controllers
                 .DistinctBy(b => b!.BrandId)
                 .ToList();
             products = await productDAO.SortProducts(products, sortOrder);
-            
+
             ViewData["CategorySlug"] = categorySlug;
             ViewBag.Brands = brands;
             ViewBag.SortOrder = sortOrder;
@@ -97,7 +100,7 @@ namespace DTech.Controllers
 
                     break;
             }
-            
+
             return View("Category", products);
         }
 
