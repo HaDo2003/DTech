@@ -4,7 +4,6 @@ using DTech.Models.ViewModel;
 using DTech.Models.EF;
 using DTech.DAO;
 using System.ComponentModel.DataAnnotations;
-using DTech.Library.Service;
 using DTech.Library;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -12,6 +11,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using DTech.Library.Service.Email;
 
 namespace DTech.Controllers
 {

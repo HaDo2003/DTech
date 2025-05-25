@@ -112,21 +112,19 @@ namespace DTech.Controllers
                 var orderSummary = await CalculateOrderSummary(model, cart);
                 model.OrderSummary = orderSummary;
 
-                if (model.PaymentMethod == 3)
-                    return HandleVnPay(model, isAjax);
+                
+                if (model.PaymentMethod == 2)
+                {
+                    if (isAjax)
+                        return Json(new { success = false, message = "Momo payment is under development, please try another way" });
+                }
 
-                var shipping = await CreateShipping();
-                var payment = await CreatePayment(model, shipping);
-                var order = await CreateOrder(model, userId, shipping, payment);
-
-                var orderResult = await orderDAO.AddAsync(order);
-                if (!orderResult)
+                var (success, order, payment) = await ProcessOrderAsync(model, userId);
+                if (!success || order == null || payment == null)
                     return HandleOrderCreationFailed(model);
 
-                await CreateOrderDetails(cart, order);
-                await cartDAO.ClearCartAsync(userId);
-                if (!string.IsNullOrEmpty(model.ReductionCode))
-                    await couponDAO.UseCodeAsync(model.ReductionCode, userId);
+                if (model.PaymentMethod == 3)
+                    return HandleVnPay(model, isAjax, payment);
 
                 TempData["OrderId"] = order.OrderId;
                 TempData["Success"] = "Order placed successfully!";
@@ -142,7 +140,110 @@ namespace DTech.Controllers
             }
         }
 
+        //Vnpay callback endpoint
+        [HttpGet("vnpay-success")]
+        public async Task<IActionResult> PaymentCallbackVnpay()
+        {
+            var response = vnPayService.PaymentExecute(Request.Query);
+
+            //return Json(response);
+
+            if (!(response?.Success ?? false))
+            {
+                ViewBag.PaymentStatus = "Payment failed or invalid callback.";
+                return View("Fail");
+            }
+
+            try
+            {
+                var txnRef = Request.Query["vnp_TxnRef"].ToString();
+                var responseCode = Request.Query["vnp_ResponseCode"].ToString();
+                var amount = Request.Query["vnp_Amount"].ToString();
+
+                if (string.IsNullOrEmpty(txnRef))
+                {
+                    ViewBag.PaymentStatus = "Missing transaction reference in callback.";
+                    return View("Fail");
+                }
+
+                if (responseCode != "00")
+                {
+                    ViewBag.PaymentStatus = $"Payment failed with code: {responseCode}";
+                    ViewBag.ResponseCode = responseCode;
+                    return View("Fail");
+                }
+
+                // Convert txnRef back to PaymentId
+                if (!int.TryParse(txnRef, out int paymentId))
+                {
+                    ViewBag.PaymentStatus = "Invalid payment ID in callback.";
+                    return View("Fail");
+                }
+                var payment = await paymentDAO.GetByIdAsync(paymentId);
+
+                if (payment == null)
+                {
+                    ViewBag.PaymentStatus = "Payment record not found.";
+                    return View("Fail");
+                }
+
+                if (payment.Status == 1)
+                {
+                    var existingOrder = await orderDAO.GetByPaymentIdAsync(payment.PaymentId);
+                    ViewBag.OrderId = existingOrder?.OrderId ?? 0;
+                    ViewBag.PaymentStatus = "Payment already processed successfully!";
+                    ViewBag.IsVnPay = true;
+                    ViewBag.PaymentMethod = "VNPay";
+                    return View("Success");
+                }
+
+                // Update payment
+                payment.Status = 1;
+                await paymentDAO.UpdateAsync(payment);
+
+                var order = await orderDAO.GetByPaymentIdAsync(payment.PaymentId);
+
+                ViewBag.OrderId = order?.OrderId ?? 0;
+                ViewBag.PaymentStatus = "Payment successful via VNPay!";
+                ViewBag.IsVnPay = true;
+                ViewBag.PaymentMethod = "VNPay";
+                ViewBag.TransactionId = response.TransactionId;
+                ViewBag.Amount = payment.Amount;
+                return View("Success");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.PaymentStatus = "An error occurred during payment processing.";
+                ViewBag.Error = ex.Message;
+                return View("Fail");
+            }
+        }
+
         // --- Helper Methods ---
+        private async Task<(bool Success, Order? Order, Payment? payment)> ProcessOrderAsync(CheckoutViewModel model, string userId)
+        {
+            var cart = await cartDAO.GetCartByUserId(userId);
+            if (cart == null || !cart.CartProducts.Any())
+                return (false, null, null);
+
+            var orderSummary = await CalculateOrderSummary(model, cart);
+            model.OrderSummary = orderSummary;
+
+            var shipping = await CreateShipping();
+            var payment = await CreatePayment(model);
+            var order = await CreateOrder(model, userId, shipping, payment);
+
+            var orderResult = await orderDAO.AddAsync(order);
+            if (!orderResult)
+                return (false, null, null);
+
+            await CreateOrderDetails(cart, order);
+            await cartDAO.ClearCartAsync(userId);
+            if (!string.IsNullOrEmpty(model.ReductionCode))
+                await couponDAO.UseCodeAsync(model.ReductionCode, userId);
+
+            return (true, order, payment);
+        }
 
         private IActionResult HandleNotAuthenticated(bool isAjax)
         {
@@ -222,7 +323,7 @@ namespace DTech.Controllers
             return orderSummary;
         }
 
-        private IActionResult HandleVnPay(CheckoutViewModel model, bool isAjax)
+        private IActionResult HandleVnPay(CheckoutViewModel model, bool isAjax, Payment payment)
         {
             if (model.OrderSummary.Total == null || model.OrderSummary.Total <= 0)
             {
@@ -237,9 +338,11 @@ namespace DTech.Controllers
                 OrderType = "other",
                 Amount = model.OrderSummary.Total.Value,
                 OrderDescription = "Payment at DTech",
-                Name = User.Identity.Name ?? ""
+                Name = User.Identity!.Name ?? "",
+                TxnRef = payment.PaymentId.ToString()
             };
             var clientIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+
             var paymentUrl = vnPayService.CreatePaymentUrl(paymentInfo, clientIp);
 
             if (isAjax)
@@ -258,7 +361,7 @@ namespace DTech.Controllers
             return shipping;
         }
 
-        private async Task<Payment> CreatePayment(CheckoutViewModel model, Shipping shipping)
+        private async Task<Payment> CreatePayment(CheckoutViewModel model)
         {
             var payment = new Payment
             {
@@ -429,17 +532,6 @@ namespace DTech.Controllers
             });
         }
 
-        [HttpGet("order-success")]
-        public async Task<IActionResult> OrderSuccess(int orderId)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var order = await orderDAO.GetOrderWithDetailsAsync(orderId, userId);
-            if (order == null)
-                return RedirectToAction("Index", "Home");
-
-            return View("Success", order);
-        }
-
         private OrderSummary CreateOrderSummary(Cart cart)
         {
             if (cart == null) return new OrderSummary();
@@ -488,12 +580,16 @@ namespace DTech.Controllers
             //return RedirectToAction("CheckOut");
         }
 
-        [HttpGet("vnpay-call-back")]
-        public IActionResult PaymentCallbackVnpay()
-        {
-            var response = vnPayService.PaymentExecute(Request.Query);
 
-            return Json(response);
+        [HttpGet("order-success")]
+        public async Task<IActionResult> OrderSuccess(int orderId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var order = await orderDAO.GetOrderWithDetailsAsync(orderId, userId);
+            if (order == null)
+                return RedirectToAction("Index", "Home");
+
+            return View("Success", order);
         }
     }
 }

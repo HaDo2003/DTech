@@ -1,4 +1,4 @@
-﻿namespace DTech.Library.Service
+﻿namespace DTech.Library.Service.Email
 {
     public interface IEmailService
     {

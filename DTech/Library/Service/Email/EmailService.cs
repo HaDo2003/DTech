@@ -1,7 +1,7 @@
 ﻿using System.Net.Mail;
 using System.Net;
 
-namespace DTech.Library.Service
+namespace DTech.Library.Service.Email
 {
     public class EmailService : IEmailService
     {

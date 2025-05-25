@@ -3,6 +3,7 @@ using DTech.DAO;
 using DTech.Library;
 using DTech.Library.Hubs;
 using DTech.Library.Service;
+using DTech.Library.Service.Email;
 using DTech.Library.Service.Vnpay;
 using DTech.Models.EF;
 using Microsoft.AspNetCore.Authentication.Cookies;

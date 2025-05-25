@@ -12,7 +12,6 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
     font-size: 18px;
     background-color: #f8f9fa;
 }
@@ -979,6 +978,16 @@ Footer
 ===========================================================*/
 .bg-footer {
     background: #000;
+}
+.icon-custom {
+    width: 40px;
+    height: 40px;
+}
+
+.payment-custom {
+    height: 50px;
+    display: flex;
+    align-items: center;
 }
 
 /*=========================================================

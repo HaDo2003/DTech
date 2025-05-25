@@ -121,5 +121,21 @@ namespace DTech.DAO
                 .Where(op => op.OrderId == orderId)
                 .ToListAsync();
         }
+
+        //Get order by paymentId
+        public async Task<Order?> GetByPaymentIdAsync(int? paymentId)
+        {
+            if (paymentId == null)
+            {
+                return null;
+            }
+            return await context.Orders
+                .AsNoTracking()
+                .Include(o => o.Customer)
+                .Include(o => o.Payment)
+                .Include(o => o.Shipping)
+                .Include(o => o.Status)
+                .FirstOrDefaultAsync(o => o.PaymentId == paymentId);
+        }
     }
 }

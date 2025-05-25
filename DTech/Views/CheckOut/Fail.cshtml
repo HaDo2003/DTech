@@ -1,0 +1,29 @@
+﻿@{
+    ViewData["Title"] = "CheckOut";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var status = ViewBag.PaymentStatus;
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mt-5">
+                <div class="card-body text-center py-5">
+                    <div class="mb-4">
+                        <i class="fa-regular fa-circle-xmark text-danger" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="text-success mb-3">Order Fail</h2>
+                    <p class="lead mb-4">@status</p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="/" class="btn btn-primary me-md-2">
+                            <i class="fas fa-home me-2"></i>Back to Home
+                        </a>
+                        <a href="#" class="btn btn-outline-primary">
+                            <i class="fas fa-list me-2"></i>Order Information
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
