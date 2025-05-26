@@ -30,6 +30,8 @@ public partial class Order
     [Display(Name = "Billing Phone Number")]
     public string? Phone { get; set; }
 
+    public string? Email { get; set; }
+
     [Display(Name = "Province")]
     public int? ProvinceId { get; set; }
 
@@ -88,4 +90,7 @@ public partial class Order
     public Province? Province { get; set; }
     public District? District { get; set; }
     public Ward? Ward { get; set; }
+    public Province? ShippingProvince { get; set; }
+    public District? ShippingDistrict { get; set; }
+    public Ward? ShippingWard { get; set; }
 }

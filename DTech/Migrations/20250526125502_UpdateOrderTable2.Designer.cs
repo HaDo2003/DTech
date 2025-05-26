@@ -4,6 +4,7 @@ using DTech.Models.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DTech.Migrations
 {
     [DbContext(typeof(EcommerceWebContext))]
-    partial class EcommerceWebContextModelSnapshot : ModelSnapshot
+    [Migration("20250526125502_UpdateOrderTable2")]
+    partial class UpdateOrderTable2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -566,13 +569,7 @@ namespace DTech.Migrations
 
                     b.HasIndex("ProvinceId");
 
-                    b.HasIndex("ShippingDistrictId");
-
                     b.HasIndex("ShippingId");
-
-                    b.HasIndex("ShippingProvinceId");
-
-                    b.HasIndex("ShippingWardId");
 
                     b.HasIndex("StatusId");
 
@@ -617,9 +614,6 @@ namespace DTech.Migrations
 
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
-
-                    b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
@@ -1461,21 +1455,9 @@ namespace DTech.Migrations
                         .WithMany()
                         .HasForeignKey("ProvinceId");
 
-                    b.HasOne("DTech.Models.EF.District", "ShippingDistrict")
-                        .WithMany()
-                        .HasForeignKey("ShippingDistrictId");
-
                     b.HasOne("DTech.Models.EF.Shipping", "Shipping")
                         .WithMany("Orders")
                         .HasForeignKey("ShippingId");
-
-                    b.HasOne("DTech.Models.EF.Province", "ShippingProvince")
-                        .WithMany()
-                        .HasForeignKey("ShippingProvinceId");
-
-                    b.HasOne("DTech.Models.EF.Ward", "ShippingWard")
-                        .WithMany()
-                        .HasForeignKey("ShippingWardId");
 
                     b.HasOne("DTech.Models.EF.OrderStatus", "Status")
                         .WithMany("Orders")
@@ -1494,12 +1476,6 @@ namespace DTech.Migrations
                     b.Navigation("Province");
 
                     b.Navigation("Shipping");
-
-                    b.Navigation("ShippingDistrict");
-
-                    b.Navigation("ShippingProvince");
-
-                    b.Navigation("ShippingWard");
 
                     b.Navigation("Status");
 

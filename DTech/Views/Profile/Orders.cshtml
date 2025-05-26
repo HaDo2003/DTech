@@ -10,7 +10,7 @@
             <tr>
                 <th class="text-center">@Html.DisplayNameFor(model => model.OrderId)</th>
                 <th class="text-center">@Html.DisplayNameFor(model => model.OrderDate)</th>
-                <th class="text-start">@Html.DisplayNameFor(model => model.FinalCost)</th>
+                <th class="text-center">@Html.DisplayNameFor(model => model.FinalCost)</th>
                 <th class="text-center">Status</th>
             </tr>
         </thead>
@@ -18,7 +18,11 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td class="text-center">@Html.DisplayFor(modelItem => item.OrderId)</td>
+                    <td class="text-center">
+                        <a href="javascript:void(0);" class="text-center text-decoration-none order-detail-link" data-id="@item.OrderId">
+                            @Html.DisplayFor(modelItem => item.OrderId)
+                        </a>
+                    </td>
                     <td class="text-center">@Html.DisplayFor(modelItem => item.OrderDate)</td>
                     <td class="text-center">@Html.DisplayFor(modelItem => item.FinalCost)</td>
                     <td class="text-center">@Html.DisplayFor(modelItem => item.Status!.Description)</td>

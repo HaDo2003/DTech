@@ -1,5 +1,7 @@
 ﻿using CloudinaryDotNet.Core;
 using DTech.DAO;
+using DTech.Library.Service.BackgroundTask;
+using DTech.Library.Service.Email;
 using DTech.Library.Service.Vnpay;
 using DTech.Models.EF;
 using DTech.Models.ViewModel;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -26,7 +29,9 @@ namespace DTech.Controllers
         CustomerDAO customerDAO,
         CouponDAO couponDAO,
         ProductDAO productDAO,
-        IVnPayService vnPayService
+        IVnPayService vnPayService,
+        IEmailService emailService,
+        IBackgroundTaskQueue taskQueue
     ) : Controller
     {
         [HttpGet("")]
@@ -83,7 +88,8 @@ namespace DTech.Controllers
             }
 
             ViewData["PaymentMethods"] = new SelectList(paymentMethods, "PaymentMethodId", "Name");
-            ViewData["CustomerAddresses"] = new SelectList(customerAddresses.Select(ca => new {
+            ViewData["CustomerAddresses"] = new SelectList(customerAddresses.Select(ca => new
+            {
                 Value = ca.AddressId,
                 Text = $"{ca.FullName}, {ca.Address}, {ca.Ward?.Name}, {ca.District?.Name}, {ca.Province?.Name}"
             }), "Value", "Text");
@@ -112,7 +118,7 @@ namespace DTech.Controllers
                 var orderSummary = await CalculateOrderSummary(model, cart);
                 model.OrderSummary = orderSummary;
 
-                
+
                 if (model.PaymentMethod == 2)
                 {
                     if (isAjax)
@@ -130,9 +136,9 @@ namespace DTech.Controllers
                 TempData["Success"] = "Order placed successfully!";
 
                 if (isAjax)
-                    return Json(new { success = true });
+                    return Json(new { success = true, orderId = order.OrderId });
 
-                return RedirectToAction("Success", new { orderId = order.OrderId });
+                return RedirectToAction("OrderSuccess", new { orderId = order.OrderId });
             }
             catch (Exception ex)
             {
@@ -209,7 +215,7 @@ namespace DTech.Controllers
                 ViewBag.PaymentMethod = "VNPay";
                 ViewBag.TransactionId = response.TransactionId;
                 ViewBag.Amount = payment.Amount;
-                return View("Success");
+                return RedirectToAction("OrderSuccess", new { orderId = order.OrderId });
             }
             catch (Exception ex)
             {
@@ -269,7 +275,8 @@ namespace DTech.Controllers
             }
             model.OrderSummary = CreateOrderSummary(cart);
             ViewData["PaymentMethods"] = new SelectList(model.PaymentMethods, "PaymentMethodId", "Name", model.PaymentMethod);
-            ViewData["CustomerAddresses"] = new SelectList(model.CustomerAddresses.Select(ca => new {
+            ViewData["CustomerAddresses"] = new SelectList(model.CustomerAddresses.Select(ca => new
+            {
                 Value = ca.AddressId,
                 Text = $"{ca.FullName}, {ca.Address}, {ca.Ward?.Name}, {ca.District?.Name}, {ca.Province?.Name}"
             }), "Value", "Text", model.CustomerAddress);
@@ -386,6 +393,7 @@ namespace DTech.Controllers
                 OrderDate = DateOnly.FromDateTime(DateTime.Now),
                 Name = model.BillingName,
                 Phone = model.BillingPhone,
+                Email = model.Email,
                 ProvinceId = model.BillingProvince,
                 DistrictId = model.BillingDistrict,
                 WardId = model.BillingWard,
@@ -421,6 +429,7 @@ namespace DTech.Controllers
             {
                 OrderId = order.OrderId,
                 ProductId = cartProduct.ProductId,
+                Price = cartProduct.Product!.Price * (cartProduct.Product.Discount.HasValue ? (1 - cartProduct.Product.Discount.Value / 100m) : 1),
                 Quantity = cartProduct.Quantity,
                 CostAtPurchase = cartProduct.Product!.Price * (cartProduct.Product.Discount.HasValue ? (1 - cartProduct.Product.Discount.Value / 100m) : 1) * cartProduct.Quantity,
             }).ToList();
@@ -496,10 +505,11 @@ namespace DTech.Controllers
 
             //Check the condition of coupon
             var subtotal = cart.CartProducts.Sum(cp => cp.Product!.Price * (cp.Product.Discount.HasValue ? (1 - cp.Product.Discount.Value / 100m) : 1) * cp.Quantity);
-            if(subtotal == 0)
+            if (subtotal == 0)
             {
                 return Json(new { success = false, message = "Subtotal is zero" });
-            }else if (subtotal < discount.Condition)
+            }
+            else if (subtotal < discount.Condition)
             {
                 return Json(new { success = false, message = $"Minimum order value for this discount is {discount.Condition}" });
             }
@@ -581,13 +591,96 @@ namespace DTech.Controllers
         }
 
 
-        [HttpGet("order-success")]
+        [HttpGet("order-success/{orderId}")]
         public async Task<IActionResult> OrderSuccess(int orderId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var order = await orderDAO.GetOrderWithDetailsAsync(orderId, userId);
+            if (string.IsNullOrEmpty(userId))
+                return RedirectToAction("Login", "Authentication");
+
+            var order = await orderDAO.GetByIdAsync(orderId);
             if (order == null)
                 return RedirectToAction("Index", "Home");
+
+            if (order.Email != null)
+            {
+                taskQueue.QueueBackgroundWorkItem(async token =>
+                {
+                    await emailService.SendEmailAsync(
+                        order.Email,
+                        "Your Order Confirmation from DTech",
+                        $@"
+                        <html>
+                            <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+                                <div style='max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);'>
+                                    <h2 style='color: #28a745;'>Thank you for your order!</h2>
+                                    <p>Hello <strong>{order.Name ?? "Valued Customer"}</strong>,</p>
+                                    <p>We're happy to let you know that we've received your order. Below is a summary of your purchase:</p>
+
+                                    <h4 style='margin-top: 30px;'>Order #{order.OrderId}</h4>
+
+                                    <table style='width: 100%; border-collapse: collapse; margin-top: 15px;'>
+                                        <thead>
+                                            <tr style='background-color: #f0f0f0;'>
+                                                <th style='padding: 10px; text-align: left; border-bottom: 1px solid #ddd;'>Product</th>
+                                                <th style='padding: 10px; text-align: center; border-bottom: 1px solid #ddd;'>Quantity</th>
+                                                <th style='padding: 10px; text-align: right; border-bottom: 1px solid #ddd;'>Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {string.Join("", order.OrderProducts.Select(product => $@"
+                                                <tr>
+                                                    <td style='padding: 10px; border-bottom: 1px solid #eee;'>{product.Product?.Name}</td>
+                                                    <td style='padding: 10px; text-align: center; border-bottom: 1px solid #eee;'>{product.Quantity}</td>
+                                                    <td style='padding: 10px; text-align: right; border-bottom: 1px solid #eee;'>{product.CostAtPurchase:N0} ₫</td>
+                                                </tr>
+                                            "))}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan='2' style='padding: 10px; text-align: right;'>Subtotal:</td>
+                                                <td style='padding: 10px; text-align: right;'>{order.TotalCost:N0} ₫</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan='2' style='padding: 10px; text-align: right;'>Shipping:</td>
+                                                <td style='padding: 10px; text-align: right;'>{order.ShippingCost:N0} ₫</td>
+                                            </tr>
+                                            {(order.CostDiscount > 0 ? $@"
+                                                <tr>
+                                                    <td colspan='2' style='padding: 10px; text-align: right;'>Discount:</td>
+                                                    <td style='padding: 10px; text-align: right; color: red;'>- {order.CostDiscount:N0} ₫</td>
+                                                </tr>
+                                            " : "")}
+                                            <tr style='font-weight: bold;'>
+                                                <td colspan='2' style='padding: 10px; text-align: right;'>Total:</td>
+                                                <td style='padding: 10px; text-align: right; color: #28a745;'>{order.FinalCost:N0} ₫</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+
+                                    <p style='margin-top: 30px;'>Your order will be shipped to:</p>
+                                    <p style='background-color: #f8f9fa; padding: 10px; border-radius: 5px;'>
+                                        {order.ShippingAddress ?? order.Address}<br/>
+                                        {order.ShippingWard?.Name ?? order.Ward?.Name}, {order.ShippingDistrict?.Name ?? order.District?.Name}, {order.ShippingProvince?.Name ?? order.Province?.Name}<br/>
+                                        Phone: {order.Phone}<br/>
+                                        Email: {order.Email}
+                                    </p>
+
+                                    <p>If you have any questions or concerns, feel free to contact our support team.</p>
+
+                                    <p>You can view your bill here: 
+                                        <a href='#' style='color: #4CAF50; text-decoration: none;'>
+                                            View Bill
+                                        </a>
+                                    </p>
+
+                                    <p>Thank you for shopping with us!<br/><strong>DTech Team</strong></p>
+                                </div>
+                            </body>
+                        </html>"
+                    );
+                });
+            }
 
             return View("Success", order);
         }

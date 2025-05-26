@@ -3,15 +3,16 @@ using DTech.DAO;
 using DTech.Library;
 using DTech.Library.Hubs;
 using DTech.Library.Service;
+using DTech.Library.Service.BackgroundTask;
 using DTech.Library.Service.Email;
 using DTech.Library.Service.Vnpay;
 using DTech.Models.EF;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Facebook;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Ganss.Xss;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -132,6 +133,8 @@ foreach (var type in daoAssembly.GetTypes())
 builder.Services.AddHostedService<CodeStatusCheckerService>();
 builder.Services.AddSingleton<CloudinaryService>();
 builder.Services.AddTransient<IEmailService, EmailService>();
+builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+builder.Services.AddHostedService<QueuedHostedService>();
 
 // Register the setting helper
 foreach (var type in daoAssembly.GetTypes())

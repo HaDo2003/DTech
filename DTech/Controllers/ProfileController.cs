@@ -20,7 +20,8 @@ namespace DTech.Controllers
     public class ProfileController(
         CloudinaryService cloudinaryService,
         CustomerDAO customerDAO,
-        CustomerAddressDAO customerAddressDAO
+        CustomerAddressDAO customerAddressDAO,
+        OrderDAO orderDAO
     ) : Controller
     {
         readonly string folderName = "Pre-thesis/Customer";
@@ -333,5 +334,24 @@ namespace DTech.Controllers
         //    ModelState.AddModelError("FullName", "Switch Default Address Fail, please try again");
         //    return PartialView(address);
         //}
+
+        [HttpGet]
+        [Route("order-detail/{id}")]
+        public async Task<IActionResult> OrderDetail(int? id)
+        {
+            ViewBag.Title = $"Order Detail of {id}";
+            if (id == null)
+                return RedirectToAction("Index", new { activeTab = "address" });
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) 
+                return RedirectToAction("Login", "Authentication");
+
+            var order = await orderDAO.GetByIdAsync(id);
+            if (order == null)
+                return RedirectToAction("Index", new { activeTab = "address" });
+
+            return PartialView(order);
+        }
     }
 }

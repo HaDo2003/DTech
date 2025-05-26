@@ -23,7 +23,7 @@
                                     <ul class="no-bullets" id="menu">
                                         <li class="@(activeTab == "info" ? "active" : "") m-3 li-custom" data-tab="info">Customer Information</li>
                                         <li class="@(activeTab == "orders" ? "active" : "") m-3 li-custom" data-tab="orders">My Order</li>
-                                        <li class="@(activeTab == "coupons" ? "active" : "") m-3 li-custom" data-tab="coupons">My Coupon</li>
+                                        <li class="@(activeTab == "coupons" ? "active" : "") m-3 li-custom" data-tab="coupons">Wish List</li>
                                         <li class="@(activeTab == "address" ? "active" : "") m-3 li-custom" data-tab="address">Address</li>
                                         <li class="@(activeTab == "password" ? "active" : "") m-3 li-custom" data-tab="password">Change Password</li>
                                         <li class="m-3" data-tab="logout">
@@ -43,6 +43,8 @@
                                 <div id="orders" class="tab-content @(activeTab != "orders" ? "d-none" : "")">
                                     <partial name="Orders" model="Model.Orders" />
                                 </div>
+
+                                <div id="order-detail-container" class="tab-content d-none"></div>
 
                                 <div id="coupons" class="tab-content @(activeTab != "coupons" ? "d-none" : "")">
                                     <partial name="Coupons" model="Model.CustomerCoupons" />
@@ -108,6 +110,25 @@
                 } else {
                     resetDropdown('ward1');
                 }
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".order-detail-link").forEach(link => {
+                link.addEventListener("click", function () {
+                    const orderId = this.dataset.id;
+                    fetch(`/Profile/order-detail/${orderId}`)
+                        .then(response => response.text())
+                        .then(html => {
+                            // Hide all tab contents
+                            document.querySelectorAll(".tab-content").forEach(el => el.classList.add("d-none"));
+
+                            // Show and populate order detail container
+                            const container = document.getElementById("order-detail-container");
+                            container.innerHTML = html;
+                            container.classList.remove("d-none");
+                        });
+                });
             });
         });
     </script>

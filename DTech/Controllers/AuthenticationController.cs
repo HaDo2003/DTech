@@ -91,9 +91,9 @@ namespace DTech.Controllers
                     };
                     await cartDAO.CreateAsync(cart);
 
-                    await signInManager.SignInAsync(user, false);
+                    //await signInManager.SignInAsync(user, false);
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Login");
                 }
             }
             // If validation fails, return the view with the model to show errors
@@ -131,7 +131,7 @@ namespace DTech.Controllers
                 {
                     Response.Cookies.Append("UserAuthenticated", "true", new CookieOptions
                     {
-                        HttpOnly = false, // Allow JavaScript to read it
+                        HttpOnly = false,
                         SameSite = SameSiteMode.Lax,
                         Expires = DateTimeOffset.Now.AddDays(1)
                     });

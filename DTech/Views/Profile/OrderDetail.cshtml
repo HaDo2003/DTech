@@ -1,0 +1,125 @@
+﻿@model DTech.Models.EF.Order
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12 col-xl-12">
+            <div class="row">
+                <div class="col-6 mb-3 text-start">
+                    <h1>Order detail of #@Model.OrderId</h1>
+                </div>
+                <div class="col-6 mb-3 pt-2 text-end">
+                    <span class="text-muted">Order Date: @Model.OrderDate</span>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-6 mb-2 text-start">
+                    <span class="fw-bold">Payment Status: </span>
+                    @if (Model.Payment!.Status == 1)
+                    {
+                        <span class="text-success fw-bold">Paid</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger fw-bold">Unpaid </span>
+                    }
+                </div>
+
+                <div class="mb-4 col-6 text-start">
+                    <span class="fw-bold">Order Status: </span>
+                    <span class="text-dark">@Model.Status!.Description</span>
+                </div>
+            </div>
+            
+
+            <div class="row">
+                <div class="col-lg-12 mb-4">
+                    <div class="border rounded p-3">
+                        <h5 class="fw-bold">Shipping Address</h5>
+                        
+                        @if (Model.ShippingAddress != null
+                            && Model.ShippingWardId != null
+                            && Model.ShippingDistrictId != null
+                            && Model.ShippingProvinceId != null)
+                        {
+                            <p><strong>@Model.NameReceive</strong></p>
+                            <p>Address: @Model.ShippingAddress, @Model.ShippingWard!.Name, @Model.ShippingDistrict!.Name, @Model.ShippingProvince!.Name</p>
+                        }
+                        else
+                        {
+                            <p><strong>@Model.Name</strong></p>
+                            <p>Address: @Model.Address, @Model.Ward!.Name, @Model.District!.Name, @Model.Province!.Name</p>
+                        }
+                        
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-4 h-100">
+                    <div class="border rounded p-3">
+                        <h5 class="fw-bold">Payment</h5>
+                        <p>@Model.Payment!.PaymentMethod!.Description</p>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-4 h-100">
+                    <div class="border rounded p-3">
+                        <h5 class="fw-bold">Note</h5>
+                        <p>@(string.IsNullOrWhiteSpace(Model.Note) ? "Empty Note" : Model.Note)</p>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="table-responsive mb-3">
+                        <table class="table table-bordered">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="text-center">Product</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-center">Total Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderProducts)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="@item.Product.Photo" class="me-2 rounded" width="60" height="60" alt="@item.Product.Name" />
+                                                <div>
+                                                    <a class="product-name-custom" href="#">@item.Product.Name</a>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center align-content-center">@(string.Format("{0:N0}", item.Price))</td>
+                                        <td class="text-center align-content-center">@item.Quantity</td>
+                                        <td class="text-center align-content-center">@(string.Format("{0:N0}", item.CostAtPurchase))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <table class="table">
+                        <tfoot>
+                            <tr>
+                                <td>Discount</td>
+                                <td class="text-end">-@(string.Format("{0:N0}", Model.CostDiscount))</td>
+                            </tr>
+                            <tr>
+                                <td>Shipping Cost</td>
+                                <td class="text-end">+@(string.Format("{0:N0}", Model.ShippingCost))</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Grand Total</strong></td>
+                                <td class="text-end">
+                                    <strong class="text-danger" style="font-size: 19px;">@(string.Format("{0:N0}", Model.FinalCost))</strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

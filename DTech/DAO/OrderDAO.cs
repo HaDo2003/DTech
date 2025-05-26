@@ -31,9 +31,14 @@ namespace DTech.DAO
                 .AsNoTracking()
                 .Include(o => o.Customer)
                 .Include(o => o.Payment)
+                .ThenInclude(p => p!.PaymentMethod)
                 .Include(o => o.Shipping)
                 .Include(o => o.Status)
-                .Include(o => o.OrderProducts).ThenInclude(op => op.Product)
+                .Include(o => o.OrderProducts)
+                .ThenInclude(op => op.Product!)
+                .Include(o => o.Province)
+                .Include(o => o.District)
+                .Include(o => o.Ward)
                 .FirstOrDefaultAsync(a => a.OrderId == id);
             return order;
         }
@@ -106,20 +111,6 @@ namespace DTech.DAO
                 Console.WriteLine(ex.Message);
                 return false;
             }
-        }
-
-        //Get Order Detail by OrderId
-        public async Task<List<OrderProduct>> GetOrderWithDetailsAsync(int? orderId, string? userId)
-        {
-            if (orderId == null)
-            {
-                return [];
-            }
-            return await context.OrderProducts
-                .AsNoTracking()
-                .Include(op => op.Product)
-                .Where(op => op.OrderId == orderId)
-                .ToListAsync();
         }
 
         //Get order by paymentId
