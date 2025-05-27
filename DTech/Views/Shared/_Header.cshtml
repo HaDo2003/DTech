@@ -1,193 +1,364 @@
-﻿<div class="header clearfix bg-main">
-    <div class="container py-2">
-        <div class="row align-items-center">
+﻿<div class="d-none d-lg-block">
+    <div class="header clearfix bg-main">
+        <div class="container py-2">
+            <div class="row align-items-center">
 
-            <div class="col-md-2 col-lg-2 col-2">
-                <a asp-controller="Home" asp-action="Index">
-                    <img src="~/img/DTechlogo.png" class="img-logo" alt="DTech logo" />
-                </a>
-            </div>
-            @* <div class="col-md-2 col-lg-2 col-2"> *@
-            @*     <img src="~/img/dtechlogosmall.png" class="img-logo-small" alt="DTech logo"/> *@
-            @* </div> *@
+                <div class="col-2 col-lg-3 col-xl-2">
+                    <a asp-controller="Home" asp-action="Index">
+                        <img src="~/img/DTechlogo.png" class="img-logo" alt="DTech logo" />
+                    </a>
+                </div>
 
 
-            <div class="col-md-4 col-lg-4 col-4 mx-auto my-auto search-box">
-                <form asp-controller="Search" asp-action="Search" method="get">
-                    <div class="input-group form-container">
-                        <input type="text" 
-                            name="query"
-                            id="searchInput"
-                            class="form-control search-input" 
-                            placeholder="Search" 
-                            autocomplete="of" 
-                            value="@ViewBag.Query" />
-                        <span class="input-group-btn">
-                            <button class="btn btn-search" type="submit">
-                                <i class="fa-solid fa-magnifying-glass fa-xl"></i>
-                            </button>
-                        </span>
+                <div class="col-3 col-lg-2 col-xl-4 mx-0 mx-md-auto my-auto search-box">
+                    <form asp-controller="Search" asp-action="Search" method="get">
+                        <div class="input-group form-container">
+                            <input type="text"
+                                   name="query"
+                                   id="searchInput"
+                                   class="form-control search-input"
+                                   placeholder="Search"
+                                   autocomplete="of"
+                                   value="@ViewBag.Query" />
+                            <span class="input-group-btn">
+                                <button class="btn btn-search" type="submit">
+                                    <i class="fa-solid fa-magnifying-glass fa-xl"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="searchHistory" class="search-history d-none">
+                    <div class="search-history-header">
+                        <span class="text-muted small">Recent Searches</span>
+                        <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="clearSearchHistory()">
+                            <i class="fa-solid fa-trash fa-xs"></i> Clear
+                        </button>
                     </div>
-                </form>
-            </div>
-
-            <div id="searchHistory" class="search-history d-none">
-                <div class="search-history-header">
-                    <span class="text-muted small">Recent Searches</span>
-                    <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="clearSearchHistory()">
-                        <i class="fa-solid fa-trash fa-xs"></i> Clear
-                    </button>
+                    <div id="historyList" class="search-history-list">
+                        <!-- History items will be populated by JavaScript -->
+                    </div>
                 </div>
-                <div id="historyList" class="search-history-list">
-                    <!-- History items will be populated by JavaScript -->
+
+
+                <div class="col-6 col-lg-7 col-xl-6">
+                    <ul class="nav justify-content-start">
+                        <li class="nav-item me-2">
+                            <a class="nav-link active d-flex align-items-center text-light text-decoration-none" href="#">
+                                <div class="me-1">
+                                    <i class="fa-solid fa-phone fa-xl"></i>
+                                </div>
+
+                                <div class="text-light">
+                                    <p class="mb-0 fontsize d-none d-xxl-block">Call to order</p>
+                                    <p class="mb-0 fontsize d-block d-xxl-none">Call to...</p>
+
+                                    <strong class="fontsize d-none d-xxl-block">1800.1234</strong>
+                                    <strong class="fontsize d-block d-xxl-none">1800...</strong>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="nav-item me-2 mt-2">
+                            <a class="nav-link active d-flex align-items-center text-light text-decoration-none" href="#">
+                                <div class="me-1">
+                                    <i class="fa-solid fa-location-dot fa-xl"></i>
+                                </div>
+
+                                <div class="text-light">
+                                    <p class="mb-0 fontsize d-none d-xxl-block">Location</p>
+                                    <p class="mb-0 fontsize d-block d-xxl-none">Loca...</p>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="nav-item me-2 mt-2">
+                            <a asp-controller="Cart" asp-action="Index" class="nav-link active d-flex align-items-center text-light text-decoration-none">
+                                @await Component.InvokeAsync("CartCount")
+                                <div class="text-light">
+                                    <p class="mb-0 fontsize d-none d-xxl-block">Shopping Cart</p>
+                                    <p class="mb-0 fontsize d-block d-xxl-none">Cart</p>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="nav-item me-2 mt-2">
+                            <a class="nav-link active d-flex align-items-center text-light text-decoration-none" href="#">
+                                <div class="me-1">
+                                    <i class="fa-solid fa-newspaper fa-xl"></i>
+                                </div>
+
+                                <div class="text-light">
+                                    <p class="mb-0 fontsize">News</p>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="nav-item dropdown mt-2">
+                            <a class="nav-link dropdown-toggle active d-flex align-items-center text-light text-decoration-none" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                                <div class="me-1">
+                                    <i class="fa-solid fa-user fa-xl"></i>
+                                </div>
+
+                                <div class="text-light">
+                                    <p class="mb-0 fontsize d-none d-xxl-block">Account</p>
+                                    <p class="mb-0 fontsize d-block d-xxl-none">Acc...</p>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @if (User.Identity?.IsAuthenticated ?? false)
+                                {
+                                    <li><a asp-controller="Profile" asp-action="Index" class="dropdown-item">Profile</a></li>
+                                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                                    <li><a asp-controller="Authentication" asp-action="Logout" class="dropdown-item">Logout</a></li>
+                                }
+                                else
+                                {
+                                    <li><a asp-controller="Authentication" asp-action="Login" class="dropdown-item">Log in</a></li>
+                                    <li><a asp-controller="Authentication" asp-action="Register" class="dropdown-item">Register</a></li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
+
             </div>
+        </div>
+    </div>
 
+    <div class="mainmenu clearfix bg-main">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg bg-body-tertiary py-1 ps-xl-4">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa-solid fa-list" style="color: #ffffff;"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100 flex-nowrap d-flex gap-custom">
+                        <li class="nav-item">
+                            <a asp-controller="Home" asp-action="Index" class="nav-link active text-light" aria-current="page">Home</a>
+                        </li>
 
-            <div class="col-md-6 col-lg-6 col-6">
-                <ul class="nav justify-content-start">
-                    <li class="nav-item me-2">
-                        <a class="nav-link active d-flex align-items-center text-light text-decoration-none" href="#">
-                            <div class="me-1">
-                                <i class="fa-solid fa-phone fa-xl"></i>
-                            </div>
+                        <li class="nav-item text-light">
+                            <a class="nav-link text-light" href="#">Introduce</a>
+                        </li>
 
-                            <div class="text-light">
-                                <p class="mb-0 fontsize">Call to order</p>
-                                <strong class="fontsize">1800.1234</strong>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="nav-item text-light">
+                            <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="laptop" class="nav-link text-light">Laptop</a>
+                        </li>
 
-                    <li class="nav-item me-2 mt-2">
-                        <a class="nav-link active d-flex align-items-center text-light text-decoration-none" href="#">
-                            <div class="me-1">
-                                <i class="fa-solid fa-location-dot fa-xl"></i>
-                            </div>
+                        <li class="nav-item text-light">
+                            <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="smart-phone" class="nav-link text-light">Smart Phone</a>
+                        </li>
 
-                            <div class="text-light">
-                                <p class="mb-0 fontsize">Location</p>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="nav-item text-light">
+                            <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="tablet" class="nav-link text-light">Tablet</a>
+                        </li>
 
-                    <li class="nav-item me-2 mt-2">
-                        <a asp-controller="Cart" asp-action="Index" class="nav-link active d-flex align-items-center text-light text-decoration-none">
-                            @await Component.InvokeAsync("CartCount")
-                            <div class="text-light">
-                                <p class="mb-0 fontsize">Shopping Cart</p>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Accessory
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="mouse" id="mouse" onmouseover="showHover(mouse, mouselist)" class="dropdown-item mouse-custom">Mouse</a>
+                                    <ul id="mouselist" class="dropdown-menu d-none">
+                                        <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-mouse" class="dropdown-item">Wired Mouse</a></li>
+                                        <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-mouse" class="dropdown-item">Wireless Mouse</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="keyboard" id="keyboard" class="dropdown-item">Keyboard</a>
+                                    <ul id="keyboardlist" class="dropdown-menu d-none">
+                                        <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-keyboard" class="dropdown-item">Wired Keyboard</a></li>
+                                        <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-keyboard" class="dropdown-item">Wireless Keyboard</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="headphone" id="headphone" class="dropdown-item">Headphone</a>
+                                    <ul id="headphonelist" class="dropdown-menu d-none">
+                                        <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-headphone" class="dropdown-item">Wired Headphone</a></li>
+                                        <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-headphone" class="dropdown-item">Wireless Headphone</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li class="nav-item me-2 mt-2">
-                        <a class="nav-link active d-flex align-items-center text-light text-decoration-none" href="#">
-                            <div class="me-1">
-                                <i class="fa-solid fa-newspaper fa-xl"></i>
-                            </div>
+                        <li class="nav-item text-light">
+                            <a class="nav-link text-light" href="#">Policy</a>
+                        </li>
 
-                            <div class="text-light">
-                                <p class="mb-0 fontsize">News</p>
-                            </div>
-                        </a>
-                    </li>
-
-                    <li class="nav-item dropdown mt-2">
-                        <a class="nav-link dropdown-toggle active d-flex align-items-center text-light text-decoration-none" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
-                            <div class="me-1">
-                                <i class="fa-solid fa-user fa-xl"></i>
-                            </div>
-
-                            <div class="text-light">
-                                <p class="mb-0 fontsize">Account</p>
-                            </div>
-                        </a>
-                        <ul class="dropdown-menu">
-                            @if (User.Identity?.IsAuthenticated ?? false)
-                            {
-                                <li><a asp-controller="Profile" asp-action="Index" class="dropdown-item">Profile</a></li>
-                                <li><a class="dropdown-item" href="#">Settings</a></li>
-                                <li><a asp-controller="Authentication" asp-action="Logout" class="dropdown-item">Logout</a></li>
-                            }
-                            else
-                            {
-                                <li><a asp-controller="Authentication" asp-action="Login" class="dropdown-item">Log in</a></li>
-                                <li><a asp-controller="Authentication" asp-action="Register" class="dropdown-item">Register</a></li>
-                            }
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+                        <li class="nav-item text-light">
+                            <a class="nav-link text-light" href="#">Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
         </div>
     </div>
 </div>
 
-<div class="mainmenu clearfix bg-main">
-    <div class="container">
-        <nav class="navbar navbar-expand-lg bg-body-tertiary py-1">
-            <div class="container-fluid">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 justify-content-between w-100">
-                    <li class="nav-item">
-                        <a asp-controller="Home" asp-action="Index" class="nav-link active text-light" aria-current="page">Home</a>
-                    </li>
+<div class="d-block d-lg-none">
+    <input type="checkbox" id="check-small">
+    <div class="header clearfix bg-main">
+        <div class="container-fluid py-2">
+            <div class="row align-items-center">
 
-                    <li class="nav-item text-light">
-                        <a class="nav-link text-light" href="#">Introduce</a>
-                    </li>
+                <div class="col-1">
+                    <label for="check-small">
+                        <i class="fas fa-bars" id="btnsmall"></i>
+                        <i class="fas fa-times" id="cancelsmall"></i>
+                    </label>
+                </div>
 
-                    <li class="nav-item text-light">
-                        <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="laptop" class="nav-link text-light">Laptop</a>
-                    </li>
+                <div class="col-3 mx-auto padding-logo">
+                    <a asp-controller="Home" asp-action="Index">
+                        <img src="~/img/DTechlogo.png" class="img-logo-small" alt="DTech logo" />
+                    </a>
+                </div>
 
-                    <li class="nav-item text-light">
-                        <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="smart-phone" class="nav-link text-light">Smart Phone</a>
-                    </li>
+                <div id="searchHistory" class="search-history d-none">
+                    <div class="search-history-header">
+                        <span class="text-muted small">Recent Searches</span>
+                        <button type="button" class="btn btn-sm btn-link text-danger p-0" onclick="clearSearchHistory()">
+                            <i class="fa-solid fa-trash fa-xs"></i> Clear
+                        </button>
+                    </div>
+                    <div id="historyList" class="search-history-list">
+                        <!-- History items will be populated by JavaScript -->
+                    </div>
+                </div>
 
-                    <li class="nav-item text-light">
-                        <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="tablet" class="nav-link text-light">Tablet</a>
-                    </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Accessory
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="mouse" id="mouse" onmouseover="showHover(mouse, mouselist)" class="dropdown-item mouse-custom">Mouse</a>
-                                <ul id="mouselist" class="dropdown-menu d-none">
-                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-mouse" class="dropdown-item">Wired Mouse</a></li>
-                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-mouse" class="dropdown-item">Wireless Mouse</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="keyboard" id="keyboard" class="dropdown-item">Keyboard</a>
-                                <ul id="keyboardlist" class="dropdown-menu d-none">
-                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-keyboard" class="dropdown-item">Wired Keyboard</a></li>
-                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-keyboard" class="dropdown-item">Wireless Keyboard</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="headphone" id="headphone" class="dropdown-item">Headphone</a>
-                                <ul id="headphonelist" class="dropdown-menu d-none">
-                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-headphone" class="dropdown-item">Wired Headphone</a></li>
-                                    <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-headphone" class="dropdown-item">Wireless Headphone</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
+                <div class="col-8 d-flex justify-content-end">
+                    <ul class="nav justify-content-start">
 
-                    <li class="nav-item text-light">
-                        <a class="nav-link text-light" href="#">Policy</a>
-                    </li>
+                        <li class="nav-item me-2 mt-2">
+                            <a asp-controller="Cart" asp-action="Index" class="nav-link active d-flex align-items-center text-light text-decoration-none">
+                                @await Component.InvokeAsync("CartCount")
+                                <div class="text-light">
+                                    <p class="mb-0 fontsize">Shopping Cart</p>
+                                </div>
+                            </a>
+                        </li>
 
-                    <li class="nav-item text-light">
-                        <a class="nav-link text-light" href="#">Contact</a>
-                    </li>
-                </ul>
+
+                        <li class="nav-item dropdown mt-2">
+                            <a class="nav-link dropdown-toggle active d-flex align-items-center text-light text-decoration-none" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                                <div class="me-1">
+                                    <i class="fa-solid fa-user fa-xl"></i>
+                                </div>
+
+                                <div class="text-light">
+                                    <p class="mb-0 fontsize">Account</p>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu">
+                                @if (User.Identity?.IsAuthenticated ?? false)
+                                {
+                                    <li><a asp-controller="Profile" asp-action="Index" class="dropdown-item">Profile</a></li>
+                                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                                    <li><a asp-controller="Authentication" asp-action="Logout" class="dropdown-item">Logout</a></li>
+                                }
+                                else
+                                {
+                                    <li><a asp-controller="Authentication" asp-action="Login" class="dropdown-item">Log in</a></li>
+                                    <li><a asp-controller="Authentication" asp-action="Register" class="dropdown-item">Register</a></li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="row my-2">
+                    <div class="col-12 search-box">
+                        <form asp-controller="Search" asp-action="Search" method="get">
+                            <div class="input-group form-container">
+                                <input type="text"
+                                       name="query"
+                                       id="searchInput"
+                                       class="form-control search-input"
+                                       placeholder="Search"
+                                       autocomplete="of"
+                                       value="@ViewBag.Query" />
+                                <span class="input-group-btn">
+                                    <button class="btn btn-search" type="submit">
+                                        <i class="fa-solid fa-magnifying-glass fa-xl"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </nav>
+        </div>
     </div>
+
+    <div class="mainmenu clearfix bg-main">
+        <div class="sidebar-small">
+            <header>
+                <a asp-controller="Home" asp-action="Index" class="nav-link active text-light" aria-current="page">Home</a>
+            </header>
+
+            <ul>
+                <li>
+                    <a class="nav-link text-light" href="#">Introduce</a>
+                </li>
+
+                <li>
+                    <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="laptop" class="nav-link text-light">Laptop</a>
+                </li>
+
+                <li>
+                    <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="smart-phone" class="nav-link text-light">Smart Phone</a>
+                </li>
+
+                <li>
+                    <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="tablet" class="nav-link text-light">Tablet</a>
+                </li>
+
+                <li>
+                    <a class="nav-link dropdown-toggle text-light" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Accessory
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="mouse" id="mouse1" class="dropdown-item mouse-custom">Mouse</a>
+                            <ul id="mouselist1" class="dropdown-menu d-none">
+                                <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-mouse" class="dropdown-item">Wired Mouse</a></li>
+                                <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-mouse" class="dropdown-item">Wireless Mouse</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="keyboard" id="keyboard1" class="dropdown-item">Keyboard</a>
+                            <ul id="keyboardlist1" class="dropdown-menu d-none">
+                                <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-keyboard" class="dropdown-item">Wired Keyboard</a></li>
+                                <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-keyboard" class="dropdown-item">Wireless Keyboard</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a asp-controller="Product" asp-action="Category" asp-route-categorySlug="headphone" id="headphone1" class="dropdown-item">Headphone</a>
+                            <ul id="headphonelist1" class="dropdown-menu d-none">
+                                <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wired-headphone" class="dropdown-item">Wired Headphone</a></li>
+                                <li><a asp-controller="Product" asp-action="Category" asp-route-categorySlug="wireless-headphone" class="dropdown-item">Wireless Headphone</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a class="nav-link text-light" href="#">Policy</a>
+                </li>
+
+                <li>
+                    <a class="nav-link text-light" href="#">Contact</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="overlay" onclick="document.getElementById('check-small').checked = false;"></div>
 </div>
+
 
 @section Scripts {
     <script>

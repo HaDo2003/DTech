@@ -210,6 +210,9 @@ document.addEventListener("DOMContentLoaded", function () {
     setupHoverDropdown('mouse', 'mouselist');
     setupHoverDropdown('keyboard', 'keyboardlist');
     setupHoverDropdown('headphone', 'headphonelist');
+    setupHoverDropdown('mouse1', 'mouselist1');
+    setupHoverDropdown('keyboard1', 'keyboardlist1');
+    setupHoverDropdown('headphone1', 'headphonelist1');
 });
 
 function handleNotLoggedIn() {
@@ -463,5 +466,3 @@ function setupLocationCascade(prefix) {
         });
     }
 }
-
-//Search functionality

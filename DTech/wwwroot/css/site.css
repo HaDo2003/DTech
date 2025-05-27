@@ -34,10 +34,6 @@ Nav Bar
     height: 46px;
 }
 
-.img-logo-small {
-    display: none;
-}
-
 .fontsize {
     font-size: 13px;
 }
@@ -81,6 +77,155 @@ Nav Bar
 
 .c-item {
     height: 400px;
+}
+/*=========================================================
+Nav Bar Small
+===========================================================*/
+.img-logo-small {
+    height: auto;
+    max-height: 70%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.sidebar-small {
+    position: fixed;
+    left: -435px;
+    top: 0;
+    width: 430px;
+    height: 100vh;
+    background: linear-gradient(180deg, #141414 0%, #202022 50%, #47474f 100%);
+    transition: all 0.5s ease;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+    .sidebar-small header {
+        font-size: 22px;
+        color: white;
+        line-height: 70px;
+        text-align: center;
+        background: linear-gradient(180deg, #141414 0%, #202022 50%, #47474f 100%);
+        user-select: none;
+    }
+
+    .sidebar-small ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+        .sidebar-small ul a {
+            display: block;
+            height: 100%;
+            width: 100%;
+            line-height: 65px;
+            font-size: 20px;
+            color: white;
+            padding-left: 40px;
+            box-sizing: border-box;
+            border-bottom: 1px solid black;
+            border-top: 1px solid rgba(255,255,255,.1);
+            transition: 0.4s;
+            text-decoration: none;
+        }
+
+        .sidebar-small ul li:hover a {
+            padding-left: 50px;
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .sidebar-small ul li .dropdown-menu a {
+            color: black;
+        }
+
+        .sidebar-small ul a i {
+            margin-right: 16px;
+        }
+
+/* Toggle Button Styles */
+#check-small {
+    display: none;
+}
+
+label {
+    position: relative;
+}
+
+    label[for="check-small"] #btnsmall,
+    label[for="check-small"] #cancelsmall {
+        position: absolute;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all 0.5s ease;
+    }
+
+    label #btnsmall {
+        left: 0;
+        top: -24px;
+        font-size: 24px;
+        color: white;
+        padding: 8px 12px;
+        z-index: 1001;
+    }
+
+    label #cancelsmall {
+        left: -250px;
+        top: -24px;
+        font-size: 24px;
+        color: white;
+        padding: 8px 12px;
+        z-index: 1002;
+    }
+
+/* Active States */
+#check-small:checked ~ .mainmenu .sidebar-small {
+    left: 0;
+}
+
+#check-small:checked ~ .header label #btnsmall {
+    left: 250px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+#check-small:checked ~ .header label #cancelsmall {
+    left: 360px;
+}
+
+/* Overlay when sidebar is open */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+/*#check-small:checked ~ .overlay {
+    opacity: 1;
+    visibility: visible;
+}*/
+
+#check-small:checked ~ body {
+    overflow: hidden;
+}
+
+#mouselist1 {
+    transform: translate(83%, -50%);
+}
+
+#keyboardlist1 {
+    transform: translate(75%, -50%);
+}
+
+#headphonelist1 {
+    transform: translate(69%, -50%);
 }
 
 /*=========================================================
@@ -167,6 +312,31 @@ Header
         opacity: 1;
     }
 
+.navbar-nav::-webkit-scrollbar {
+    height: 6px;
+}
+
+.navbar-nav::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.gap-custom {
+    gap: 5.9rem;
+}
+
+@media(max-width: 1399.98px) {
+    .gap-custom {
+        gap: 4.4rem;
+    }
+}
+
+@media(max-width: 1199.98px) {
+    .gap-custom {
+        gap: 2.9rem;
+    }
+}
+
 /*=========================================================
 Breadcrum
 ===========================================================*/
@@ -196,6 +366,15 @@ Slider
     width: 5% !important;
 }
 
+.carousel,
+.carousel-inner,
+.carousel-item,
+.carousel-item img {
+    height: auto;
+    max-height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
 /*=========================================================
 Register
 ===========================================================*/
@@ -347,7 +526,7 @@ Product Card
         font-size: 1.5rem;
     }
 
-.custom-text{
+.custom-text {
     color: black
 }
 
@@ -456,6 +635,7 @@ Home
     border-radius: 8px;
     padding: 10px;
 }
+
 .hot-sales-bg .product-card {
     background-color: white; /* keep product cards clean */
 }
@@ -529,9 +709,9 @@ Category
     color: #212529;
 }
 
-.btn-custom:hover {
-     background: #0d6efd;
-}
+    .btn-custom:hover {
+        background: #0d6efd;
+    }
 
 .btn-active {
     background: #0d6efd;
@@ -546,11 +726,11 @@ Product Detail
     height: 80%;
 }
 
-.height-custom{
+.height-custom {
     height: 20px;
 }
 
-.product-information{
+.product-information {
     font-size: 15px;
 }
 
@@ -1001,7 +1181,6 @@ Order Success
     justify-content: center;
     color: white;
     font-size: 24px;
-    
 }
 
 .product-image-placeholder {
@@ -1013,7 +1192,7 @@ Order Success
     font-size: 24px;
 }
 
-.quantity-display{
+.quantity-display {
     font-size: 13px;
 }
 
@@ -1095,6 +1274,7 @@ Footer
 .bg-footer {
     background: #000;
 }
+
 .icon-custom {
     width: 40px;
     height: 40px;
