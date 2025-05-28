@@ -3,7 +3,7 @@
     var title = ViewBag.SectionTitle as string;
     var slug = ViewBag.SectionTitle.ToLower().Replace(" ", "-") as string;
     var sliderId = "slider_" + Guid.NewGuid().ToString("N");
-    var sectionClass = title == "Hot Sales" ? "category-section my-xl-4 my-lg-4 my-md-1 my-sm-0 my-1 bg-hot-sales" : "category-section my-xl-4 my-lg-4 my-md-1 my-sm-0 my-1";
+    var sectionClass = title == "Hot Sales" ? "category-section my-xl-4 my-lg-4 my-2 bg-hot-sales" : "category-section my-xl-4 my-lg-4 my-md-1 my-sm-0 my-1";
     var hotSalesTitle = title == "Hot Sales" ? "text-uppercase fw-bold mb-1 hot-sales-title-custom" : "text-uppercase fw-bold mb-1";
 }
 <div class="@sectionClass">

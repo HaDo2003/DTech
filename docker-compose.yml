@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: dtech_sql
+    environment:
+      SA_PASSWORD: "password@123456"
+      ACCEPT_EULA: "Y"
+    ports:
+      - 1433:1433
+    networks:
+      - dtechnet
+
+  dtech:
+    container_name: dtech-app
+    build:
+      context: .
+      dockerfile: DTech/Dockerfile
+    ports:
+      - 7283:8080
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DTech=Server=host.docker.internal,1433;Database=DTech;User=sa;Password=password@123456;TrustServerCertificate=True;
+    networks:
+      - dtechnet
+
+networks:
+  dtechnet:
