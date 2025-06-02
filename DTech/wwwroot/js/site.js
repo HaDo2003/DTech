@@ -162,6 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 //Open full specification
 function openWindow() {
+
     const form = document.getElementById("SpecWindow");
     const overlay = document.getElementById("overlay");
     form.classList.remove('d-none');

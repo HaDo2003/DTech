@@ -30,6 +30,17 @@
 
                 accumulatedPath += $"/{segment}";
                 var isLast = i == segments.Length - 1 || segments.Skip(i + 1).All(s => s.Equals("Authentication", StringComparison.OrdinalIgnoreCase));
+                switch (displaySegment)
+                {
+                    case "ForgotPassword":
+                        displaySegment = "Forgot Password";
+                        break;
+                    case "ResetPassword":
+                        displaySegment = "Reset Password";
+                        break;
+                    default:
+                        break;
+                }
 
                 if (isLast)
                 {

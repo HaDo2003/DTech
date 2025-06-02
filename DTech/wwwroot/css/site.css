@@ -194,7 +194,7 @@ label {
 }
 
 /* Overlay when sidebar is open */
-.overlay {
+.overlay1 {
     position: fixed;
     top: 0;
     left: 0;
@@ -207,10 +207,10 @@ label {
     transition: all 0.3s ease;
 }
 
-/*#check-small:checked ~ .overlay {
+#check-small:checked ~ .overlay1 {
     opacity: 1;
     visibility: visible;
-}*/
+}
 
 #check-small:checked ~ body {
     overflow: hidden;
