@@ -15,7 +15,7 @@ DTech is a modern web-based e-commerce platform built with ASP.NET Core. It enab
 - **Authentication**: ASP.NET Core Identity
 - **Payment Integration**: VNPay
 - **Image Hosting**: Cloudinary
-- - **Containerization**: Docker
+- **Containerization**: Docker
 - **Others**: Entity Framework Core, HtmlSanitizer
 
 ## 🌟 Features
