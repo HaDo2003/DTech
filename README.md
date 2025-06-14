@@ -1,1 +1,66 @@
 # DTech
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-8.0-blue)](https://dotnet.microsoft.com/en-us/apps/aspnet)
+[![SQL Server](https://img.shields.io/badge/SQL_Server-2022-red)](https://www.microsoft.com/en-us/sql-server)
+[![Docker](https://img.shields.io/badge/Docker-Containerized-blue?logo=docker)](https://www.docker.com/)
+
+DTech is a modern web-based e-commerce platform built with ASP.NET Core. It enables users to browse and purchase technology products seamlessly while providing administrators with tools to manage inventory, orders, and users.
+
+## 🔧 Technologies Used
+
+- **Frontend**: Razor Pages, HTML, CSS, Bootstrap
+- **Backend**: ASP.NET Core MVC
+- **Database**: Microsoft SQL Server (MSSQL)
+- **Real-Time Updates**: SignalR
+- **Authentication**: ASP.NET Core Identity
+- **Payment Integration**: VNPay
+- **Image Hosting**: Cloudinary
+- **Containerization**: Docker
+- **Others**: Entity Framework Core, HtmlSanitizer
+
+## 🌟 Features
+
+### 🔐 Authentication & Authorization
+- Register/Login with email
+- Role-based access (Admin & User)
+- Profile management
+
+### 🛒 E-Commerce Functionality
+- Product listing with sorting and filtering (by category and brand)
+- Product detail view
+- Shopping cart with quantity management
+- Order checkout process
+- Order history for users
+
+### ⚙️ Admin Panel
+- Dashboard overview
+- Manage products (CRUD)
+- Manage categories and brands
+- Manage users and roles
+- View orders and update status
+
+### 💳 Payment System
+- VNPay integration for secure online transactions
+
+### 📡 Real-Time Features
+- SignalR to update user pages when admins add new products (no page reload)
+
+## 🚀 Getting Started
+
+### Prerequisites
+- [.NET SDK](https://dotnet.microsoft.com/)
+- [SQL Server](https://www.microsoft.com/en-us/sql-server)
+- [Cloudinary Account](https://cloudinary.com/)
+- VNPay Sandbox Account
+
+### Installation
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/HaDo2003/DTech.git
+   cd DTech
+2. **Configure database:**
+   ```bash
+   Update appsettings.json with your SQL Server connection string.
+3. **Run the application:**
+   ```bash
+   dotnet run
