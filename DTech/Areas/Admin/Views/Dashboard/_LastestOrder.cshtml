@@ -1,0 +1,112 @@
+﻿@model IEnumerable<DTech.Models.EF.Order>
+<!--begin::Latest Order Widget-->
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="card-title">Latest Orders</h3>
+
+        <div class="card-tools">
+            <button type="button"
+                    class="btn btn-tool"
+                    data-lte-toggle="card-collapse">
+                <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+            </button>
+            <button type="button"
+                    class="btn btn-tool"
+                    data-lte-toggle="card-remove">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table m-0">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Cusomer</th>
+                        <th>Status</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var order in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Orders" asp-action="Details" asp-route-id="@order.OrderId" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">@order.OrderId</a>
+                            </td>
+                            <td>@order.Customer!.FullName</td>
+                            <td>
+                                @switch (order.Status!.StatusId)
+                                {
+                                    case 1:
+                                        <span class="badge text-bg-info">
+                                            @order.Status!.Description
+                                        </span>
+                                        break;
+                                    case 2:
+                                        <span class="badge text-bg-primary">
+                                            @order.Status!.Description
+                                        </span>
+                                        break;
+                                    case 3:
+                                        <span class="badge text-bg-primary">
+                                            @order.Status!.Description
+                                        </span>
+                                        break;
+                                    case 4:
+                                        <span class="badge text-bg-primary">
+                                            @order.Status!.Description
+                                        </span>
+                                        break;
+                                    case 5:
+                                        <span class="badge text-bg-success">
+                                            @order.Status!.Description
+                                        </span>
+                                        break;
+                                    case 6:
+                                        <span class="badge text-bg-success">
+                                            @order.Status!.Description
+                                        </span>
+                                        break;
+                                    case 7:
+                                        <span class="badge text-bg-warning">
+                                            @order.Status!.Description
+                                        </span>
+                                        break;
+                                    case 8:
+                                        <span class="badge text-bg-danger">
+                                            @order.Status!.Description
+                                        </span>
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                
+                            </td>
+                            <td>
+                                @order.OrderProducts.Sum(op => op.Quantity)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <!-- /.table-responsive -->
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer clearfix">
+        <a href="javascript:void(0)"
+           class="btn btn-sm btn-primary float-start">
+            Place New Order
+        </a>
+        <a asp-controller="Orders" asp-action="Index"
+           class="btn btn-sm btn-secondary float-end">
+            View All Orders
+        </a>
+    </div>
+    <!-- /.card-footer -->
+</div>
+<!-- /.card -->

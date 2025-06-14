@@ -241,15 +241,15 @@
                       PictureEditing,
                       Heading,
                       Indent,
-                      IndentBlock, 
+                      IndentBlock,
                       Table,
                       TableToolbar,
                       TableColumnResize,
                       ImageUpload,
                       SimpleUploadAdapter],
             toolbar: [
-                'undo', 'redo', '|', 
-                'heading', '|', 
+                'undo', 'redo', '|',
+                'heading', '|',
                 'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
                 'bold', 'italic', 'underline', '|',
                 'link', 'insertTable' , 'uploadImage', '|',
@@ -339,5 +339,125 @@
 <script type="text/javascript">
     let table = $('#myTable').DataTable();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.min.js"
+        integrity="sha256-+vh8GkaU7C9/wbSLIcwq82tQ2wTf44aOHA8HlBMwRI8="
+        crossorigin="anonymous"></script>
+<script is:inline>
+    // NOTICE!! DO NOT USE ANY OF THIS JAVASCRIPT
+    // IT'S ALL JUST JUNK FOR DEMO
+    // ++++++++++++++++++++++++++++++++++++++++++
 
+    /* apexcharts
+     * -------
+     * Here we will create a few charts using apexcharts
+     */
+
+    //-----------------------
+    // - MONTHLY SALES CHART -
+    //-----------------------
+
+    const sales_chart_options = {
+      series: [
+        {
+          name: "Digital Goods",
+          data: [28, 48, 40, 19, 86, 27, 90],
+        },
+        {
+          name: "Electronics",
+          data: [65, 59, 80, 81, 56, 55, 40],
+        },
+      ],
+      chart: {
+        height: 180,
+        type: "area",
+        toolbar: {
+          show: false,
+        },
+      },
+      legend: {
+        show: false,
+      },
+      colors: ["#0d6efd", "#20c997"],
+      dataLabels: {
+        enabled: false,
+      },
+      stroke: {
+        curve: "smooth",
+      },
+      xaxis: {
+        type: "datetime",
+        categories: [
+          "2023-01-01",
+          "2023-02-01",
+          "2023-03-01",
+          "2023-04-01",
+          "2023-05-01",
+          "2023-06-01",
+          "2023-07-01",
+        ],
+      },
+      tooltip: {
+        x: {
+          format: "MMMM yyyy",
+        },
+      },
+    };
+
+    const sales_chart = new ApexCharts(
+      document.querySelector("#sales-chart"),
+      sales_chart_options,
+    );
+    sales_chart.render();
+
+    //---------------------------
+    // - END MONTHLY SALES CHART -
+    //---------------------------
+
+      const visitors_chart_options = {
+        series: [
+          {
+            name: "High - 2023",
+            data: [100, 120, 170, 167, 180, 177, 160],
+          },
+          {
+            name: "Low - 2023",
+            data: [60, 80, 70, 67, 80, 77, 100],
+          },
+        ],
+        chart: {
+          height: 200,
+          type: "line",
+          toolbar: {
+            show: false,
+          },
+        },
+        colors: ["#0d6efd", "#adb5bd"],
+        stroke: {
+          curve: "smooth",
+        },
+        grid: {
+          borderColor: "#e7e7e7",
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5,
+          },
+        },
+        legend: {
+          show: false,
+        },
+        markers: {
+          size: 1,
+        },
+        xaxis: {
+          categories: ["22th", "23th", "24th", "25th", "26th", "27th", "28th"],
+        },
+      };
+
+      const visitors_chart = new ApexCharts(
+        document.querySelector("#visitors-chart"),
+        visitors_chart_options
+      );
+      visitors_chart.render();
+</script>
+<!--end::Script-->
 <ejs-scripts></ejs-scripts>

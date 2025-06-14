@@ -19,6 +19,21 @@ namespace DTech.DAO
                 .ToListAsync();
         }
 
+        //Return all content of table by descending id
+        public async Task<List<Order>> GetListByDecendingAsync()
+        {
+            return await context.Orders
+                .AsNoTracking()
+                .Include(o => o.Customer)
+                .Include(o => o.Payment)
+                .Include(o => o.Shipping)
+                .Include(o => o.Status)
+                .Include(o => o.OrderProducts)
+                .OrderByDescending(o => o.OrderId)
+                .Take(6)
+                .ToListAsync();
+        }
+
         //Return one row of table
         public async Task<Order?> GetByIdAsync(int? id)
         {

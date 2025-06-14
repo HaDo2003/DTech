@@ -1,0 +1,57 @@
+﻿@model IEnumerable<DTech.Models.EF.Product>
+
+<!-- PRODUCT LIST -->
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Recently Added Products</h3>
+
+        <div class="card-tools">
+            <button type="button"
+                    class="btn btn-tool"
+                    data-lte-toggle="card-collapse">
+                <i data-lte-icon="expand" class="bi bi-plus-lg"></i>
+                <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>
+            </button>
+            <button type="button"
+                    class="btn btn-tool"
+                    data-lte-toggle="card-remove">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body p-0">
+        <div class="px-2">
+            @foreach (var product in Model)
+            {
+                <div class="d-flex border-top py-2 px-1">
+                    <div class="col-2">
+                        <img src="@product.Photo"
+                             alt="@product.Name"
+                             class="img-size-50" />
+                    </div>
+                    <div class="col-10">
+                        <a asp-controller="Products" asp-action="Edit" asp-route-id="@product.ProductId" class="fw-bold">
+                            @product.Category!.Name
+                            <span class="badge text-bg-info float-end">
+                                $@string.Format("{0:N0}", product.Price)
+                            </span>
+                        </a>
+                        <div class="text-truncate">
+                            @(product.Name!.Length > 30 ? product.Name.Substring(0, 30) + "..." : product.Name)
+                        </div>
+                    </div>
+                </div>
+            }
+            
+        </div>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer text-center">
+        <a asp-controller="Products" asp-action="Index" class="uppercase">
+            View All Products
+        </a>
+    </div>
+    <!-- /.card-footer -->
+</div>
+<!-- /.card -->

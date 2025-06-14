@@ -467,3 +467,52 @@ function setupLocationCascade(prefix) {
         });
     }
 }
+
+//Chat box
+document.addEventListener("DOMContentLoaded", function () {
+    const chatToggle = document.getElementById('chatToggle');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatBody = document.getElementById('chatBody');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    chatToggle.addEventListener('click', function () {
+        if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
+            chatWindow.style.display = 'block';
+        } else {
+            chatWindow.style.display = 'none';
+        }
+    });
+
+    function addMessage(message, isUser = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message';
+
+        const messageContent = document.createElement('div');
+        messageContent.className = isUser ? 'user-message' : 'bot-message';
+        messageContent.textContent = message;
+
+        messageDiv.appendChild(messageContent);
+        chatBody.appendChild(messageDiv);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', function () {
+        const message = messageInput.value.trim();
+        if (message) {
+            addMessage(message, true);
+            messageInput.value = '';
+
+            // Simple bot response
+            setTimeout(() => {
+                addMessage('Thank you for contacting us. We will assist you as soon as possible..');
+            }, 1000);
+        }
+    });
+
+    messageInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendBtn.click();
+        }
+    });
+});
