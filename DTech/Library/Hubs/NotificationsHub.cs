@@ -4,9 +4,9 @@ namespace DTech.Library.Hubs
 {
     public class NotificationsHub : Hub
     {
-        public async Task SendProductUpdate(object product)
+        public async Task SendNewProduct(object product)
         {
-            await Clients.All.SendAsync("ReceiveProductUpdate", product);
+            await Clients.All.SendAsync("ReceiveNewProduct", product);
         }
     }
 }

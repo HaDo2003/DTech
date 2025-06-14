@@ -329,23 +329,23 @@ namespace DTech.Areas.Admin.Controllers
                     // Generate slug
                     var slug = spec.SpecName?.ToLower().Replace(" ", "-");
 
-                    var existingSpec = product.Specifications
-                                              .FirstOrDefault(s => s.SpecId == spec.SpecId);
-
-                    if (existingSpec != null)
+                    if (spec.SpecId > 0)
                     {
                         // Update existing specification
-                        existingSpec.SpecName = spec.SpecName;
-                        existingSpec.Detail = spec.Detail;
-                        // Update slug only if the name has changed
-                        if (existingSpec.Slug != slug)
+                        var existingSpec = product.Specifications.FirstOrDefault(s => s.SpecId == spec.SpecId);
+                        if (existingSpec != null)
                         {
-                            existingSpec.Slug = slug;
+                            existingSpec.SpecName = spec.SpecName;
+                            existingSpec.Detail = spec.Detail;
+                            if (existingSpec.Slug != slug)
+                            {
+                                existingSpec.Slug = slug;
+                            }
                         }
                     }
                     else
                     {
-                        // Add new specification
+                        // Add new specification (SpecId = 0)
                         product.Specifications.Add(new Specification
                         {
                             SpecName = spec.SpecName,
