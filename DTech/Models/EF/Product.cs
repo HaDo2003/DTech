@@ -33,6 +33,10 @@ public partial class Product
     [Display(Name = "Product Status")]
     public bool? StatusProduct { get; set; }
 
+    [Required(ErrorMessage = "Please enter initial cost of product")]
+    [Display(Name = "Initial Cost")]
+    public decimal? InitialCost { get; set; }
+
     [Required(ErrorMessage = "Please enter price of product")]
     public decimal? Price { get; set; }
 

@@ -71,19 +71,27 @@
                                     </div>
 
                                     <div class="row">
-                                        <div class="col">
+                                        @* <div class="col">
                                             <div class="form-group">
                                                 <label asp-for="SupplierId" class="control-label">Supplier</label>
                                                 <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.SupplierId"></select>
                                                 <span asp-validation-for="SupplierId" class="text-danger"></span>
                                             </div>
-                                        </div>
+                                        </div> *@
 
                                         <div class="col">
                                             <div class="form-group">
                                                 <label asp-for="CategoryId" class="control-label">Category</label>
                                                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
                                                 <span asp-validation-for="CategoryId" class="text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col">
+                                            <div class="form-group">
+                                                <label asp-for="Warranty" class="control-label"></label>
+                                                <input asp-for="Warranty" class="form-control" />
+                                                <span asp-validation-for="Warranty" class="text-danger"></span>
                                             </div>
                                         </div>
                                     </div>
@@ -99,9 +107,9 @@
 
                                         <div class="col">
                                             <div class="form-group">
-                                                <label asp-for="Warranty" class="control-label"></label>
-                                                <input asp-for="Warranty" class="form-control" />
-                                                <span asp-validation-for="Warranty" class="text-danger"></span>
+                                                <label asp-for="InitialCost" class="control-label"></label>
+                                                <input asp-for="InitialCost" class="form-control" />
+                                                <span asp-validation-for="InitialCost" class="text-danger"></span>
                                             </div>
                                         </div>
                                     </div>

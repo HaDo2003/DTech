@@ -64,6 +64,7 @@ namespace DTech.Controllers
                     DateOfBirth = newUser.DateOfBirth,
                     CreatedBy = newUser.FullName,
                     CreateDate = DateTime.Now,
+                    Image = "https://res.cloudinary.com/dwbibirzk/image/upload/v1750003485/images_uc75hj.png"
                 };
 
                 var result = await customerDAO.AddAsync(user);

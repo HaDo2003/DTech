@@ -35,7 +35,52 @@ namespace DTech.DAO
             }
 
             return filteredUsers;
+        }
 
+        //Return lastest user
+        public async Task<List<ApplicationUser>> GetLastestCustomerAsync()
+        {
+            var users = await userManager.Users.AsNoTracking().ToListAsync();
+            var roles = await roleManager.Roles.AsNoTracking().ToListAsync();
+
+            var filteredUsers = new List<ApplicationUser>();
+
+            foreach (var user in users)
+            {
+                var role = roles.FirstOrDefault(r => r.Id == user.RoleId);
+                var roleName = role?.Name ?? string.Empty;
+
+                if (roleName == "Customer")
+                {
+                    user.RoleName = roleName ?? string.Empty;
+                    filteredUsers.Add(user);
+                }
+            }
+
+            return [.. filteredUsers.OrderByDescending(c => c.CreateDate).Take(8)];
+        }
+
+        //Return count users today
+        public async Task<int> GetCountCustomerAsync()
+        {
+            var users = await userManager.Users.AsNoTracking().ToListAsync();
+            var roles = await roleManager.Roles.AsNoTracking().ToListAsync();
+
+            var filteredUsers = new List<ApplicationUser>();
+
+            foreach (var user in users)
+            {
+                var role = roles.FirstOrDefault(r => r.Id == user.RoleId);
+                var roleName = role?.Name ?? string.Empty;
+
+                if (roleName == "Customer")
+                {
+                    user.RoleName = roleName ?? string.Empty;
+                    filteredUsers.Add(user);
+                }
+            }
+            var countUsersToday = filteredUsers.Count(c => c.CreateDate.HasValue && c.CreateDate.Value.Date == DateTime.Now.Date);
+            return countUsersToday;
         }
 
         //Return one row of table

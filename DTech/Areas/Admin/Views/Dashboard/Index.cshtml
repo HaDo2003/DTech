@@ -2,7 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
-    ViewData["Title"] = "Blank Page";
+    ViewData["Title"] = "Dashboard";
     Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";
 }
 
@@ -17,7 +17,7 @@
                 <!--begin::Row-->
                 <div class="row">
                     <div class="col-sm-6">
-                        <h3 class="mb-0">Dashboard v2</h3>
+                        <h3 class="mb-0">Dashboard</h3>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-end">
@@ -56,8 +56,11 @@
                         <!--begin::Row-->
                         <div class="row g-4 mb-4">
                             <partial name="_DirectChat" />
-
-                            <partial name="_UserList" />
+                            @await Html.PartialAsync("_UserList", new {
+                                Customers = (IEnumerable<DTech.Models.EF.ApplicationUser>)ViewBag.Customers,
+                                Count = (int)ViewBag.CountCustomer
+                            })
+                            @* @await Html.PartialAsync("_UserList", (IEnumerable<DTech.Models.EF.ApplicationUser>)ViewBag.Customers, ViewBag.CountCustomer) *@
                         </div>
                         <!--end::Row-->
                     </div>

@@ -8,13 +8,16 @@ namespace DTech.Areas.Admin.Controllers
     [Authorize(Roles = "Admin,Seller")]
     public class DashboardController(
         ProductDAO productDAO,
-        OrderDAO orderDAO
+        OrderDAO orderDAO,
+        CustomerDAO customerDAO
     ) : Controller
     {
         public async Task<IActionResult> Index()
         {
             ViewBag.Products = await productDAO.GetListOrderByIdAsync();
             ViewBag.Orders = await orderDAO.GetListByDecendingAsync();
+            ViewBag.Customers = await customerDAO.GetLastestCustomerAsync();
+            ViewBag.CountCustomer = await customerDAO.GetCountCustomerAsync();
             return View();
         }
     }

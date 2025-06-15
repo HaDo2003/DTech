@@ -74,7 +74,7 @@ namespace DTech.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("ProductId,BrandId,SupplierId,CategoryId,Name,Slug,Warranty,StatusProduct,Price,Discount,EndDateDiscount,Views,DateOfManufacture,MadeIn,PromotionalGift,Photo,Description,UpdateDate,CreatedBy,CreateDate,UpdatedBy,Status,PhotoUpload")] 
+            [Bind("ProductId,BrandId,SupplierId,CategoryId,Name,Slug,Warranty,StatusProduct,InitialCost,Price,Discount,EndDateDiscount,Views,DateOfManufacture,MadeIn,PromotionalGift,Photo,Description,UpdateDate,CreatedBy,CreateDate,UpdatedBy,Status,PhotoUpload")] 
             Product product)
         {
             if (ModelState.IsValid)
@@ -186,7 +186,7 @@ namespace DTech.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, 
-            [Bind("ProductId,BrandId,SupplierId,CategoryId,Name,Slug,Warranty,StatusProduct,Price,Discount,EndDateDiscount,Views,DateOfManufacture,MadeIn,PromotionalGift,Photo,Description,UpdateDate,CreatedBy,CreateDate,UpdatedBy,Status,PhotoUpload")] 
+            [Bind("ProductId,BrandId,SupplierId,CategoryId,Name,Slug,Warranty,StatusProduct,InitialCost,Price,Discount,EndDateDiscount,Views,DateOfManufacture,MadeIn,PromotionalGift,Photo,Description,UpdateDate,CreatedBy,CreateDate,UpdatedBy,Status,PhotoUpload")] 
             Product product)
         {
             if (id != product.ProductId)

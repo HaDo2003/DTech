@@ -80,6 +80,8 @@ public partial class EcommerceWebContext : IdentityDbContext<ApplicationUser>
     public DbSet<District> Districts { get; set; }
     public DbSet<Ward> Wards { get; set; }
     public DbSet<Chat> Chats { get; set; }
+    public DbSet<VisitorCount> VisitorCounts { get; set; }
+    public DbSet<MonthlyRecap> MonthlyRecaps { get; set; }
 
     protected void OnModelCreatingPartial(ModelBuilder modelBuilder)
     {

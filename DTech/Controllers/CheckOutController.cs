@@ -429,6 +429,7 @@ namespace DTech.Controllers
             {
                 OrderId = order.OrderId,
                 ProductId = cartProduct.ProductId,
+                InitialCost = cartProduct.Product!.InitialCost,
                 Price = cartProduct.Product!.Price * (cartProduct.Product.Discount.HasValue ? (1 - cartProduct.Product.Discount.Value / 100m) : 1),
                 Quantity = cartProduct.Quantity,
                 CostAtPurchase = cartProduct.Product!.Price * (cartProduct.Product.Discount.HasValue ? (1 - cartProduct.Product.Discount.Value / 100m) : 1) * cartProduct.Quantity,
