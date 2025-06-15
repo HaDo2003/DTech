@@ -61,6 +61,10 @@ DTech is a modern web-based e-commerce platform built with ASP.NET Core. It enab
 2. **Configure database:**
    ```bash
    Update appsettings.json with your SQL Server connection string.
-3. **Run the application:**
+3. **Add Migration and Update Database:**
+   ```bash
+   ADD-MIGRATION <Migration Name>
+   UPDATE-DATABASE
+4. **Run the application:**
    ```bash
    dotnet run
