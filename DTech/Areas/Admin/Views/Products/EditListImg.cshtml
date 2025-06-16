@@ -107,47 +107,52 @@
 
         // Add new image to the main table
         $('#addImage').on('click', function () {
-            var fileInput = $('#newImageUpload')[0];
-            var file = fileInput.files[0];
+            var $fileInput = $('#newImageUpload');
+            var file = $fileInput[0].files[0];
 
             if (file) {
+                var imageIndex = $('#imageTable tr').length;
+
+                // Move the file input into the new row (do not clone)
+                $fileInput.attr('name', `ProductImages[${imageIndex}].ImageUpload`);
+                $fileInput.attr('id', '');
+                $fileInput.removeClass('is-invalid');
+
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    // Dynamically create a new row with image on the left and file input on the right
-                    var newRow = `
-                    <tr>
-                        <td>
-                            <div class="row">
-                                <div class="col-5">
-                                    <div class="form-group">
-                                        <img src="` + e.target.result + `" id="imagePreview_${imageIndex}" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
+                    var newRow = $(`
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-5">
+                                        <div class="form-group">
+                                            <img src="${e.target.result}" id="imagePreview_${imageIndex}" class="img-thumbnail" style="max-width: 150px; max-height: 150px;" />
+                                        </div>
+                                    </div>
+                                    <div class="col-7">
+                                        <div class="form-group">
+                                            <input type="hidden" name="ProductImages[${imageIndex}].ImageId" value="0" />
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-7">
-                                    <div class="form-group">
-                                        <input type="file" name="ProductImages[${imageIndex}].ImageUpload" class="form-control-file" accept="image/*" onchange="previewImage(this, ${imageIndex})" />
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-custom removeImage">
-                                <i class="fa-solid fa-trash fa-sm"></i>
-                            </button>
-                        </td>
-                    </tr>`;
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-custom removeImage">
+                                    <i class="fa-solid fa-trash fa-sm"></i>
+                                </button>
+                            </td>
+                        </tr>`);
+                    newRow.find('.form-group').last().append($fileInput);
+                    $('#imageTable').append(newRow);
 
-                    $('#imageTable').append(newRow); // Append the new row to the table
+                    // Add a new empty file input for the next add
+                    var $newInput = $('<input type="file" id="newImageUpload" class="form-control-file" accept="image/*" style="padding-left: 10px;" />');
+                    $('.col-3').html($newInput);
 
-                    // Increment the index for the next image
-                    imageIndex++;
-
-                    // Clear the input field and preview for the next input
-                    $('#newImageUpload').val('');
+                    // Reset preview
                     $('#newImagePreview').attr('src', '');
                 };
-
-                reader.readAsDataURL(file); // Read the selected file and convert to base64 for preview
+                reader.readAsDataURL(file);
             } else {
                 alert('Please select an image.');
             }
@@ -187,27 +192,23 @@
             }
         });
 
-        $(document).ready(function () {
-            // Function to preview the selected image
-            $('#newImageUpload').on('change', function () {
-                var fileInput = this;
-                var file = fileInput.files[0];
+        // Function to preview the selected image
+        $('#newImageUpload').on('change', function () {
+            var fileInput = this;
+            var file = fileInput.files[0];
 
-                if (file) {
-                    var reader = new FileReader();
+            if (file) {
+                var reader = new FileReader();
 
-                    reader.onload = function (e) {
-                        // Set the preview image source to the selected file
-                        $('#newImagePreview').attr('src', e.target.result);
-                    };
-
-                    reader.readAsDataURL(file); // Read the file as a data URL
-                } else {
-                    // Clear the preview if no file is selected
-                    $('#newImagePreview').attr('src', '');
-                }
-            });
+                reader.onload = function (e) {
+                    // Set the preview image source to the selected file
+                    $('#newImagePreview').attr('src', e.target.result);
+                };
+                reader.readAsDataURL(file); // Read the file as a data URL
+            } else {
+                // Clear the preview if no file is selected
+                $('#newImagePreview').attr('src', '');
+            }
         });
-
     });
 </script>

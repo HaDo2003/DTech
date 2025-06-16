@@ -15,19 +15,44 @@
                             ? Model.Description.Substring(0, 1000) + "..."
                             : Model.Description;
 }
+
 @Html.AntiForgeryToken()
 <input type="hidden" id="productId" value="@Model.ProductId" />
 <div class="container">
     <div class="row g-4 align-items-start">
         <!-- LEFT: Product Image -->
-        <div class="col-12 col-lg-5 d-flex justify-content-center position-relative">
+        <div class="col-12 col-lg-5 d-flex flex-column justify-content-center position-relative">
             @if (Model.Discount > 0)
             {
                 <div class="position-absolute end-0 top-0 m-2">
                     <span class="badge bg-danger rounded-pill fs-4 px-3 py-2">-@discountPercent%</span>
                 </div>
             }
-            <img src="@Model.Photo" class="img-fluid" alt="@Model.Name" />
+            <div class="border rounded shadow-sm p-2 mb-2 bg-white d-flex justify-content-center align-items-center main-div-img-size">
+                <img id="mainProductImage" src="@Model.Photo" class="img-fluid rounded main-img"
+                     alt="@Model.Name" />
+            </div>
+
+            @if (Model.ProductImages != null && Model.ProductImages.Any())
+            {
+                <div class="d-flex flex-wrap justify-content-center gap-2 mt-2">
+                    <div class="border rounded p-1 bg-light sub-div-img">
+                        <img src="@Model.Photo"
+                             data-full="@Model.Photo"
+                             alt="@Model.Name"
+                             class="rounded thumbnail-img"/>
+                    </div>
+                    @foreach (var image in Model.ProductImages)
+                    {
+                        <div class="border rounded p-1 bg-light sub-div-img">
+                            <img src="@image.Image"
+                                 data-full="@image.Image"
+                                 alt="Image @image.ImageId"
+                                 class="rounded thumbnail-img"/>
+                        </div>
+                    }
+                </div>
+            }
         </div>
 
         <!-- RIGHT: Product Details -->
@@ -399,5 +424,17 @@
             })
             .catch(err =>
                 console.error("Failed to load recently viewed:", err));
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const mainImage = document.getElementById("mainProductImage");
+
+            document.querySelectorAll(".thumbnail-img").forEach(function (thumb) {
+                thumb.addEventListener("click", function () {
+                    const newSrc = this.getAttribute("data-full");
+                    mainImage.src = newSrc;
+                });
+            });
+        });
     </script>
 }

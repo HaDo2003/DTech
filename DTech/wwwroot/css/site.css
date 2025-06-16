@@ -998,6 +998,28 @@ Product Detail
     overflow-y: auto;
 }
 
+.main-div-img-size {
+    width: 100%;
+    height: 400px;
+}
+
+.main-img {
+    max-height: 400px;
+    object-fit: contain;
+}
+
+.sub-div-img {
+    width: 100px;
+    height: 100px;
+}
+
+.thumbnail-img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
 /*=========================================================
 Cart
 ===========================================================*/

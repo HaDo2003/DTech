@@ -393,48 +393,54 @@ namespace DTech.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SaveImages(int productId, List<ProductImage> images)
+        public async Task<IActionResult> SaveImages(int productId, List<ProductImage> ProductImages)
         {
             try
             {
+                bool hasChanges = false;
                 if (ModelState.IsValid)
                 {
                     var product = await productDAO.GetByIdAsync(productId);
                     if (product != null)
                     {
-                        bool hasChanges = false; // Flag to check if changes were made
+                        if (ProductImages == null)
+                            Console.WriteLine("ProductImages is null");
+                        else
+                            Console.WriteLine("ProductImages count: " + ProductImages.Count);
 
-                        foreach (var image in images)
+                        foreach (var image in ProductImages)
                         {
-                            var existingImage = product.ProductImages
+                            if (image.ImageId > 0)
+                            {
+                                var existingImage = product.ProductImages
                                                       .FirstOrDefault(s => s.ImageId == image.ImageId);
 
-                            if (existingImage != null)
-                            {
-                                if (image.ImageUpload != null && image.ImageUpload.Length > 0)
+                                if (existingImage != null)
                                 {
-                                    string imageName = await cloudinaryService.ChangeImageAsync(existingImage.Image ?? string.Empty, image.ImageUpload, folderName);
-                                    existingImage.Image = imageName;
-                                    hasChanges = true; // Changes were made
-                                }
-                                else
-                                {
-                                    existingImage.Image = image.Image; // Update existing image name
-                                    hasChanges = true; // Changes were made
+                                    if (image.ImageUpload != null && image.ImageUpload.Length > 0)
+                                    {
+                                        string imageName = await cloudinaryService.ChangeImageAsync(existingImage.Image ?? string.Empty, image.ImageUpload, folderName);
+                                        existingImage.Image = imageName;
+                                        hasChanges = true; // Changes were made
+                                    }
+                                    //else
+                                    //{
+                                    //    existingImage.Image = image.Image; // Update existing image name
+                                    //    hasChanges = true; // Changes were made
+                                    //}
+                                    continue;
                                 }
                             }
-                            else
+
+                            if (image.ImageUpload != null && image.ImageUpload.Length > 0)
                             {
-                                if (image.ImageUpload != null && image.ImageUpload.Length > 0)
+                                string imageName = await cloudinaryService.UploadImageAsync(image.ImageUpload, folderName);
+                                product.ProductImages.Add(new ProductImage
                                 {
-                                    string imageName = await cloudinaryService.UploadImageAsync(image.ImageUpload, folderName);
-                                    product.ProductImages.Add(new ProductImage
-                                    {
-                                        Image = imageName,
-                                        ProductId = productId
-                                    });
-                                    hasChanges = true; // Changes were made
-                                }
+                                    Image = imageName,
+                                    ProductId = productId
+                                });
+                                hasChanges = true; // Changes were made
                             }
                         }
 
@@ -466,7 +472,7 @@ namespace DTech.Areas.Admin.Controllers
                 TempData["message"] = JsonConvert.SerializeObject(new XMessage("error", "Editing failed: " + ex.Message));
             }
 
-            return View(images);
+            return View(ProductImages);
         }
 
 
