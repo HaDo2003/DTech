@@ -1,6 +1,21 @@
-﻿@{
+﻿@using DTech.Models.EF
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+@inject SignInManager<ApplicationUser> SignInManager
+@{
     var mainPage = ViewBag.MainPage as string ?? "";
     var page = ViewBag.Page as string ?? "";
+    string? avatar = "";
+    string? username = "";
+    if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        if (user != null)
+        {
+            avatar = user.Image;
+            username = user.FullName;
+        }
+    }
 }
 
 <aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
@@ -9,10 +24,10 @@
         <!--begin::Brand Link-->
         <a href="../index.html" class="brand-link">
             <!--begin::Brand Image-->
-            <img src="../../../dist/assets/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image opacity-75 shadow">
+            <img src="@avatar" alt="@username" class="brand-image opacity-75 shadow rounded-circle">
             <!--end::Brand Image-->
             <!--begin::Brand Text-->
-            <span class="brand-text fw-light">@User.Identity?.Name</span>
+            <span class="brand-text fw-light">@username</span>
             <!--end::Brand Text-->
         </a> <!--end::Brand Link-->
     </div> <!--end::Sidebar Brand-->
