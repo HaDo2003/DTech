@@ -40,5 +40,21 @@ namespace DTech.DAO
                 return false;
             }
         }
+
+        //Add new row to table
+        public async Task<bool> AddAsync(Feedback feedback)
+        {
+            try
+            {
+                await context.Feedbacks.AddAsync(feedback);
+                await context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
     }
 }

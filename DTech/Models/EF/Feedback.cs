@@ -12,8 +12,12 @@ public partial class Feedback
     [Required(ErrorMessage = "Please enter name to give feedback")]
     public string? Name { get; set; }
 
+    [Required(ErrorMessage = "Please enter phone number to give feedback")]
+    [Phone(ErrorMessage = "Invalid phone number")]
+    public string? PhoneNumber { get; set; }
+
     [Required(ErrorMessage = "Please enter email to give feedback")]
-    [EmailAddress(ErrorMessage = "Imvalid email address")]
+    [EmailAddress(ErrorMessage = "Invalid email address")]
     public string? Email { get; set; }
 
     [Required(ErrorMessage = "Please write feedback")]
