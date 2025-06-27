@@ -1,12 +1,14 @@
 ﻿using DTech.Models.EF;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace DTech.DAO
 {
     public class AdminDAO(
         UserManager<ApplicationUser> userManager, 
-        RoleManager<IdentityRole> roleManager
+        RoleManager<IdentityRole> roleManager,
+        EcommerceWebContext context
     )
     {
         public async Task<List<ApplicationUser>> GetListAsync()

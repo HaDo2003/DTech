@@ -1,4 +1,8 @@
-﻿<!-- Redicrect to Zalo Chat -->
+﻿@model DTech.Models.ViewModel.FullChatViewModel
+@{
+    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+}
+<!-- Redicrect to Zalo Chat -->
 <div class="chat-widget-zalo">
     <a href="https://chat.zalo.me/" target="_blank" class="chat-btn-zalo">
         <img src="~/img/zalo.png" alt="Zalo Chat" class="zalo-icon">
@@ -18,14 +22,31 @@
                 Chat Support
             </h6>
         </div>
-
-        <div class="chat-body" id="chatBody">
-            <div class="message">
-                <div class="bot-message">
-                    Hello! How can I help you ?
+        @if (Model == null)
+        {
+            <div class="chat-body" id="chatBody">
+                <div class="message">
+                    <div class="bot-message">
+                        Hello! How can I help you ?
+                    </div>
                 </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="chat-body" id="chatBody">
+                @foreach (var chat in Model.Messages!.OrderBy(c => c.Timestamp))
+                {
+                    bool isMine = chat.SenderId == currentUserId;
+                    <div class="message">
+                        <div class="@(isMine ? "user-message" : "bot-message")">
+                            @chat.Message
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+
 
         <div class="chat-footer">
             <div class="input-group">

@@ -26,7 +26,8 @@
         </main>
     </div>
 
-    <partial name="_ChatBox" />
+    @* <partial name="_ChatBox" /> *@
+    @await Component.InvokeAsync("ChatBox")
 
     <footer>
         <partial name="_Footer" />

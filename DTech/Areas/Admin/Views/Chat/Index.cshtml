@@ -1,0 +1,142 @@
+﻿@using DTech.Library;  
+@model IEnumerable<DTech.Models.ViewModel.ChatPreviewViewModel>  
+
+@{  
+    ViewData["Title"] = "Support";  
+    Layout = "~/Areas/Admin/Views/Shared/_LayoutAdmin.cshtml";  
+}  
+
+<!--begin::App Wrapper-->  
+<div class="app-wrapper">  
+    <!--begin::App Main-->  
+    <main class="app-main">  
+        <!--begin::App Content Header-->  
+        <div class="app-content-header">  
+            <!--begin::Container-->  
+            <div class="container-fluid">  
+                <!--begin::Row-->  
+                <div class="row">  
+                    <div class="col-sm-6">  
+                        <h3 class="mb-0">Customer Support</h3>  
+                    </div>  
+                    <div class="col-sm-6">  
+                        <ol class="breadcrumb float-sm-end">  
+                            <li class="breadcrumb-item"><a asp-controller="Dashboard" asp-action="Index">Home</a></li>  
+                            <li class="breadcrumb-item active" aria-current="page">  
+                                Customer Support  
+                            </li>  
+                        </ol>  
+                    </div>  
+                </div>  
+                <!--end::Row-->  
+            </div>  
+            <!--end::Container-->  
+        </div>  
+        <div class="app-content">  
+            <!--begin::Container-->  
+            <div class="container-fluid">  
+                <!--begin::Row-->  
+                <div class="row">  
+                    <div class="col-lg-6">  
+                        <div class="card">  
+                            <div class="card-header">  
+                                <h3 class="card-title">List of Chat</h3>  
+                                <div class="card-tools">  
+                                    <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse" title="Collapse">  
+                                        <i data-lte-icon="expand" class="bi bi-plus-lg"></i>  
+                                        <i data-lte-icon="collapse" class="bi bi-dash-lg"></i>  
+                                    </button> <button type="button" class="btn btn-tool" data-lte-toggle="card-remove" title="Remove">  
+                                        <i class="bi bi-x-lg"></i>  
+                                    </button>  
+                                </div>  
+                            </div>  
+                            <div class="card-body">  
+                                @foreach (var chat in Model)  
+                                {
+                                    <div class="chat-preview d-flex align-items-center mb-3" data-userid="@chat.SenderId">
+                                        <img src="@chat.AvatarUrl" class="rounded-circle" style="width: 48px; height: 48px;" />  
+                                        <div class="ms-3">  
+                                            <div class="fw-bold">@chat.SenderName</div>  
+                                            <div class="text-muted text-truncate" style="max-width: 250px;">@chat.Message</div>  
+                                            <small class="text-secondary">
+                                                @chat.Timestamp.ToTimeAgo()
+                                            </small>  
+                                        </div>  
+                                    </div>  
+                                }  
+                            </div> <!-- /.card-body -->  
+                        </div> <!-- /.card -->  
+                    </div>  
+                    <!-- /.col-md-6 -->  
+                    <div class="col-lg-6">  
+                        <div id="chat-window"></div>
+                    </div>  
+                    <!-- /.col-md-6 -->  
+                </div>  
+                <!--end::Row-->  
+            </div>  
+            <!--end::Container-->  
+        </div>  
+        <!--end::App Content-->  
+    </main>  
+    <!--end::App Main-->  
+    <Footer />  
+</div>  
+<!--end::App Wrapper-->
+<style>
+    .chat-preview {
+        cursor: pointer;
+        padding: 10px;
+    }
+
+        .chat-preview:hover {
+            background-color: #f8f9fa;
+        }
+
+        .chat-preview.active {
+            background-color: #dee2e6;
+        }
+
+    #chat-container {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.chat-preview').click(function () {
+                const userId = $(this).data('userid');
+
+                $('.chat-preview').removeClass('active');
+                $(this).addClass('active');
+
+                $('#chat-window').html('<p class="text-muted">Loading...</p>');
+
+                $.get(`/Admin/Chat/FullChat?senderId=${userId}`, function (html) {
+                    $('#chat-window').html(html);
+                });
+            });
+        });
+    </script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatsHub")
+            .build();
+
+        connection.start()
+            .then(() => {
+                console.log("Connected to ChatHub");
+            })
+            .catch(err => console.error(err.toString()));
+
+        connection.on("ReceiveMessage", function (senderId, message) {
+            const msgHtml = `<div class="d-flex justify-content-start mb-2">
+            <div class="p-2 bg-light text-dark" style="max-width: 60%; border-radius: 30px;">${message}</div>
+        </div>`;
+            $("#chat-container").append(msgHtml);
+            $("#chat-container").scrollTop($("#chat-container")[0].scrollHeight);
+        });
+    </script>
+}

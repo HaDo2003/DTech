@@ -193,6 +193,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.MapHub<NotificationsHub>("/notificationsHub");
+app.MapHub<ChatsHub>("/chatsHub");
 
 app.UseAuthentication();
 app.UseAuthorization();

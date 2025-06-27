@@ -10,5 +10,8 @@ namespace DTech.Models.EF
         public string? ReceiverId { get; set; }
         public string? Message { get; set; }
         public DateTime Timestamp { get; set; }
+        public virtual ApplicationUser? Sender { get; set; }
+        public virtual ApplicationUser? Receiver { get; set; }
+
     }
 }

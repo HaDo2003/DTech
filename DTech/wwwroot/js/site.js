@@ -475,12 +475,44 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatBody = document.getElementById('chatBody');
     const messageInput = document.getElementById('messageInput');
     const sendBtn = document.getElementById('sendBtn');
+    const receiverId = "7aede655-1203-45b4-a00e-a0f81a812ecb";
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chatsHub")
+        .build();
+
+    connection.start()
+        .then(() => {
+            console.log("Connected to ChatHub");
+        })
+        .catch(err => console.error(err.toString()));
+
+    connection.on("ReceiveMessage", function (senderId, message) {
+        addMessage(message, false);
+    });
 
     chatToggle.addEventListener('click', function () {
         if (chatWindow.style.display === 'none' || chatWindow.style.display === '') {
             chatWindow.style.display = 'block';
         } else {
             chatWindow.style.display = 'none';
+        }
+    });
+
+    sendBtn.addEventListener('click', function () {
+        const message = messageInput.value.trim();
+        if (message) {
+            addMessage(message, true);
+            messageInput.value = '';
+
+            connection.invoke("SendMessage", receiverId, message)
+                .catch(err => console.error(err.toString()));
+        }
+    });
+
+    messageInput.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            sendBtn.click();
         }
     });
 
@@ -496,23 +528,4 @@ document.addEventListener("DOMContentLoaded", function () {
         chatBody.appendChild(messageDiv);
         chatBody.scrollTop = chatBody.scrollHeight;
     }
-
-    sendBtn.addEventListener('click', function () {
-        const message = messageInput.value.trim();
-        if (message) {
-            addMessage(message, true);
-            messageInput.value = '';
-
-            // Simple bot response
-            setTimeout(() => {
-                addMessage('Thank you for contacting us. We will assist you as soon as possible..');
-            }, 1000);
-        }
-    });
-
-    messageInput.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            sendBtn.click();
-        }
-    });
 });
