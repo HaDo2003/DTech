@@ -22,7 +22,7 @@
                 Chat Support
             </h6>
         </div>
-        @if (Model == null)
+        @if (Model == null || Model.Messages == null || !Model.Messages.Any())
         {
             <div class="chat-body" id="chatBody">
                 <div class="message">

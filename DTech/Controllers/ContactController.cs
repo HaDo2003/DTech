@@ -1,11 +1,9 @@
-﻿using CloudinaryDotNet.Actions;
-using DTech.DAO;
+﻿using DTech.DAO;
 using DTech.Library.Service.BackgroundTask;
 using DTech.Library.Service.Email;
 using DTech.Models.EF;
 using DTech.Models.ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Security.Claims;
 
 namespace DTech.Controllers

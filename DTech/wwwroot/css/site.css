@@ -1038,6 +1038,7 @@ Product Detail
 }
 
 .sub-div-img {
+    background: white;
     width: 78px;
     height: 78px;
 }
@@ -1049,6 +1050,66 @@ Product Detail
     cursor: pointer;
 }
 
+/*=========================================================
+Product Comment
+===========================================================*/
+.rate-border-size{
+    max-width: 50rem;
+    margin: auto;
+}
+.rate-size{
+    font-size: 15px;
+}
+.rating-star div{
+    color: #ffe400;
+    font-size: 20px;
+    font-family: sans-serif;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.rating-star input {
+    display: none;
+}
+
+.rating-star input + label{
+    font-size: 20px;
+    text-shadow: 1px 1px 0 #ffe400;
+    cursor: pointer;
+}
+
+.rating-star input:checked + label ~ label{
+    color: #838383;
+}
+
+.rating-star label:active{
+    transform: scale(0.8);
+    transition: 0.3s ease;
+}
+
+.comment-fade {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+    .comment-fade.show {
+        opacity: 1;
+        visibility: visible;
+    }
+
+.cmt-custom {
+    background: #f3f3f3;
+    border-radius: 10px;
+    transition: box-shadow 0.3s ease;
+    max-width: 48rem;
+    margin: auto;
+}
+
+.reply{
+    font-size: 12px;
+    color: green;
+}
 /*=========================================================
 Cart
 ===========================================================*/

@@ -1,0 +1,50 @@
+﻿@model DTech.Models.EF.ProductComment
+<form asp-controller="Product" asp-action="SubmitComment" method="post">
+    <input type="hidden" name="ProductId" value="@Model.ProductId" />
+
+    <div class="row m-2">
+        <div class="col-md-1">
+            <label asp-for="Rate" class="col-form-label text-center align-content-center rate-size"></label>
+        </div>
+        <div class="col-md-11 align-content-center">
+            <div class="form-group rating-star">
+                <div class="star-icon">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <input type="radio" id="rating-@i" name="Rate" value="@i" @(Model.Rate == i ? "checked" : "") />
+                        <label for="rating-@i" class="fa fa-star"></label>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row m-2">
+        <div class="form-group">
+            <input asp-for="Name" class="form-control" placeholder="Full Name" required />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row m-2">
+        <div class="form-group">
+            <input asp-for="Email" class="form-control" placeholder="Email" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row m-2">
+        <div class="form-group">
+            <textarea asp-for="Detail" class="form-control" placeholder="Your Comment" rows="3" required></textarea>
+            <span asp-validation-for="Detail" class="text-danger"></span>
+        </div>
+    </div>
+
+    <div class="row m-2 text-center align-content-center">
+        <div class="form-group">
+            <button type="submit" value="Create" class="btn btn-primary w-100 button-hover">
+                Submit
+            </button>
+        </div>
+    </div>
+</form>

@@ -13,7 +13,8 @@ namespace DTech.Controllers
         CategoryDAO categoryDAO,
         ProductDAO productDAO,
         SpecificationDAO specificationDAO,
-        ProductCommentDAO productCommentDAO
+        ProductCommentDAO productCommentDAO,
+        CustomerDAO customerDAO
     ) : Controller
     {
         // Route: /laptop
@@ -180,6 +181,52 @@ namespace DTech.Controllers
                 .ToList();
 
             return PartialView(recentlyViewedProducts);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CommentForm(int productId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = new ProductComment { ProductId = productId, Rate = 5 };
+            if ( userId != null )
+            {
+                var customer = await customerDAO.GetByIdAsync(userId);
+                if (customer != null)
+                {
+                    model.Name = customer.FullName ?? string.Empty;
+                    model.Email = customer.Email ?? string.Empty;
+                }
+            }
+            return PartialView(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SubmitComment(ProductComment cmt)
+        {
+            var product = await productDAO.GetByIdAsync(cmt.ProductId ?? 0);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                cmt.CmtDate = DateTime.Now;
+                await productCommentDAO.AddCommentAsync(cmt);
+
+                return RedirectToAction("ProductDetail", new
+                {
+                    categorySlug = product.Category!.Slug,
+                    brandSlug = product.Brand!.Slug,
+                    productSlug = product.Slug
+                });
+            }
+            return RedirectToAction("ProductDetail", new
+            {
+                categorySlug = product.Category!.Slug,
+                brandSlug = product.Brand!.Slug,
+                productSlug = product.Slug
+            });
         }
     }
 }

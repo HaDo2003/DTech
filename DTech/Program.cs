@@ -209,6 +209,12 @@ app.MapControllerRoute(
 );
 
 app.MapControllerRoute(
+    name: "comment-form",
+    pattern: "comment-form",
+    defaults: new { controller = "Product", action = "CommentForm" }
+);
+
+app.MapControllerRoute(
     name: "search",
     pattern: "search/{query?}",
     defaults: new { controller = "Search", action = "Search" }

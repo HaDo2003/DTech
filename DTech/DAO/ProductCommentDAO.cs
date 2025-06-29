@@ -13,6 +13,7 @@ namespace DTech.DAO
             var comments = await context.ProductComments
                 .AsNoTracking()
                 .Where(c => c.ProductId == productId)
+                .OrderByDescending(c => c.CmtDate)
                 .ToListAsync();
             return comments;
         }
@@ -49,6 +50,22 @@ namespace DTech.DAO
             {
                 Console.WriteLine(ex.Message);
                 return false;
+            }
+        }
+
+        //Create a new comment
+        public async Task<ProductComment> CreateCommentAsync(ProductComment comment)
+        {
+            try
+            {
+                context.ProductComments.Add(comment);
+                await context.SaveChangesAsync();
+                return comment;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
             }
         }
     }

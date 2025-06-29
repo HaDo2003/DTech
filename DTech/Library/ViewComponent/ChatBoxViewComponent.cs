@@ -13,7 +13,7 @@ public class ChatBoxViewComponent(ChatDAO chatDAO) : ViewComponent
             var fullChat = await chatDAO.GetChatMessagesAsync(userId);
             return View("~/Views/Shared/Components/ChatBox/_ChatBox.cshtml", fullChat);
         }
-        return View("~/Views/Shared/Components/ChatBox/_ChatBox.cshtml");
+        return View("~/Views/Shared/Components/ChatBox/_ChatBox.cshtml", new DTech.Models.ViewModel.FullChatViewModel());
     }
 }
 
